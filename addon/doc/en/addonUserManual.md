@@ -1,9 +1,9 @@
 # VLC media player : accessibility enhancements - user's manual # 
 
 * Authors : Paulber19 with the very active participation of Daniel Poiraud. 
-* download version 1.1: 
-* [download server 1][1] 
-* [download server 2][2] 
+* download version 1.1.1: 
+	* [download server 1][1] 
+	* [download server 2][2] 
 
 
 
@@ -222,7 +222,8 @@ Changes:
 
 
 ### Changes for version 2.0 # # # $ $ | | $ $ $ $ | | $ $ * * * First multi-lingual version. $ $ | | $ $ $ $ | | $ $ 
-[1]: http://angouleme.avh.asso.fr/fichesinfo/fiches_nvda/data/VLCAccessEnhancement-1.0.1.nvda-addon 
-[2]: https://rawgit.com/paulber007/AllMyNVDAAddons/master/VLC/VLCAccessEnhancement-1.0.1.nvda-addon 
+
+[1]: http://angouleme.avh.asso.fr/fichesinfo/fiches_nvda/data/VLCAccessEnhancement-1.1.1.nvda-addon 
+[2]: https://rawgit.com/paulber007/AllMyNVDAAddons/master/VLC/VLCAccessEnhancement-1.1.1.nvda-addon 
 
 

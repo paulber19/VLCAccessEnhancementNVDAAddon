@@ -2,8 +2,10 @@
 
 * Author : PaulBer19
 * URL : paulber19@laposte.net
-* Download [stable version][1]
-* Download [developpement version][2]
+* Download stable version:
+	* [server 1][1]
+	* [server 2][2]
+* Download [developpement version][3]
 
 
 This addon adds a variety of commands to enhance accessibility in playing media:
@@ -26,6 +28,7 @@ Compatible with VLC 3.0 or higher.
 
 Tested with NVDA 2018.4, NVDA 2018.3.2 and NVDA 2018.2.1.
 
-[1]: https://rawgit.com/paulber007/AllMyNVDAAddons/master/VLC/VLCAccessEnhancement-1.1.nvda-addon
+[1]: http://angouleme.avh.asso.fr/fichesinfo/fiches_nvda/data/VLCAccessEnhancement-1.1.1.nvda-addon
+[2]: https://rawgit.com/paulber007/AllMyNVDAAddons/master/VLC/VLCAccessEnhancement-1.1.1.nvda-addon
 
-[2]:
+[3]:

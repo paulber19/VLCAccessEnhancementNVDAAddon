@@ -34,7 +34,7 @@ Tested on NVDA 2018.2 and NVDA 2018.4
 """),
 
 	# version
-	"addon_version" : "1.1",
+	"addon_version" : "1.1.1",
 	# Author(s)
 	"addon_author" : u"PaulBer19",
 	# URL for the add-on documentation support

@@ -2,11 +2,11 @@
 
 
 *	Auteurs :  Paulber19 avec la participation très active de  Daniel Poiraud.
-*	Télécharger  version 1.0:
-	*	[serveur de téléchargement 1][1]
-	*	[serveur de téléchargement 2][2]
+*	Télécharger  version 1.1.1:
+	* [serveur de téléchargement 1][1]
+	* [serveur de téléchargement 2][2]
 
-	
+
 Ce module complémentaire ajoute diverses commandes pour faciliter la lecture des médias avec NVDA.  
 
 Il a été testé sur VLC 3.0, Windows 10  NVDA 2018.2.1 et NVDA 2018.3.
@@ -223,7 +223,7 @@ Changements:
 *	 Première version multilingue.
 
 
-[1]: http://angouleme.avh.asso.fr/fichesinfo/fiches_nvda/data/VLCAccessEnhancement-1.0.1.nvda-addon
-[2]: https://rawgit.com/paulber007/AllMyNVDAAddons/master/VLC/VLCAccessEnhancement-1.0.1.nvda-addon
+[1]: http://angouleme.avh.asso.fr/fichesinfo/fiches_nvda/data/VLCAccessEnhancement-1.1.1.nvda-addon
+[2]: https://rawgit.com/paulber007/AllMyNVDAAddons/master/VLC/VLCAccessEnhancement-1.1.1.nvda-addon
 
 
