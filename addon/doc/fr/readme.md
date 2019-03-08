@@ -8,7 +8,7 @@
 * Télécharger [version de développement][3]
 
 
-Cet addon ajoute diverses commandes pour faciliter la lecture des médias:
+Cette extension ajoute diverses commandes pour faciliter la lecture des médias:
 
 * script  pour annoncer la durée du média  déjà lue,
 * script pour annoncer la durée du média restante à lire,
@@ -26,9 +26,9 @@ La liste des commandes est obtenue par Control+NVDA+H
 
 Compatible avec VLC 3.0 ou supérieure.
 
-Testé avec NVDA 2018.4, NVDA 2018.3.2 et NVDA 2018.2.1
+Incompatible avec les versions de NVDA inférieures à la 2018.3.2
 
-[1]: http://angouleme.avh.asso.fr/fichesinfo/fiches_nvda/data/VLCAccessEnhancement-1.1.1.nvda-addon
-[2]: https://rawgit.com/paulber007/AllMyNVDAAddons/master/VLC/VLCAccessEnhancement-1.1.1.nvda-addon
+[1]: http://angouleme.avh.asso.fr/fichesinfo/fiches_nvda/data/VLCAccessEnhancement-1.2.nvda-addon
+[2]: https://rawgit.com/paulber007/AllMyNVDAAddons/master/VLC/VLCAccessEnhancement-1.2.nvda-addon
 
 [3]:

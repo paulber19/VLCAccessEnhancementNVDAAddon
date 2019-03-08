@@ -1,6 +1,6 @@
-# globalPlugins/VLCSettingMenu.py
+# globalPlugins\VLCAccessEnhancement\theVLCGlobalPlugin.py
 # a part of VLC media player add-on
-# Copyright 2018 paulber19
+# Copyright 2019 paulber19
 #This file is covered by the GNU General Public License.
 #See the file COPYING for more details.
 
@@ -28,18 +28,18 @@ import vlc_special
 del sys.path[-1]
 
 
-class GlobalPlugin (globalPluginHandler.GlobalPlugin):
+class VLCGlobalPlugin (globalPluginHandler.GlobalPlugin):
 	scriptCategory = _addonSummary
 	
 	def __init__(self, *args, **kwargs):
-		super (GlobalPlugin, self).__init__(*args, **kwargs)
+		super (VLCGlobalPlugin, self).__init__(*args, **kwargs)
 		self.createSubMenu ()
 	
 	def createSubMenu (self):
 		self.preferencesMenu = gui.mainFrame.sysTrayIcon.preferencesMenu
 		self.vlc = self.preferencesMenu.Append (wx.ID_ANY,
 		# Translators: name of the option in the menu.
-			_("%s add-on - settings ...")%_addonSummary, "")
+			_("%s - settings ...")%_addonSummary, "")
 		gui.mainFrame.sysTrayIcon.Bind (wx.EVT_MENU, self.onVLCAddonConfigurationDialog, self.vlc)
 
 	def terminate (self):
@@ -52,7 +52,7 @@ class GlobalPlugin (globalPluginHandler.GlobalPlugin):
 				self.preferencesMenu.RemoveItem (self.vlc)
 		except wx.PyDeadObjectError:
 			pass
-		super(GlobalPlugin, self).terminate()
+		super(VLCGlobalPlugin, self).terminate()
 	def onVLCAddonConfigurationDialog (self, evt):
 		wx.CallAfter(VLCAddonConfigurationDialog.run)
 	
@@ -63,7 +63,7 @@ class GlobalPlugin (globalPluginHandler.GlobalPlugin):
 	script_activateVLCAddonConfigurationDialog.category = _addonSummary
 	
 	def script_VLCGlobalPluginTest(self, gesture):
-		print "test VLCGlobalPluginTest"
+		print ("test VLCGlobalPluginTest")
 		ui.message("VLCGlobalPluginTest")
 	
 	__gestures = {

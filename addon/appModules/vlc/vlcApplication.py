@@ -24,8 +24,9 @@ import oleacc
 import ctypes
 from NVDAObjects.IAccessible import getNVDAObjectFromEvent
 import winUser
-import vlcAddonConfig
 import scriptHandler
+from . import vlcAddonConfig
+
 _curAddon = addonHandler.getCodeAddon()
 import sys
 debugToolsPath = os.path.join(_curAddon.path, "debugTools")
@@ -311,7 +312,6 @@ class MainWindow (object):
 	def reportLoopAndRandomStates(self):
 		self._loopState =  self.mainPanel.getLoopState()
 		randomState = self.mainPanel.getRandomState()
-		print "reportLoopAndRandomStates: random= %s, loop= %s"%(self._loopState, randomState)
 		msg = None
 		if self._loopState and randomState:
 			# Translators: message to user to report repeat and random playback state.
@@ -412,7 +412,6 @@ class MainWindow (object):
 			
 	
 	def jumpToTime(self, jumpTime, totalTime, startPlaying = False):
-		print "type: %s" %type(jumpTime)
 		printDebug ("MainWindow: jumpToTime")
 		mainWindow = self
 		speech.cancelSpeech()
