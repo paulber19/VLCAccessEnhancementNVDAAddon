@@ -4,7 +4,6 @@
 #This file is covered by the GNU General Public License.
 #See the file COPYING for more details.
 
-
 import addonHandler
 addonHandler.initTranslation()
 from logHandler import log
@@ -28,11 +27,16 @@ import winsound
 import eventHandler
 import mouseHandler
 import oleacc
+from vlcGoToTime import GoToTimeDialog
+import vlcAddonConfig
 from inputCore import normalizeGestureIdentifier
 import inputCore
 import core
+import vlcApplication
 
 _curAddon = addonHandler.getCodeAddon()
+_addonSummary = _curAddon.manifest['summary']
+_scriptCategory = unicode(_addonSummary)
 import sys
 debugToolsPath = os.path.join(_curAddon.path, "debugTools")
 sys.path.append(debugToolsPath)
@@ -53,13 +57,7 @@ from vlcUtils import *
 from vlcSettingsHandler import *
 import vlc_special
 import vlcStrings
-from py3Compatibility import _unicode
 del sys.path[-1]
-from .vlcGoToTime import GoToTimeDialog
-from . import vlcAddonConfig
-from . import vlcApplication
-_addonSummary = _curAddon.manifest['summary']
-_scriptCategory = _unicode(_addonSummary)
 
 def sendGesture(gesture):
 	gesture.send()
@@ -99,7 +97,7 @@ class InVLCViewWindow(NVDAObjects.NVDAObject):
 		
 	def _initGestures(self):
 		scriptGestures = self.appModule.vlcrcSettings .localeSettings .scriptGestures
-		for script in  scriptGestures:
+		for script in  scriptGestures.keys():
 			gesture = scriptGestures[script]
 			self.bindGesture(gesture, script)
 	
@@ -287,7 +285,7 @@ class InVLCViewWindow(NVDAObjects.NVDAObject):
 		helpMsg.append( vlcHelp)
 		text = "\n".join(helpMsg)
 		# Translators: title of main window shortcut help window.
-		title = _("%s - main window help") %_addonSummary
+		title = _("%s add-on - main window help") %_addonSummary
 		wx.CallAfter(MessageBox.run, title, text)
 	def script_recordResumeFile(self, gesture):
 		def callback():
@@ -321,9 +319,9 @@ class InVLCViewWindow(NVDAObjects.NVDAObject):
 			# Translators:  message to ask the user if he want to resume playback.
 			_("Do you want to resume Playback at %s") %formatTime(resumeTime),
 			# Translators: title of message box.
-			_("%s - Confirmation")%_addonSummary,
-			wx.OK|wx.CANCEL)
-			if res == wx.CANCEL:
+			_("Confirmation"),
+			wx.YES|wx.NO)
+			if res == wx.NO:
 				return
 			mainWindow = self.appModule.mainWindow
 			totalTime = getTimeList(mainWindow.getTotalTime())
@@ -528,7 +526,7 @@ class AppModule(AppModuleDebug):
 				if key != "":
 					self.vlcGestures["kb:%s" %key] = script
 		self.jumpKeyToDelay = {}
-		for keyName in jumpDelays:
+		for keyName in jumpDelays.keys():
 			key = self.vlcrcSettings.getKeyFromName(keyName)
 			if key != "":
 				identifier = normalizeGestureIdentifier("kb:%s"%key)

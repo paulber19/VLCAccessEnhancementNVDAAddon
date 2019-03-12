@@ -14,7 +14,6 @@ import time
 import wx
 import config
 import characterProcessing
-from py3Compatibility import baseString 
 
 def PutWindowOnForeground(hwnd, sleepNb  = 10, sleepTime  = 0.1):
 	winUser.setForegroundWindow(hwnd)
@@ -120,7 +119,7 @@ def formatTime(sTime) :
 		
 def getTimeInSec(theTime):
 
-	if isinstance(theTime, baseString ):
+	if isinstance(theTime, basestring):
 		if "--:--" in theTime:
 			return 0
 		
@@ -155,14 +154,6 @@ def getTimeString( timeList):
 
 
 	return "{0}:{1}:{2}" .format(timeList[0].zfill(2),timeList[1].zfill(2), timeList[2].zfill(2))
-
-
-def messageBox(message, caption=wx.MessageBoxCaptionStr, style=wx.OK | wx.CENTER, parent=None):
-	option = config.conf["presentation"]["reportObjectDescriptions"]
-	config.conf["presentation"]["reportObjectDescriptions"] = True
-	ret = gui.messageBox(message, caption, style, parent)
-	config.conf["presentation"]["reportObjectDescriptions"] = option
-	return ret
 
 	
 def leftClick (x,y):

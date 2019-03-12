@@ -11,9 +11,7 @@ The author has used a software of translation to write this document and  presen
 
 This add-on adds a number of commands to facilitate the playback of the media with NVDA. 
 
-This version is compatible  with VLC's versions higher to 3.0.
-
-This version is not compatible with NVDA's versions below to 2018.3.2.
+It has been tested on VLC 3.0, Windows 10, NVDA 2018.4 and NVDA 2018.3.2. 
 
 ## Gestures  provided by the module: ## 
 
@@ -162,10 +160,12 @@ The identifiers of the scripts are:
 
 ## History ## 
 
-### Version 1.2 (21/02/2019) ### 
-- compatibility with NVDA 2019.1.0.
-- preparation of compatibility with Python 3
 
+### Version 1.1.2 (25/02/2019) ### 
+Modification of manifest.ini file for compatibility with NVDA 2019.1.0.
+
+### Version 1.1.1 (25/12/2018) ### 
+Documentation correction for download links.
 
 ### Version 1.1 (5/12/2018) ### 
 
@@ -230,7 +230,7 @@ Changes:
 
 ### Changes for version 2.0 # # # $ $ | | $ $ $ $ | | $ $ * * * First multi-lingual version. $ $ | | $ $ $ $ | | $ $ 
 
-[1]: http://angouleme.avh.asso.fr/fichesinfo/fiches_nvda/data/VLCAccessEnhancement-1.2.nvda-addon 
-[2]: https://rawgit.com/paulber007/AllMyNVDAAddons/master/VLC/VLCAccessEnhancement-1.2.nvda-addon 
+[1]: http://angouleme.avh.asso.fr/fichesinfo/fiches_nvda/data/VLCAccessEnhancement-1.1.2.nvda-addon 
+[2]: https://rawgit.com/paulber007/AllMyNVDAAddons/master/VLC/VLCAccessEnhancement-1.1.2.nvda-addon 
 
 

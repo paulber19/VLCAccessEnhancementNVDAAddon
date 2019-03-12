@@ -17,6 +17,7 @@ import wx
 from keyboardHandler import KeyboardInputGesture
 from inputCore import normalizeGestureIdentifier
 from localeSettingsHandler import LocaleSettings
+import urllib
 from configobj import ConfigObj, DuplicateError
 _curAddon = addonHandler.getCodeAddon()
 import sys
@@ -29,8 +30,6 @@ except ImportError:
 del sys.path[-1]
 import vlc_special
 from vlc_special import makeAddonWindowTitle
-from py3Compatibility import urllib_unquote
-
 
 _defaultVlcKeysAssignment  =  {
 	"key-loop" : "l",
@@ -302,14 +301,14 @@ class QTInterface (VLCSettings):
 		recents = qtInterface [section]
 		filesList = []
 		timesList = []
-		if "list" not in recents:
+		if "list" not in recents.keys():
 			return
 		l = recents["list"] if type(recents["list"]) is  list else [recents["list"],]
 		for item in l:
-			file = urllib_unquote(item.encode("utf-8"))
+			file = urllib.unquote(item.encode("utf-8"))
 			filesList.append(file.decode("utf-8"))
 		
-		if "times" in recents:
+		if "times" in recents.keys():
 			timesList = recents["times"]
 			if type(timesList) is not list:
 				timesList = [timesList,]
@@ -324,7 +323,7 @@ class QTInterface (VLCSettings):
 			p = f[6:]
 			#p = p.replace("%20", " ")
 			p = p.split("/")[-1]
-			if p in self.recents:
+			if p in self.recents.keys():
 				continue
 			self.recents[p] = timesList[index]
 		return True
@@ -376,7 +375,7 @@ class Vlcrc(VLCSettings):
 			return
 		# delete vlc key definition which must be modified
 
-		keyNames = list(newVLCKeys.keys())
+		keyNames = newVLCKeys.keys()
 		newLines = []
 		for line in self.content:
 			if line.strip() == "" or  line[0] in ["#", "["]:
@@ -396,7 +395,7 @@ class Vlcrc(VLCSettings):
 
 	def _secondPass(self, lines, newVLCKeys):
 		# add new key definition
-		keyNames = list(newVLCKeys.keys())
+		keyNames = newVLCKeys.keys()
 		newLines = []
 		for line in lines:
 			newLines.append(line)
@@ -457,7 +456,7 @@ class Vlcrc(VLCSettings):
 				text + ". " + _("Are you OK?"),
 				# Translators: title of message box.
 				_("%s add-on - Confirmation") %self.addon.manifest["summary"],
-				wx.OK|wx.CANCEL) == wx.CANCEL:
+				wx.YES|wx.NO) == wx.NO:
 				return
 		lines = self._firstPass(newVLCKeys)
 		lines = self._secondPass(lines, newVLCKeys)
@@ -487,7 +486,7 @@ class Vlcrc(VLCSettings):
 			"downArrow" : "down"
 			}
 		newKey = key.split("+")
-		for item in NVDAKeyToVLCKey:
+		for item in NVDAKeyToVLCKey.keys():
 			if item in newKey:
 				newKey[newKey.index(item)] = NVDAKeyToVLCKey[item]
 		return "+".join(newKey)
@@ -504,7 +503,7 @@ class Vlcrc(VLCSettings):
 		if key == "+": return "numlock+numpadplus"
 		k = key.replace("++", "+numlock+numpadplus")
 		newKey = [x.lower() for x in k.split("+")]
-		for item in vlcKeyToNVDAKey:
+		for item in vlcKeyToNVDAKey.keys():
 			if item in newKey:
 				newKey[newKey.index(item)] = vlcKeyToNVDAKey[item]
 		return "+".join(newKey)
@@ -513,7 +512,7 @@ class Vlcrc(VLCSettings):
 		newVLCKeys= self.localeSettings.getVLCKeysToUpdate()
 		if newVLCKeys is None:
 			return ""
-		vlcKeyNames = list(newVLCKeys.keys())
+		vlcKeyNames = newVLCKeys.keys()
 		# Translators: message to the user.
 		text = _("The VLC command keys which will be record in the VLC configuration file are:") +"\r\n"
 		for (keyName, msg)  in _vlcHotKeyHelp:
@@ -557,7 +556,7 @@ class Vlcrc(VLCSettings):
 		vlcKeysAssignment = _defaultVlcKeysAssignment  .copy()
 		if self.content is None:
 			return vlcKeysAssignment
-		keyNames = list(vlcKeysAssignment.keys())
+		keyNames = vlcKeysAssignment .keys()
 		keys = vlcKeysAssignment
 		for line in self.content:
 			if line.strip() == "" or  line[0] in ["[",]:

@@ -64,14 +64,14 @@ class LocaleSettings(object):
 			printDebug("loadScriptGestures: Default script gestures assignment loaded")
 			return
 		section = conf["script-gestures"]
-		for scriptName in defaultScriptGestures:
-			if scriptName in section:
+		for scriptName in defaultScriptGestures.keys():
+			if scriptName in section.keys():
 				self.scriptGestures[scriptName] = section[scriptName]
 		printDebug ("loadScriptGestures: script gestures assignment loaded")
 	def getVLCKeysToUpdate(self):
 		conf = self.conf
 		sectionName = "vlc-assignements"
-		if conf is  None or sectionName not in conf:
+		if conf is  None or sectionName not in conf.keys():
 			return None
 		return conf[sectionName].copy() if len(conf[sectionName]) else None
 		

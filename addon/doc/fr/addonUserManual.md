@@ -2,19 +2,16 @@
 
 
 *	Auteurs :  Paulber19 avec la participation très active de  Daniel Poiraud.
-*	Télécharger  version 1.2:
+*	Télécharger  version 1.1.1:
 	* [serveur de téléchargement 1][1]
 	* [serveur de téléchargement 2][2]
 
 
-Cette extension ajoute diverses commandes pour faciliter la lecture des médias avec NVDA.  
+Ce module complémentaire ajoute diverses commandes pour faciliter la lecture des médias avec NVDA.  
 
+Il a été testé sur VLC 3.0, Windows 10  NVDA 2018.2.1 et NVDA 2018.3.
 
-Cette version est compatible avec les versions de VLC supérieurs à la 3.0.
-
-Elle est incompatible avec les versions de NVDA inférieurs à la 2018.3.2.
-
-## Gestes de commande apportés par l'extension: ##
+## Gestes de commande apportés par le module: ##
 *	NVDA+Control+H : Afficher l'aide sur les raccourcis possibles dans la fenêtre principale,
 *	virgule : annoncer la  durée lue du média,
 *	point-virgule : annoncer la durée du média restante à lire,
@@ -28,7 +25,7 @@ Elle est incompatible avec les versions de NVDA inférieurs à la 2018.3.2.
 
 Ces gestes de commandes peuvent être modifiés  avec le dialogue "Gestes de commande" de NVDA.
 
-## Raccourcis clavier propre à VLC vocalisés par cette extension: ##
+## Raccourcis clavier propre à VLC vocalisés par le module: ##
 Certains raccourcis prévus par défaut par VLC posent des problèmes et doivent être modifiés. Ce sont:
 
 *	Les raccourcis-clavier "Crochet fermé" et "Crochet ouvert" pour la vitesse de lecture un peu plus rapide ou un peu plus lente,   car ils ne sont pas utilisables en clavier français. Ils seront remplacés par "I" et "U". ,
@@ -43,7 +40,7 @@ Pour mettre en place ces nouveaux raccourcis, vous devez procéder  à la modifi
 *	enfin, appuyez sur le bouton "Modifier les raccourcis du lecteur média  VLC".
 
 
-Voici les raccourcis clavier que cette extension vocalise:
+Voici les raccourcis clavier que le module vocalise:
 
 *	Y : diminuer la vitesse de lecture.
 *	U : diminuer un peu la vitesse de lecture.
@@ -76,7 +73,7 @@ Le passage en pause est annoncé.
 ## Script Afficher le dialogue pour  définir un temps et déplacer le curseur de lecture à ce temps ##
 VLC offre la possibilité à l'aide du raccourci "contrôl+t" de se déplacer à un temps précis du média. Mais la boite de dialogue qu'il présente pose des problèmes d’accessibilité.
 
-Cette extension offre une autre solution  (préférable) pour se déplacer à un temps avec le  raccourci "control+virgule".  
+Le module offre une autre solution  (préférable) pour se déplacer à un temps avec le  raccourci "control+virgule".  
 Ce raccourci présente une boite de dialogue qui vous permet de définir le temps (heures, minutes, secondes) où positionner le curseur de lecture du média, dans la limite de la durée totale du média diminuée de 5 secondes.
 
 
@@ -87,7 +84,7 @@ VLC mémorise la position courante de lecture au moment  où celle-ci est interr
 
 Lorsque le média est relancé, VLC affiche la possibilité de reprise dans la barre d'état pendant un temps très court (quelques secondes)  et en tapant le raccourci "alt+r", la lecture est relancée à la position enregistrée pour ce média.
 
-Comme ceci est difficilement utilisable pour un non voyant,cette extension apporte un script qui permet de relancer la lecture à la position enregistrée par VLC sans avoir cette contrainte de temps.
+Comme ceci est difficilement utilisable pour un non voyant,le module apporte un script qui permet de relancer la lecture à la position enregistrée par VLC sans avoir cette contrainte de temps.
 
 Lorsque un média est relancé et que VLC a enregistré , pour ce média, une position de reprise de la lecture,  l'annonce vocale"Reprise de la lecture alt+control+r"  l'indique. En utilisant le geste de commande "alt+control+r",  la lecture du média continue à la position enregistrée.
 
@@ -99,9 +96,9 @@ Cette seconde solution  nécessite tout d'abord de marquer la position de repris
 Il est préférable de mettre en pause le média au préalable.
 Vous n'êtes pas obligé de quitter VLC pour reprendre la lecture de ce média.
 
-Pour reprendre la lecture d'un  média, la commande clavier "NVDA+control+f6"  relancera la lecture   à la position enregistrée par le l'extension pour ce média.
+Pour reprendre la lecture d'un  média, la commande clavier "NVDA+control+f6"  relancera la lecture   à la position enregistrée par le module pour ce média.
 
-Cette position est enregistrée dans le fichier de configuration de l'extension et pour chaque média sont enregistrés le nom du média et la position associée. Seuls les médias les plus récemment ouverts sont conservés dans ce fichier.
+Cette position est enregistrée dans le fichier de configuration du module et pour chaque média sont enregistrés le nom du média et la position associée. Seuls les médias les plus récemment ouverts sont conservés dans ce fichier.
 
 Attention: le nom du média  est unique dans ce fichier. Si deux fichiers de même noms sont dans des dossiers différents, seul le dernier  enregistrement pour ce nom sera retenu.
 
@@ -111,17 +108,17 @@ Lors de son démarage, VLC crée dans le dossier de configuration utilisateur de
 
 Pour réinitialiser la configuration deVLC sans avoir à le réinstaller, il suffit de supprimer ce dossier.
 
-Pour faciliter cela, l'extension offre le bouton "Supprimer le dossier de configuration de VLC" dans le dialogue de configuration de l'extension.
+Pour faciliter cela, le module offre le bouton "Supprimer le dossier de configuration de VLC" dans le dialogue de configuration du module .
 
 Par la suite, si le bouton "Modifier les raccourcis du lecteur média  VLC  " doit être utiliser, il est nécessaire de lancer au moins une fois VLC pour recréer ce dossier et les fichiers de configuration de VLC.
 
 
 
 ### Support du multilinguisme du lecteur multimédia VLC ###
-Comme les concepteurs du lecteur multimédia n'ont pas prévu dans le logiciel de fournir des informations pertinentes pour identifier  les objets le constituant, cette extension s'appuie sur leur nom ou leur description.
-Pour ce faire, il est nécessaire de définir pour chaque langue de VLC les objets utilisés par l'extension. Ces définitions se trouvent dans les fichiers "strings-xx.ini" (xx = identifiant de la langue) du dossier "VLCLocale de l'extension.
+Comme les concepteurs du lecteur multimédia n'ont pas prévu dans le logiciel de fournir des informations pertinentes pour identifier  les objets le constituant, le module s'appuie sur leur nom ou leur description.
+Pour ce faire, il est nécessaire de définir pour chaque langue de VLC les objets utilisés par le module. Ces définitions se trouvent dans les fichiers "strings-xx.ini" (xx = identifiant de la langue) du dossier "VLCLocale du module.
 Ces fichiers sont enregistrés en codage "UTF-8" sans BOM.
-Pour connaitre la langue configuré dans VLC, cette extension utilise le nom du second menu de la barre de menus et c'est la  clé "StringToFindLanguage " de la section "main" qui le défini.
+Pour connaitre la langue configuré dans VLC, le module utilise le nom du second menu de la barre de menus et c'est la  clé "StringToFindLanguage " de la section "main" qui le défini.
 La section "VLC" du fichier   contient les clés permettant d'identifier les objets. Ce sont:
 
 *	VLCAppTitle =  définit le titre de la fenêtre de VLC sans média lancé.
@@ -134,14 +131,14 @@ La section "VLC" du fichier   contient les clés permettant d'identifier les obj
 
 
 ### Définition des raccourcis-clavier à modifier ###
-Comme indiqué précédemment, certains raccourcis de VLC ne sont pas exploitables  suivant le type de clavier. cette extension permet de les définir et de les modifier.
+Comme indiqué précédemment, certains raccourcis de VLC ne sont pas exploitables  suivant le type de clavier. Le module permet de les définir et de les modifier.
 
-Les définitions de ces raccourcis à modifier sont dans le fichier "settings.ini" du dossier "locale" pour  chaque langue de NVDA supportée par l'extension.
+Les définitions de ces raccourcis à modifier sont dans le fichier "settings.ini" du dossier "locale" pour  chaque langue de NVDA supportée par le module.
 Dans ce fichier, la section "vlc-keynames"  définit par un numéro, les  identifiants VLC  des raccourcis à modifier et la section "vlc-assignements", associe à chaque identifiant le nouveau raccourcis.
 Les raccourcis doivent être sous la forme comprise par VLC(par exemple, Ctrl pour control, left pour flèche gauch).
 
 ### Définition des gestes de commande ###
-Les gestes de commandes de cette extension sont également définis dans le fichier "settings.ini".
+Les gestes de commandes du module sont également définis dans le fichier "settings.ini".
 Ils se trouvent dans la section "script-gestures" et pour chaque script, il est possible d'attribuer un ou plusieurs gestes de commande sous la forme NVDA,  (par exemple kb:(desktop):control+c, kb:nvda+shift+alt+f1).
 Les identifiants des scripts sont:
 
@@ -157,26 +154,26 @@ Les identifiants des scripts sont:
 
 ## Historique ##
 
-### Version 1.2 (06/03/2019) ###
-* remplacement des boutons "oui" et "non"  par les boutons "ok" et "annuler" dans les boites de confirmation pour  pouvoir utiliser la touche"Échapp".
-* remplacement du terme "module complémentaire " par "extension (imposé par les traducteurs de NVDA).
-* compatibilité avec NVDA 2019.1.0.
-* préparation à la compatibilité avec python3.
+### Version 1.1.2 (21/02/2019) ###
+Correction du fichier manifest.ini pour compatibilité avec NVDA 2019.1.0
 
+### Version 1.1.1 (25/12/2018) ###
+correction de la documentation pour les liens de téléchargement
 
 ### Version 1.1 (21/12/2018) ###
+
 *	correction de non reprise de la lecture lorsque la liste des médias récents n'a qu'un seul média,
 *	corrections de la documentation,
 *	mise en compatibilité avec les versions alpha 2019.1 de NVDA.
 
 
 ### Version 1.0 (29/10/2018) ###
-Pour éviter une confusion avec d'autres extensions pour VLC, le nom de l'extension est renommé en "VLCAccessEnhancement" et dans le gestionnaire d'extensions, il se nomme "Lecteur multimédia VLC: compléments d'accessibilité".
+Pour éviter une confusion avec d'autres modules complémentaires pour VLC, le nom du module est renommé en "VLCAccessEnhancement" et dans le gestionnaire de modules complémentaires, il se nomme "Lecteur multimédia VLC: compléments d'accessibilité".
 
 Nouveautés:
 
 *	mise en compatibilité avec NVDA 2018.3,
-* changement du nom de l'extension pour éviter toute confusion avec d'autres extensions pour VLC.
+* changement du nom du module pour éviter toute confusion avec d'autres modules pour VLC.
 *	annonce  de l'indication de la possibilité de reprise de la lecture interrompue à la position mémorisée parVLC et reprise de la lecture à l'aide du geste de commande "alt+control+r",
 *	ajout du bouton pour supprimer le fichier de configuration deVLC,
 
@@ -185,8 +182,8 @@ Changement interne:
 
 * remaniement complet du code,
 *	fichier style.css renommé en style_md.css,
-*	reconversion du fichier manuel utilisateur pour conformité  de forme avec les extensions   internationnales,
-*	renomage du menu de configuration de l'extension.
+*	reconversion du fichier manuel utilisateur pour conformité  de forme avec les modules complémentaires  internationnaux,
+*	renomage du menu de configuration du module.
 
 
 ## Historique précédent##
@@ -213,7 +210,7 @@ Changements:
 
 ### Version 2.3 ###
 *	ajout des scripts pour la relance de la lecture
-*	ajout de la gestion d'un fichier de configuration pour l'extension
+*	ajout de la gestion d'un fichier de configuration pour le module
 
 
 ### Version 2.2 ###
@@ -223,7 +220,7 @@ Changements:
 *	annonce de la coupure /remise du son,
 *	annonce du passage en pause,
 *	vocalisation de la boite de dialogue de VLC "Aller au temps",
-* modification de la boite de dialogue de l'extension "Aller au temps".
+* modification de la boite de dialogue du module "Aller au temps".
 
 
 
@@ -232,5 +229,7 @@ Changements:
 *	 Première version multilingue.
 
 
-[1]: http://angouleme.avh.asso.fr/fichesinfo/fiches_nvda/data/VLCAccessEnhancement-1.2.nvda-addon
-[2]: https://rawgit.com/paulber007/AllMyNVDAAddons/master/VLC/VLCAccessEnhancement-1.2.nvda-addon
+[1]: http://angouleme.avh.asso.fr/fichesinfo/fiches_nvda/data/VLCAccessEnhancement-1.1.2.nvda-addon
+[2]: https://rawgit.com/paulber007/AllMyNVDAAddons/master/VLC/VLCAccessEnhancement-1.1.2.nvda-addon
+
+

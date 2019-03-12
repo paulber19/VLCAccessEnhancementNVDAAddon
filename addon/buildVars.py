@@ -30,19 +30,19 @@ addon_info = {
 - change of some VLC's annoying keyboard shortcuts  of VLC.
 The list of commands is obtained by Control+NVDA+H
 Compatible with VLC 3.0 or higher.
-No compatible with NVDA's versions below 2018.3.2
+Tested on NVDA 2018.2 and NVDA 2018.4
 """),
 
 	# version
-	"addon_version" : "1.2",
+	"addon_version" : "1.1.2",
 	# Author(s)
-	"addon_author" : "PaulBer19",
+	"addon_author" : u"PaulBer19",
 	# URL for the add-on documentation support
 	"addon_url" : "paulber19@laposte.net",
 	# Documentation file name
 	"addon_docFileName" : "addonUserManual.html",
 	# Minimum NVDA version supported (e.g. "2018.3")
-	"addon_minimumNVDAVersion" : "2018.3.2",
+	"addon_minimumNVDAVersion" : "2018.2.1",
 	# Last NVDA version supported/tested (e.g. "2018.4", ideally more recent than minimum version)
 	"addon_lastTestedNVDAVersion" : "2019.1.0",
 	# Add-on update channel (default is stable or None)
