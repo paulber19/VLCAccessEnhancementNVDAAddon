@@ -8,8 +8,13 @@ import addonHandler
 from logHandler import log
 import os
 from configobj import ConfigObj, ConfigObjError
-from validate import Validator
-from cStringIO import StringIO
+# ConfigObj 5.1.0 and later integrates validate module.
+try:
+	from configobj.validate import Validator, VdtTypeError
+except ImportError:
+	from validate import Validator, VdtTypeError
+from py3Compatibility import importStringIO
+StringIO = importStringIO()
 import api
 import winUser
 from NVDAObjects.IAccessible import getNVDAObjectFromEvent
@@ -188,11 +193,11 @@ def getString(stringID):
 		loadStringsDic()
 		if _stringsDics  is None:
 			return ""
-	if section not in _stringsDics.keys():
+	if section not in _stringsDics:
 		log.warning("getStrings error: not section %s in _stringsDic" %module)
 		return""
 	dic = _stringsDics [section]
-	if not stringID in dic.keys():
+	if not stringID in dic:
 		log.warning("getStrings error: not string \"%s\" in dic" %stringID)
 		return ""
 	return dic[stringID]

@@ -1,6 +1,6 @@
 # appModules/vlc/addonConfig.py.
 # a part of VLC media player add-on
-# Copyright 2018 paulber19
+# Copyright 2018-2019 paulber19
 #This file is covered by the GNU General Public License.
 #See the file COPYING for more details.
 
@@ -8,9 +8,6 @@
 import addonHandler
 addonHandler.initTranslation()
 import os
-from cStringIO import StringIO
-from configobj import ConfigObj, ConfigObjError
-from validate import Validator
 from logHandler import log
 import globalVars
 import gui
@@ -25,8 +22,15 @@ sharedPath = os.path.join(_curAddon.path, "shared")
 sys.path.append(sharedPath)
 from vlcUtils import getTimeString
 import vlc_special
+from  py3Compatibility import importStringIO , _unicode
 del sys.path[-1]
-
+from configobj import ConfigObj, ConfigObjError
+# ConfigObj 5.1.0 and later integrates validate module.
+try:
+	from configobj.validate import Validator, VdtTypeError
+except ImportError:
+	from validate import Validator, VdtTypeError
+StringIO = importStringIO ()
 # config section
 SCT_General = "General"
 SCT_ResumeFiles = "ResumeFiles"
@@ -34,8 +38,6 @@ SCT_ResumeFiles = "ResumeFiles"
 # general section items
 IT_ConfigVersion= "ConfigVersion"
 IT_SubstractTime= "SubstractTime"
-
-
 
 class AddonConfigManager(object):
 	_generalConfSpec = """[{section}]
@@ -58,7 +60,7 @@ class AddonConfigManager(object):
 		self._updateResumeFiles()
 	
 	def _importOldSettings(self):
-		oldConfigFile = os.path.join(os.path.dirname(__file__).decode("mbcs"), "addonConfig_old.ini")
+		oldConfigFile = os.path.join(self.addon.path, "addonConfig_old.ini")
 		if not os.path.isfile(oldConfigFile):
 			return
 		try:
@@ -76,20 +78,17 @@ class AddonConfigManager(object):
 ), list_values=False, encoding="UTF-8")
 		confspec.newlines = "\r\n"
 		configFile = os.path.join(globalVars.appArgs.configPath, "%sAddon.ini"%self.addon.manifest["name"])
-		
 		try:
 			self._conf = ConfigObj(configFile, configspec = confspec, indent_type = "\t", encoding="UTF-8")
-		except ConfigObjError as e:
+		except:
 			self._conf = ConfigObj(None, configspec = confspec, indent_type = "\t", encoding="UTF-8")
 			self._configFileError="Error parsing configuration file: %s" %e
-		
 		self._conf.newlines = "\r\n"
 		result = self._conf.validate(self._val)
-	
 		if not result or self._configFileError:
 			log.warn(configFileError)
-			
-			
+	
+	
 	def _updateResumeFiles(self):
 		sharedPath = os.path.join(self.addon.path, "shared")
 		sys.path.append(sharedPath)
@@ -97,13 +96,12 @@ class AddonConfigManager(object):
 		del sys.path[-1]
 		resumeFiles = self._conf[SCT_ResumeFiles]
 		QTInterface = QTInterface (self.addon)
-		recents = QTInterface.recents.keys()
 		fileList = []
-		for f in recents:
+		for f in QTInterface.recents:
 			file = f.split("/")[-1]
 			fileList.append(file)
 		change = False
-		for f in resumeFiles.keys():
+		for f in resumeFiles:
 			if f in fileList:
 				continue
 			del resumeFiles[f]
@@ -119,14 +117,10 @@ class AddonConfigManager(object):
 		del sys.path[-1]
 		resumeFiles = self._conf[SCT_ResumeFiles]
 		QTInterface = QTInterface (self.addon)
-		recents = QTInterface.recents
-		print "recents: %s"%recents
 		try:
-			return recents[mediaName]
+			return QTInterface.recents[mediaName]
 		except:
 			return None
-
-		
 	def save(self):
 		#Saves the configuration to the config file.
 		#We never want to save config if runing securely
@@ -137,25 +131,32 @@ class AddonConfigManager(object):
 		try:
 			# Copy default settings and formatting.
 			self._conf.validate(self._val, copy = True)
+		except VdtTypeError:
+			# error in configuration file
+			log.warning("saveSettings: validator error: %s"%self._conf.errors )
+			return
+		try:
 			self._conf.write()
-			
-		except Exception, e:
+		except:
 			log.warning("Could not save configuration - probably read only file system")
-			raise e
 	
 	
 	def recordFileToResume(self, fileName, resumeTime):
-		if fileName in self._conf[SCT_ResumeFiles].keys():
+		if fileName in self._conf[SCT_ResumeFiles]:
+			curAddon = addonHandler.getCodeAddon()
+			
 			# Translators: Message shown to ask user  to modify resume time.
-			res = vlc_special.messageBox(_("Do you want to modify resume time for this media ?"), _("Confirmation"), wx.YES|wx.NO)
-			if res== wx.NO:
+			msg = _("Do you want to modify resume time for this media ?") 
+			# TRanslators: title of message box
+			title = _("%s - Confirmation")%curAddon.manifest["summary"]
+			res = vlc_special.messageBox(msg, title, wx.OK|wx.CANCEL)
+			if res== wx.CANCEL:
 				return False
 		self._conf[SCT_ResumeFiles][fileName] = getTimeString(resumeTime)
 		self.save()
 		return True
 		
 	def getResumeFileTime(self, fileName):
-		if not fileName in self._conf[SCT_ResumeFiles].keys():
+		if not fileName in self._conf[SCT_ResumeFiles]:
 			return None
-			
 		return self._conf[SCT_ResumeFiles][fileName]
