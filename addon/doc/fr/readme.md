@@ -1,4 +1,4 @@
-# "Lecteur multimédia VLC: compléments d'accessibilité" #
+# Lecteur multimédia VLC: compléments d'accessibilité #
 
 * Auteur : PaulBer19
 * URL : paulber19@laposte.net
