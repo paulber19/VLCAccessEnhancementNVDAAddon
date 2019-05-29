@@ -34,7 +34,7 @@ No compatible with NVDA's versions below 2018.3.2
 """),
 
 	# version
-	"addon_version" : "1.2",
+	"addon_version" : "1.3",
 	# Author(s)
 	"addon_author" : "PaulBer19",
 	# URL for the add-on documentation support
@@ -44,7 +44,7 @@ No compatible with NVDA's versions below 2018.3.2
 	# Minimum NVDA version supported (e.g. "2018.3")
 	"addon_minimumNVDAVersion" : "2018.3.2",
 	# Last NVDA version supported/tested (e.g. "2018.4", ideally more recent than minimum version)
-	"addon_lastTestedNVDAVersion" : "2019.1.0",
+	"addon_lastTestedNVDAVersion" : "2019.2.0",
 	# Add-on update channel (default is stable or None)
 	"addon_updateChannel" : None,
 }

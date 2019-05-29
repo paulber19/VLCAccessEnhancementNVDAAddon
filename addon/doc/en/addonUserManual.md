@@ -161,6 +161,8 @@ The identifiers of the scripts are:
 
 
 ## History ## 
+### Version 1.3 (01/06/2019) ### 
+- compatibility with NVDA 2019.2.0.
 
 ### Version 1.2 (21/02/2019) ### 
 - compatibility with NVDA 2019.1.0.
@@ -191,7 +193,7 @@ internal Change:
 * renomage the configuration menu of the module. 
 
 
-## History previous## 
+## Previous history ## 
 ### Version 3.0 (19/06/2018) ### 
 This version is compatible with VLC 3.0, which is incompatible with the old versions. 
 
@@ -230,7 +232,7 @@ Changes:
 
 ### Changes for version 2.0 # # # $ $ | | $ $ $ $ | | $ $ * * * First multi-lingual version. $ $ | | $ $ $ $ | | $ $ 
 
-[1]: http://angouleme.avh.asso.fr/fichesinfo/fiches_nvda/data/VLCAccessEnhancement-1.2.nvda-addon 
-[2]: https://rawgit.com/paulber007/AllMyNVDAAddons/master/VLC/VLCAccessEnhancement-1.2.nvda-addon 
+[1]: http://angouleme.avh.asso.fr/fichesinfo/fiches_nvda/data/VLCAccessEnhancement-1.3.nvda-addon 
+[2]: https://rawgit.com/paulber007/AllMyNVDAAddons/master/VLC/VLCAccessEnhancement-1.3.nvda-addon 
 
 

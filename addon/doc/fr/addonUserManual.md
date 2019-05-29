@@ -156,6 +156,8 @@ Les identifiants des scripts sont:
 
 
 ## Historique ##
+### Version 1.3 (01/06/2019) ###
+Compatibilité avec NVDA 2019.2.0 (mise à jour du manifest.ini).
 
 ### Version 1.2 (06/03/2019) ###
 * remplacement des boutons "oui" et "non"  par les boutons "ok" et "annuler" dans les boites de confirmation pour  pouvoir utiliser la touche"Échapp".
@@ -232,5 +234,5 @@ Changements:
 *	 Première version multilingue.
 
 
-[1]: http://angouleme.avh.asso.fr/fichesinfo/fiches_nvda/data/VLCAccessEnhancement-1.2.nvda-addon
-[2]: https://rawgit.com/paulber007/AllMyNVDAAddons/master/VLC/VLCAccessEnhancement-1.2.nvda-addon
+[1]: http://angouleme.avh.asso.fr/fichesinfo/fiches_nvda/data/VLCAccessEnhancement-1.3.nvda-addon
+[2]: https://rawgit.com/paulber007/AllMyNVDAAddons/master/VLC/VLCAccessEnhancement-1.3.nvda-addon
