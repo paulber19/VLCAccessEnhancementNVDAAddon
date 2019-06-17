@@ -2,7 +2,7 @@
 
 
 *	Auteurs :  Paulber19 avec la participation très active de  Daniel Poiraud.
-*	Télécharger  version 1.2:
+*	Télécharger  version 1.3.1:
 	* [serveur de téléchargement 1][1]
 	* [serveur de téléchargement 2][2]
 
@@ -156,6 +156,11 @@ Les identifiants des scripts sont:
 
 
 ## Historique ##
+### Version 1.3.1 (11/06/2019) ###
+* correction du fichier buildVars.py 
+* ajout traduction espagnol
+
+
 ### Version 1.3 (01/06/2019) ###
 Compatibilité avec NVDA 2019.2.0 (mise à jour du manifest.ini).
 
@@ -234,5 +239,5 @@ Changements:
 *	 Première version multilingue.
 
 
-[1]: http://angouleme.avh.asso.fr/fichesinfo/fiches_nvda/data/VLCAccessEnhancement-1.3.nvda-addon
-[2]: https://rawgit.com/paulber007/AllMyNVDAAddons/master/VLC/VLCAccessEnhancement-1.3.nvda-addon
+[1]: http://angouleme.avh.asso.fr/fichesinfo/fiches_nvda/data/VLCAccessEnhancement-1.3.1.nvda-addon
+[2]: https://rawgit.com/paulber007/AllMyNVDAAddons/master/VLC/VLCAccessEnhancement-1.3.1.nvda-addon

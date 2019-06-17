@@ -34,7 +34,7 @@ No compatible with NVDA's versions below 2018.3.2
 """),
 
 	# version
-	"addon_version" : "1.3",
+	"addon_version" : "1.3.1",
 	# Author(s)
 	"addon_author" : "PaulBer19",
 	# URL for the add-on documentation support
@@ -57,7 +57,7 @@ import os.path
 pythonSources = [
 os.path.join("addon", "*.py"),
 os.path.join("addon", "appModules", "vlc", "*.py"),
-os.path.join("addon", "globalPlugins", "*.py"),
+os.path.join("addon", "globalPlugins", "vlcAccessEnhancement", "*.py"),
 os.path.join("addon", "shared", "*.py"),
 
 ]

@@ -28,7 +28,7 @@ Compatible with VLC 3.0 or higher.
 
 No compatibile with NVDA's versions below to 2018.3.2
 
-[1]: http://angouleme.avh.asso.fr/fichesinfo/fiches_nvda/data/VLCAccessEnhancement-1.2.nvda-addon
-[2]: https://rawgit.com/paulber007/AllMyNVDAAddons/master/VLC/VLCAccessEnhancement-1.2.nvda-addon
+[1]: http://angouleme.avh.asso.fr/fichesinfo/fiches_nvda/data/VLCAccessEnhancement-1.3.1.nvda-addon
+[2]: https://rawgit.com/paulber007/AllMyNVDAAddons/master/VLC/VLCAccessEnhancement-1.3.1.nvda-addon
 
 [3]:
