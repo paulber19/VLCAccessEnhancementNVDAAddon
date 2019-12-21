@@ -1,8 +1,8 @@
-# shared/vlc_special.py
-# a part of VLC media player add-on
+# shared\vlc_special.py
+# a part of vlcAccessEnhancement add-on
 # Copyright 2018 paulber19
 #This file is covered by the GNU General Public License.
-#See the file COPYING for more details.
+
 
 import addonHandler
 addonHandler.initTranslation()
@@ -13,7 +13,7 @@ import wx
 def makeAddonWindowTitle(dialogTitle):
 	curAddon = addonHandler.getCodeAddon()
 	addonSummary = curAddon.manifest['summary']
-	return  _("{addonSummary}'s add-on - {dialogTitle}").format(addonSummary = addonSummary, dialogTitle = dialogTitle)
+	return  "%s - %s"%(addonSummary, dialogTitle)
 
 
 def messageBox(message, caption=wx.MessageBoxCaptionStr, style=wx.OK | wx.CENTER, parent=None):

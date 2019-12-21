@@ -1,8 +1,8 @@
-# shared/vlcSettingsHandler.py.
-# a part of VLC media player add-on
-# Copyright 2018 paulber19
+# shared\vlc_settingsHandler.py.
+# a part of vlcAccessEnhancement add-on
+# Copyright 2019 paulber19
 #This file is covered by the GNU General Public License.
-#See the file COPYING for more details.
+
 
 import addonHandler
 addonHandler.initTranslation()
@@ -16,7 +16,6 @@ import speech
 import wx
 from keyboardHandler import KeyboardInputGesture
 from inputCore import normalizeGestureIdentifier
-from localeSettingsHandler import LocaleSettings
 from configobj import ConfigObj, DuplicateError
 _curAddon = addonHandler.getCodeAddon()
 import sys
@@ -27,12 +26,14 @@ try:
 except ImportError:
 	def printDebug (msg): return
 del sys.path[-1]
-import vlc_special
-from vlc_special import makeAddonWindowTitle
-from py3Compatibility import urllib_unquote
+from vlc_localeSettingsHandler import LocaleSettings
+from vlc_special import makeAddonWindowTitle, messageBox
+from vlc_py3Compatibility import urllib_unquote
 
 
 _defaultVlcKeysAssignment  =  {
+	"key-toggle-fullscreen": "f",
+	"key-leave-fullscreen": "escape",
 	"key-loop" : "l",
 	"key-random" : "r",
 	"global-key-next" : "",
@@ -117,7 +118,9 @@ _vlcHotKeyHelp= (
 	("key-stop" , _("Stop the media")),
 	("key-loop", _("loop playback")),
 	("key-random", _("random playback")),
-	
+	("" , _("Others commands:")),
+	("key-toggle-fullscreen" , _("Full screen")),
+	("key-leave-fullscreen", _("Leave full screen")),
 	)
 
 normalSpeedKeys = (
@@ -208,7 +211,6 @@ jumpDelays = {
 		}
 		
 
-
 class VLCSettings(object):
 	def __init__(self, addon):
 		printDebug ("VLCSettings __init__")
@@ -236,8 +238,13 @@ class VLCSettings(object):
 		
 	def isVLCRunning (self):
 		name = "vlc.exe"
-		rp = os.popen('tasklist /v').read().strip().split('\n')
-		for process in rp:
+		from subprocess import check_output
+		c = ["tasklist","/v"]
+		p = check_output(c).strip()
+		l = str(p).split(r"\r\n")
+		#rp = os.popen('tasklist /v').read().strip().split('\n')
+		#for process in rp:
+		for process in l:
 			if name == process[: len(name)]:
 				return True
 		return False
@@ -248,14 +255,14 @@ class VLCSettings(object):
 			msg =_("You must stop VLC application before delete configuration folder")
 			# Translators: title of message box.
 			dialogTitle = _("Warning") 
-			vlc_special.messageBox(msg,makeAddonWindowTitle(dialogTitle),  wx.OK|wx.ICON_WARNING)
+			messageBox(msg,makeAddonWindowTitle(dialogTitle),  wx.OK|wx.ICON_WARNING)
 			return False
 		if  not self.vlcInitialized:
 			# Translators:  message to inform the user  than VLC is not initialized.
 			msg = _("Impossible, VLC application is not installed or initialized")
 			# Translators: title of message box.
 			dialogTitle = _("Warning")
-			vlc_special.messageBox(msg, makeAddonWindowTitle(dialogTitle), wx.OK|wx.ICON_WARNING)
+			messageBox(msg, makeAddonWindowTitle(dialogTitle), wx.OK|wx.ICON_WARNING)
 			return False
 		return True
 
@@ -269,13 +276,13 @@ class VLCSettings(object):
 			msg = _("VLC configuration folder (%s) has been deleted. Before modify VLC shortcuts, you must start VLC once.")%self.vlcSettingsDir 
 			# Translators: title of message box.
 			dialogTitle = _("Information")
-			vlc_special.messageBox(msg, makeAddonWindowTitle(dialogTitle),  wx.OK|wx.ICON_WARNING)
+			messageBox(msg, makeAddonWindowTitle(dialogTitle),  wx.OK|wx.ICON_WARNING)
 		except OSError:
 			# Translators:  message to inform the user  that VLC configuration folder cannot be deleted.
 			msg = _("VLC configuration folder \"%s\" cannot be deleted")%self.vlcSettingsDir 
 			# Translators: title of message box.
 			dialogTitle = _("Error")
-			vlc_special.messageBox(msg, makeAddonWindowTitle(dialogTitle),  wx.OK|wx.ICON_WARNING)
+			messageBox(msg, makeAddonWindowTitle(dialogTitle),  wx.OK|wx.ICON_WARNING)
 
 class QTInterface (VLCSettings):
 	def __init__(self, addon):
@@ -306,8 +313,15 @@ class QTInterface (VLCSettings):
 			return
 		l = recents["list"] if type(recents["list"]) is  list else [recents["list"],]
 		for item in l:
-			file = urllib_unquote(item.encode("utf-8"))
-			filesList.append(file.decode("utf-8"))
+			if sys.version.startswith("3"):
+				# for python 3
+				file = urllib_unquote(item)
+				filesList.append(file)
+			else:
+				# for python 2
+				file = urllib_unquote(item.encode("utf-8"))
+				filesList.append(file.decode("utf-8"))
+
 		
 		if "times" in recents:
 			timesList = recents["times"]
@@ -417,14 +431,14 @@ class Vlcrc(VLCSettings):
 			msg = _("You must stop VLC application before modify   VLC configuration file")
 			# Translators: title of message box.
 			dialogTitle = _("Warning")
-			vlc_special.messageBox(msg, makeAddonWindowTitle(dialogTitle),  wx.OK|wx.ICON_WARNING)
+			messageBox(msg, makeAddonWindowTitle(dialogTitle),  wx.OK|wx.ICON_WARNING)
 			return False
 		if  not self.vlcInitialized:
 			# Translators:  message to inform the user  than VLC is not initialized.
 			msg = _("Impossible, VLC application is not installed or initialized")
 			# Translators: title of message box.
 			dialogTitle = _("Warning")
-			vlc_special.messageBox(msg, makeAddonWindowTitle(dialogTitle), wx.OK|wx.ICON_WARNING)
+			messageBox(msg, makeAddonWindowTitle(dialogTitle), wx.OK|wx.ICON_WARNING)
 			return False
 		
 		if not self.exist():
@@ -432,7 +446,7 @@ class Vlcrc(VLCSettings):
 			msg = _("Error, VLC configuration is not found")
 			# Translators: title of message box.
 			dialogTitle = _("Warning")
-			vlc_special.messageBox(msg, makeAddonWindowTitle(dialogTitle), wx.OK|wx.ICON_WARNING)
+			messageBox(msg, makeAddonWindowTitle(dialogTitle), wx.OK|wx.ICON_WARNING)
 			return False
 		return True
 	
@@ -447,12 +461,12 @@ class Vlcrc(VLCSettings):
 			msg = _("There is no key modification to do")
 			# Translators: title of message box.
 			dialogTitle = _("Information")
-			vlc_special.messageBox(msg, makeAddonWindowTitle(dialogTitle), wx.OK)
+			messageBox(msg, makeAddonWindowTitle(dialogTitle), wx.OK)
 			return
 		if not self.canUpdateVlcrcFile():
 			return
 		text = self.getNewVLCKeysHelp()
-		if vlc_special.messageBox(
+		if messageBox(
 			# Translators:  message to ask the user if he  accepts the update.
 				text + ". " + _("Are you OK?"),
 				# Translators: title of message box.
@@ -476,7 +490,7 @@ class Vlcrc(VLCSettings):
 		msg = _("VLC configuration file has been  updated")
 		# Translators: title of message box.
 		dialogTitle = _("Information")
-		vlc_special.messageBox(msg, makeAddonWindowTitle(dialogTitle), wx.OK)
+		messageBox(msg, makeAddonWindowTitle(dialogTitle), wx.OK)
 	
 	def normalizeKeyToVLC(self, key):
 		NVDAKeyToVLCKey = {
@@ -494,6 +508,7 @@ class Vlcrc(VLCSettings):
 	
 	def normalizeKeyToNVDA(self, key):
 		vlcKeyToNVDAKey = {
+		"esc" : "Escape",
 			"ctrl": "control",
 			"left": "leftArrow",
 			"right": "rightArrow",

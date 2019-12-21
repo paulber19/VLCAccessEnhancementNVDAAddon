@@ -1,8 +1,8 @@
-# appModules/vlc/addonConfig.py.
-# a part of VLC media player add-on
-# Copyright 2018-2019 paulber19
+# shared\vlc_addonConfig.py
+# a part of vlcAccessEnhancement add-on
+# Copyright 2019 paulber19
 #This file is covered by the GNU General Public License.
-#See the file COPYING for more details.
+
 
 #Manages add-on configuration.
 import addonHandler
@@ -18,12 +18,11 @@ import time
 import shutil
 import sys
 _curAddon = addonHandler.getCodeAddon()
-sharedPath = os.path.join(_curAddon.path, "shared")
-sys.path.append(sharedPath)
-from vlcUtils import getTimeString
-import vlc_special
-from  py3Compatibility import importStringIO , _unicode
-del sys.path[-1]
+
+from vlc_settingsHandler import QTInterface 
+from vlc_utils import getTimeString
+from vlc_special import makeAddonWindowTitle, messageBox
+from  vlc_py3Compatibility import importStringIO , _unicode
 from configobj import ConfigObj, ConfigObjError
 # ConfigObj 5.1.0 and later integrates validate module.
 try:
@@ -33,17 +32,32 @@ except ImportError:
 StringIO = importStringIO ()
 # config section
 SCT_General = "General"
+SCT_Options =  "Options"
 SCT_ResumeFiles = "ResumeFiles"
 
 # general section items
-IT_ConfigVersion= "ConfigVersion"
-IT_SubstractTime= "SubstractTime"
+ID_ConfigVersion= "ConfigVersion"
+ID_SubstractTime= "SubstractTime"
+ID_AutoUpdateCheck = "AutoUpdateCheck"
+ID_UpdateReleaseVersionsToDevVersions  = "UpdateReleaseVersionsToDevVersions"
+# options section items
+ID_AutoVolumeLevelReport = "AutoVolumeLevelReport"
+ID_AutoElapsedTimeReport = "AutoElapsedTimeReport"
+ID_PlaybackControlsAccess = "PlaybackControlsAccess"
 
 class AddonConfigManager(object):
 	_generalConfSpec = """[{section}]
 	{version} = string(default="1.0")
+	{autoUpdateCheck} = boolean(default=True)
+	{updateReleaseVersionsToDevVersions} = boolean(default=False)
 	{substractTime} = string(default="5")
-""".format(section = SCT_General, version = IT_ConfigVersion, substractTime = IT_SubstractTime)
+""".format(section = SCT_General, version = ID_ConfigVersion, autoUpdateCheck = ID_AutoUpdateCheck, updateReleaseVersionsToDevVersions    = ID_UpdateReleaseVersionsToDevVersions, substractTime = ID_SubstractTime)
+	_optionsConfSpec = """[{section}]
+	{AutoVolumeLevelReport} = boolean(default=True)
+	{AutoElapsedTimeReport} = boolean(default=True)
+	{playbackControlsPanelAccess} = boolean(default=True)
+""".format(section = SCT_Options,   AutoVolumeLevelReport= ID_AutoVolumeLevelReport, AutoElapsedTimeReport= ID_AutoElapsedTimeReport, playbackControlsPanelAccess = ID_PlaybackControlsAccess)
+
 	
 	_resumeFilesConfSpec = """[{section}]
 """.format(section = SCT_ResumeFiles)
@@ -74,7 +88,8 @@ class AddonConfigManager(object):
 """#{0} add-on Configuration File
 {1}
 {2}
-""".format(_curAddon .manifest["name"],self._generalConfSpec, self._resumeFilesConfSpec)
+{3}
+""".format(_curAddon .manifest["name"],self._generalConfSpec, self._optionsConfSpec, self._resumeFilesConfSpec)
 ), list_values=False, encoding="UTF-8")
 		confspec.newlines = "\r\n"
 		configFile = os.path.join(globalVars.appArgs.configPath, "%sAddon.ini"%self.addon.manifest["name"])
@@ -87,17 +102,15 @@ class AddonConfigManager(object):
 		result = self._conf.validate(self._val)
 		if not result or self._configFileError:
 			log.warn(configFileError)
-	
+			return
+		if not os.path.exists(configFile ):
+			self.save()
 	
 	def _updateResumeFiles(self):
-		sharedPath = os.path.join(self.addon.path, "shared")
-		sys.path.append(sharedPath)
-		from vlcSettingsHandler import QTInterface 
-		del sys.path[-1]
 		resumeFiles = self._conf[SCT_ResumeFiles]
-		QTInterface = QTInterface (self.addon)
+		QTI = QTInterface (self.addon)
 		fileList = []
-		for f in QTInterface.recents:
+		for f in QTI.recents:
 			file = f.split("/")[-1]
 			fileList.append(file)
 		change = False
@@ -111,14 +124,10 @@ class AddonConfigManager(object):
 	
 	def getAltRTime(self, mediaName):
 		#printDebug ("AddonConfigManager: getAltRTime mediaName = %s"%mediaName)
-		sharedPath = os.path.join(self.addon.path, "shared")
-		sys.path.append(sharedPath)
-		from vlcSettingsHandler import QTInterface 
-		del sys.path[-1]
 		resumeFiles = self._conf[SCT_ResumeFiles]
-		QTInterface = QTInterface (self.addon)
+		QTI = QTInterface (self.addon)
 		try:
-			return QTInterface.recents[mediaName]
+			return QTI.recents[mediaName]
 		except:
 			return None
 	def save(self):
@@ -147,9 +156,9 @@ class AddonConfigManager(object):
 			
 			# Translators: Message shown to ask user  to modify resume time.
 			msg = _("Do you want to modify resume time for this media ?") 
-			# TRanslators: title of message box
-			title = _("%s - Confirmation")%curAddon.manifest["summary"]
-			res = vlc_special.messageBox(msg, title, wx.OK|wx.CANCEL)
+			# Translators: title of message box
+			title = makeAddonWindowTitle(_("Confirmation"))
+			res = messageBox(msg, title, wx.OK|wx.CANCEL)
 			if res== wx.CANCEL:
 				return False
 		self._conf[SCT_ResumeFiles][fileName] = getTimeString(resumeTime)
@@ -160,3 +169,41 @@ class AddonConfigManager(object):
 		if not fileName in self._conf[SCT_ResumeFiles]:
 			return None
 		return self._conf[SCT_ResumeFiles][fileName]
+	def toggleOption (self, sct, id, toggle = True):
+		conf = self._conf
+		if toggle:
+			conf[sct][id] = not conf[sct][id]
+			self.save()
+		return conf[sct][id]
+	
+	def getAutoUpdateCheck(self):
+		return self.toggleOption (SCT_General, ID_AutoUpdateCheck, False)
+	def getUpdateReleaseVersionsToDevVersions  (self):
+		return self.toggleOption (SCT_General, ID_UpdateReleaseVersionsToDevVersions, False)
+
+	def toggleAutoUpdateCheck(self):
+		return self.toggleOption (SCT_General, ID_AutoUpdateCheck, True)
+
+	def toggleUpdateReleaseVersionsToDevVersions     (self):
+		return self.toggleOption (SCT_General, ID_UpdateReleaseVersionsToDevVersions, True)
+	def getAutoVolumeLevelReportOption(self):
+		return self.toggleOption (SCT_Options,  ID_AutoVolumeLevelReport, False)
+	def getAutoElapsedTimeReportOption(self):
+		return self.toggleOption (SCT_Options,  ID_AutoElapsedTimeReport , False)
+	def getPlaybackControlsAccessOption(self):
+		return self.toggleOption (SCT_Options,  ID_PlaybackControlsAccess, False)
+	
+	def toggleAutoVolumeLevelReportOption(self):
+		return self.toggleOption (SCT_Options, ID_AutoVolumeLevelReport, True)
+	def toggleAutoElapsedTimeReportOption(self):
+		return self.toggleOption (SCT_Options, ID_AutoElapsedTimeReport , True)
+	
+	def togglePlaybackControlsAccessOption(self):
+		return self.toggleOption (SCT_Options, ID_PlaybackControlsAccess, True)
+
+def initialize(vlcSettings = None):
+	global _addonConfigManager
+	_addonConfigManager = AddonConfigManager(vlcSettings)
+
+_addonConfigManager = None
+		

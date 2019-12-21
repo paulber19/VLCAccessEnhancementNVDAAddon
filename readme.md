@@ -2,10 +2,13 @@
 
 * Author : PaulBer19
 * URL : paulber19@laposte.net
-* Download stable version:
-	* [server 1][1]
-	* [server 2][2]
-* Download [developpement version][3]
+* Download:
+	* [stable version server 1][1]
+	* [stable version server 2][2]
+	* Download [developpement version][3]
+* Compatibility:
+	* Minimum required NVDA version:  2019.1
+	* Last NVDA version tested:  2019.3
 
 
 This addon adds a variety of commands to enhance accessibility in playing media:
@@ -20,15 +23,19 @@ This addon adds a variety of commands to enhance accessibility in playing media:
 * script to restart interrupted playback  at time recorded by VLC,
 * correct reading of the status bar,
 * change of some VLC's annoying keyboard shortcuts  of VLC.
+* and others enhancements as:
+ * access to playback controls (feature 's idea of Javi Dominguez),
+ * access to adjustments and effects dialog,
+ * correct announcement of  name and value 's slider,
+ * deleting of some useless html text in description's object(code from Javi Dominguez add-on).
 
 
 The list of commands is obtained by Control+NVDA+H
 
-Compatible with VLC 3.0 or higher.
+Compatible with VLC 3.0.
 
-No compatibile with NVDA's versions below to 2018.3.2
 
-[1]: http://angouleme.avh.asso.fr/fichesinfo/fiches_nvda/data/VLCAccessEnhancement-1.3.1.nvda-addon
-[2]: https://rawgit.com/paulber007/AllMyNVDAAddons/master/VLC/VLCAccessEnhancement-1.3.1.nvda-addon
+[1]: http://angouleme.avh.asso.fr/fichesinfo/fiches_nvda/data/VLCAccessEnhancement-2.0.nvda-addon
+[2]: https://github.com/paulber007/AllMyNVDAAddons/raw/master/VLC/VLCAccessEnhancement-2.0.nvda-addon
 
-[3]:
+[3]:https://github.com/paulber007/AllMyNVDAAddons/tree/master/vlcAccessEnhancement/dev

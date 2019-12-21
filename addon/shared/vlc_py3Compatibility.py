@@ -1,8 +1,7 @@
-#NVDAExtensionGlobalPlugin/utils/py3Compatibility.py
-# a part of NVDAExtensionGlobalPlugin add-on
+#shared\vlc_py3Compatibility.py
+# a part of vlcAccessEnhancement add-on
 # Copyright 2019 paulber19
 #This file is covered by the GNU General Public License.
-#See the file COPYING for more details.
 
 
 import addonHandler
@@ -33,7 +32,7 @@ def importStringIO ():
 		from io import StringIO
 	else:
 		from cStringIO import StringIO
-		return StringIO
+	return StringIO
 
 def longint(i):
 	if py3:
@@ -52,7 +51,7 @@ def getUtilitiesPath():
 	if py3:
 		return os.path.join(curAddon.path, "utilitiesPy3")
 	else:
-		return os.path.join(curAddon.path, "utilities")	
+		return os.path.join(curAddon.path, "utilities")
 def urllib_unquote(s):
 	if py3:
 		from urllib.parse import unquote

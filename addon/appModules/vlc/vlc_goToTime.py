@@ -1,8 +1,8 @@
-# appModules/vlc/vlcGoToTime.py.
-# a part of VLC media player add-on
-# Copyright 2018 paulber19
+# appModules\vlc\vlc_goToTime.py.
+# a part of vlcAccessEnhancement add-on
+# Copyright 2019 paulber19
 #This file is covered by the GNU General Public License.
-#See the file COPYING for more details.
+
 
 import addonHandler
 addonHandler.initTranslation()
@@ -14,7 +14,8 @@ import sys
 _curAddon = addonHandler.getCodeAddon()
 sharedPath = os.path.join(_curAddon.path, "shared")
 sys.path.append(sharedPath)
-from vlcUtils import PutWindowOnForeground
+from vlc_utils import PutWindowOnForeground
+from vlc_special import makeAddonWindowTitle
 del sys.path[-1]
 
 class GoToTimeDialog(wx.Dialog):
@@ -22,7 +23,7 @@ class GoToTimeDialog(wx.Dialog):
 		self.mainWindow = mainWindow
 		self.destroyed = False
 		# Translators:  title of go to time dialog.
-		title= _("Go to time")
+		title= makeAddonWindowTitle(_("Go to time"))
 		super(GoToTimeDialog, self).__init__(parent, ID , title , size = (290, 130))
 		self.curTime = curTime
 		self.totalTime = totalTime

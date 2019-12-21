@@ -1,8 +1,8 @@
-# shared/vlcUtils.py.
-# a part of VLC media player add-on
-# Copyright 2018 paulber19
+# shared\vlc_utils.py.
+# a part of VLCAccessEnhancement add-on
+# Copyright 2018-2019 paulber19
 #This file is covered by the GNU General Public License.
-#See the file COPYING for more details.
+
 
 import addonHandler
 addonHandler.initTranslation()
@@ -14,7 +14,7 @@ import time
 import wx
 import config
 import characterProcessing
-from py3Compatibility import baseString 
+from vlc_py3Compatibility import baseString 
 
 def PutWindowOnForeground(hwnd, sleepNb  = 10, sleepTime  = 0.1):
 	winUser.setForegroundWindow(hwnd)

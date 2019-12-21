@@ -22,19 +22,25 @@ addon_info = {
 - script to announce the duration of the media remaining to be play,
 - script to announce the total duration of the media,
 - script to announce the current speed,
-- automatic announcement of state's changes such as pause , mute, changing the pitch or speed of playback, and the setting repeated playback or random,
-- automatic announcement of the time after a command to jump,
-- scripts to mark playback position and start playback at this position,
+- automatic announcement of state's changes such as: pause , volume mute,   speed ,    repeat or random state's playback, volume's level, state of hidden or shown of  menu bar,
+- automatic announcement of the elapsed time after a command to jump,
+- scripts to mark playback position and resume playback at this position,
 - script to restart interrupted playback  at time recorded by VLC,
-- correct reading of the status bar,
+- correct reading of the main window's status bar,
 - change of some VLC's annoying keyboard shortcuts  of VLC.
-The list of commands is obtained by Control+NVDA+H
-Compatible with VLC 3.0 or higher.
-No compatible with NVDA's versions below 2018.3.2
+- and others enhancements as:
+ - access to playback controls (feature 's idea of Javi Dominguez),
+ - access to adjustments and effects dialog,
+ - correct announcement of  name and value 's slider,
+ - deleting of some useless html text in description's object(code from Javi Dominguez add-on).
+
+
+The list of commands is obtained by "NVDA +Control+h".
+Compatible with VLC 3.0.
 """),
 
 	# version
-	"addon_version" : "1.3.1",
+	"addon_version" : "2.0-dev40",
 	# Author(s)
 	"addon_author" : "PaulBer19",
 	# URL for the add-on documentation support
@@ -42,9 +48,9 @@ No compatible with NVDA's versions below 2018.3.2
 	# Documentation file name
 	"addon_docFileName" : "addonUserManual.html",
 	# Minimum NVDA version supported (e.g. "2018.3")
-	"addon_minimumNVDAVersion" : "2018.3.2",
+	"addon_minimumNVDAVersion" : "2019.1",
 	# Last NVDA version supported/tested (e.g. "2018.4", ideally more recent than minimum version)
-	"addon_lastTestedNVDAVersion" : "2019.2.0",
+	"addon_lastTestedNVDAVersion" : "2019.3",
 	# Add-on update channel (default is stable or None)
 	"addon_updateChannel" : None,
 }
@@ -55,12 +61,12 @@ import os.path
 # Define the python files that are the sources of your add-on.
 # You can use glob expressions here, they will be expanded.
 pythonSources = [
-os.path.join("addon", "*.py"),
-os.path.join("addon", "appModules", "vlc", "*.py"),
-os.path.join("addon", "globalPlugins", "vlcAccessEnhancement", "*.py"),
-os.path.join("addon", "shared", "*.py"),
-
-]
+	os.path.join("addon", "*.py"),
+	os.path.join("addon", "appModules", "vlc", "*.py"),
+	os.path.join("addon", "globalPlugins", "vlcAccessEnhancement", "*.py"),
+	os.path.join("addon", "globalPlugins", "vlcAccessEnhancement", "updateHandler", "*.py"),
+	os.path.join("addon", "shared", "*.py"),
+	]
 
 # Files that contain strings for translation. Usually your python sources
 i18nSources = pythonSources

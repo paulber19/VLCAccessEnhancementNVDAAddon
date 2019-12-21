@@ -2,17 +2,24 @@
 
 
 *	Autores:  Paulber19 con la participación muy activa de  Daniel Poiraud.
-*	Descargar versión 1.3.1:
-	* [servidor de descarga 1][1]
-	* [servidor de descarga 2][2]
+* URL: paulber19@laposte.net
+* Descargar:
+	* [versión estable servidor de descarga 1][1]
+	* [versión estable servidor de descarga 2][2]
+	* [Descargar versiones  de desarrollo][3]
+* Compatibilitad:
+	* Versión mínima de NVDA requerida: 2019.1
+	* Última versión de NVDA probada: 2019.3
 
 
 Este complemento añade varias órdenes para facilitar la reproducción de medios con NVDA.  
 
 
+
+## Compatibilidad ##
 Esta versión es compatible con versiones de VLC superiores a 3.0.
 
-Es incompatible con las versiones NVDA inferiores a 2018.3.2.
+
 
 ## Gestos de Entrada proporcionados por el complemento: ##
 *	NVDA+Control+H: Mostrar ayuda sobre posibles órdenes en la ventana principal,
@@ -28,7 +35,7 @@ Es incompatible con las versiones NVDA inferiores a 2018.3.2.
 
 Estos gestos de entrada se pueden modificar con el cuadro de diálogo "Gestos de entrada" de NVDA.
 
-## Órdenes de teclado propios a VLC vocalizado por el complemento: ##
+## Órdenes de teclado propios a VLC verbalizados por el complemento: ##
 Algunos atajos predeterminados de VLC son problemáticos y deben modificarse. Son:
 
 *	Las órdenes de teclado "cierra corchete" y "abre corchete" para la velocidad de reproducción un poco más rápido o un poco más lento,   porque no se pueden utilizar en el teclado francés. Serán reemplazados por "I" y "U". Nota del traductor: Estos mismos serán reemplazados en el teclado español.
@@ -43,7 +50,7 @@ Para configurar estos nuevos atajos, debe modificar el archivo de configuración
 *	por último, pulsa el botón "Modificar los atajos del Reproductor multimedia VLC".
 
 
-Aquí están las órdenes de teclado que este complemento vocaliza:
+Aquí están las órdenes de teclado que este complemento verbaliza:
 
 *	Y: decrementar la velocidad de reproducción.
 *	U: decrementar un poco la velocidad de reproducción.
@@ -63,7 +70,7 @@ Aquí están las órdenes de teclado que este complemento vocaliza:
 * espacio: poner en pausa el medio o reanudar la reproducción.
 
 
-Para no molestar al usuario, el tiempo reproducido automáticamente solo se vocaliza cuando el medio está en pausa o se está reproduciendo con el sonido silenciado.
+Para no molestar al usuario, el tiempo reproducido automáticamente solo se verbaliza cuando el medio está en pausa o se está reproduciendo con el sonido silenciado.
 
 Se realiza una comprobación para evitar un salto fuera de los límites del medio. Por ejemplo, No es posible hacer un salto de 5 minutos Si quedan  sólo 2 minutos restantes para reproducir o bien retroceder de 10 segundos si la duración ya  reproducida es de 3 segundos.  
 
@@ -72,6 +79,10 @@ El estado "sonido silenciado" es señalado al iniciar la reproducción.
 El nivel de volumen se anuncia en cada cambio.
 
 El pasaje en pausa es anunciado.
+
+Las opciones "Anunciar automáticamente el nivel de volumen" y "Anunciar automáticamente el tiempo transcurrido" controlan el comportamiento del complemento. De manera predeterminada, se habilitan estas dos opciones.
+
+Cada opción se puede modificar mediante el cuadro de diálogo que te permite configurar el complemento o  con un script sin  gesto de entrada asignado por defecto.
 
 ## Script Mostrar el cuadro de diálogo para establecer el tiempo y mover el cursor de reproducción en este tiempo ##
 VLC ofrece la posibilidad de utilizar el atajo "control+t" para moverse a un tiempo específico  del medio. Pero el cuadro de diálogo que se presenta plantea problemas de accesibilidad.
@@ -104,6 +115,26 @@ Para reanudar la reproducción de un medio, la órdenes de teclado "NVDA+control
 Esta posición se guarda en el archivo de configuración del complemento y para cada medio se registra el nombre del medio y la posición asociada. En este archivo solo se guardan los medios abiertos más recientemente.
 
 Advertencia: el nombre del medio es único en este archivo. Si dos archivos con el mismo nombre están en carpetas diferentes, solo se conservará el último registro para ese nombre.
+
+Algunos medios tal como una radio, no permiten el uso de esta característica. Esto se determina por la ausencia de tiempo total.
+
+## Acceso a los controles de reproducción ##
+VLC presenta loss elementos de control  de reproducción del medio (principalmente los botones y casillas de verificación) que no son alcanzables por el teclado.
+
+Aunque los atajos de VLC permiten realizar ciertas funciones de estos elementos, el complemento da el acceso a estos controles usando la tecla "Tab".
+
+Estos controles se agrupan en un panel virtual.
+La entrada en este panel es señalado por el anuncio "Panel de control".
+La salida del panel es señalado por el anuncio del título del medio  seguido  de "ventana enfocado".
+
+En este panel, la tecla "Tab" permite pasar al siguiente elemento, "mayúscula + Tab" al elemento anterior.
+
+Es posible activar un elemento con la tecla "Intro".
+
+Advertencia: la barra espaciadora pone en pausa o reinicia la reproducción del medio, pero no activa el elemento.
+
+La opción "Acceso a los controles de reproducción" permite cambiar el comportamiento configurado por defecto.
+
 
 ## Complementos tecnicos ##
 ### Reinicialización de la configuración de VLC ###
@@ -153,28 +184,66 @@ Los identificadores de los scripts son:
 *	recordResumeFile=script "Guardar la posición de reproducción actual para este medio",
 *	resumePlayback= script "Reanudar la reproducción en la posición guardada para este medio".
 * continuePlayback= script "Reanudar la reproducción interrumpida en la posición memorizada por VLC"
+* hideShowMenusView = script   que habilita el menú "Interfaz mínima" de VLC que oculta o muestra la barra de menú. El gesto de entrada debe coincidir exactamente al atajo de VLC.
+* adjustmentsAndEffects = script que habilita el menú "Efectos y filtros" de VLC. El gesto de entrada debe coincidir al atajo de VLC.
+
+
+## Actualización ##
+La actualización del complemento por defecto se hace automáticamente poco tiempo después de iniciar NVDA (entre 20 y 600 segundos) y como máximo una vez al día.
+Puedes desactivar esta actualización desmarcando la opción "Buscar automáticamente actualizaciones" que se encuentra en las opciones del complemento, submenú "Actualización".
+La versión del complemento puede ser:
+
+* Ya sea una versión estable: su número de versión es de tipo "1.0" por ejemplo.
+* Ya sea una versión de desarrollo: su número de versión es entonces de tipo "1.0-dev1", o "1.0-rc1", o "1.0-beta2".
+
+
+Por defecto, una versión estable se actualiza con la última versión estable (Número de versión superior).
+Sin embargo, es posible actualizar la versión actual estable con una versión de desarrollo de la próxima versión estable. Simplemente marcando la opción "Actualizar también versiones estable hacia versiones de desarrollo" situado en las opciones del complemento, submenú "Actualización".
+
+Una versión de desarrollo se actualiza con una versión de desarrollo más reciente o con su versión estable.
+
+El botón "Buscar actualización" situado en las opciones del complemento, submenú "Actualización", permite buscar inmediatamente una actualización.
 
 
 ## Historial ##
+### Versión 2.0 (20/10/2019) ###
+* Compatibilidad con NVDA 2019.3
+* Se añade la actualización automática del complemento
+ * Implementado en la opción  el anuncio automático de los cambios del nivel de volumen y el tiempo transcurrido.
+* Anuncio de ocultar la barra de menús.
+* Gestión del atajo  habilitando el menú "Interfaz mínima".
+* Gestión del atajo habilitando el menú "Efectos y filtros".
+* Mejora del anuncio del nombre y del nivel de los potenciómetros.
+* Acceso  vía el panel virtual, a los diversos elementos de control de reproducción del medio  (código fuente  de base de Javi Domínguez).
+* Tomada en cuenta la ausencia  de tiempo total de ciertos medios durante el anuncio del tiempo  transcurrido, total y restante. 
+* Eliminación de texto HTML incluido en la descripción de ciertos controles (código fuente  de base de Javi Domínguez).
+* Mejora de la accesibilidad en la lista de reproducción.
+* Mejora de la accesibilidad de los campos de edición  (código fuente  de base de Javi Domínguez).
+* En el diálogo "metadatos":
+	* Anuncio de los títulos de los  cuadros de edición.
+	* Corrección  del bloqueo  en los desplazamientos vía la tecla de tabulación  (código fuente  de base de Javi Domínguez).
+* Reordenamiento  del menú  de ajustes del complemento.
+
+ 
 ### Versión 1.3.1 (11/06/2019) ###
-* corrección del archivo buildVars.py 
-* se añade traducción al español
+* Corrección del archivo buildVars.py 
+* Se añade traducción al español
 
 
 ### Versión 1.3 (01/06/2019) ###
 Compatibilidad con NVDA 2019.2.0 (actualización del manifest.ini).
 
 ### Versión 1.2 (06/03/2019) ###
-* reemplazo de los botones "sí" y "no" con los botones "ok" y "cancelar" en los cuadros de confirmación para usar la tecla "Escape".
-* reemplazo del termino "module complémentaire " por "extension impuesto por los traductores de NVDA en francés).
-* compatibilidad con NVDA 2019.1.0.
-* preparación para la compatibilidad con python3.
+* Reemplazo de los botones "Sí" y "No" con los botones "Aceptar" y "Cancelar" en los cuadros de confirmación para usar la tecla "Escape".
+* Reemplazo del termino "module complémentaire " por "extension impuesto por los traductores de NVDA en francés).
+* Compatibilidad con NVDA 2019.1.0.
+* Preparación para la compatibilidad con python3.
 
 
 ### Versión 1.1 (21/12/2018) ###
-*	corrección de no reanudar la reproducción cuando la lista de medios recientes tiene solo un medio,
-*	corrección de la documentación,
-*	puesta en compatibilidad con versiones alpha 2019.1 de NVDA.
+*	Corrección de no reanudar la reproducción cuando la lista de medios recientes tiene solo un medio,
+*	Corrección de la documentación,
+*	Puesta en compatibilidad con versiones alpha 2019.1 de NVDA.
 
 
 ### Versión 1.0 (29/10/2018) ###
@@ -182,18 +251,18 @@ Para evitar confusiones con otros complementos para VLC, el nombre del complemen
 
 Novedades:
 
-*	puesta en compatibilidad con NVDA 2018.3,
-* cambio en el nombre del complemento para evitar confusiones con otros complementos para VLC.
-*	anuncia la indicación de la posibilidad de reanudar la reproducción interrumpida en la posición memorizada por VLC y reanuda la reproducción con el gesto de entrada "alt+control+r",
-*	se añade el botón para eliminar el archivo de configuración de VLC,
+*	Puesta en compatibilidad con NVDA 2018.3,
+* Cambio en el nombre del complemento para evitar confusiones con otros complementos para VLC.
+*	Anuncia la indicación de la posibilidad de reanudar la reproducción interrumpida en la posición memorizada por VLC y reanuda la reproducción con el gesto de entrada "alt+control+r",
+*	Se añade el botón para eliminar el archivo de configuración de VLC,
 
 
 Cambio interno::
 
 * Reelaboración completa del código,
-*	archivo style.css renombrado en style_md.css,
-*	reconversión del archivo del manual del usuario para la conformidad en la  forma con los complementos internacionales,
-*	renombrado el menú de configuración del complemento.
+*	Archivo style.css renombrado en style_md.css,
+*	Reconversión del archivo del manual del usuario para la conformidad en la  forma con los complementos internacionales,
+*	Renombrado el menú de configuración del complemento.
 
 
 ## Historial anterior ##
@@ -202,35 +271,35 @@ Esta versión es compatible con VLC 3.0, incompatible con versiones anteriores.
 
 Novedades:
 
-*	vocalización del indicador de repetición del medio,
-*	lectura correcta de la barra de estado,
-*	anuncio del estado   reproduciendo o en pausa con el sonido silenciado al enfocar la ventana principal.
+*	Verbalización del indicador de repetición del medio,
+*	Lectura correcta de la barra de estado,
+*	Anuncio del estado   reproduciendo o en pausa con el sonido silenciado al enfocar la ventana principal.
 
 
 Cambios:
 
-*	el archivo de configuración de VLC ya no se modifica automáticamente para definir atajos de teclado.  Su implementación se realiza manualmente por el usuario con la ayuda de un simple botón,
-*	el cuadro de diálogo "Ir a tiempo" de VLC ya no se vocaliza.
-*	el nivel de volumen ahora se anuncia con cada cambio.
+*	El archivo de configuración de VLC ya no se modifica automáticamente para definir atajos de teclado.  Su implementación se realiza manualmente por el usuario con la ayuda de un simple botón,
+*	El cuadro de diálogo "Ir a tiempo" de VLC ya no se verbaliza.
+*	El nivel de volumen ahora se anuncia con cada cambio.
 
 
 ### Versión 2.3.1 ###
-*	correcciones de errores (regresión de "nvda+control+h")
+*	Correcciones de errores (regresión de "nvda+control+h")
 
 
 ### Versión 2.3 ###
-*	se añade los scripts para Reanudar la reproducción
-*	se añade la gestión de un archivo de configuración para el complemento
+*	Se añade los scripts para Reanudar la reproducción
+*	Se añade la gestión de un archivo de configuración para el complemento
 
 
 ### Versión 2.2 ###
 
-*	configuración del archivo vlcrc para cambiar las teclas de variaciones de velocidad,
-*	anuncio de la duración reproducida durante los saltos de  reproducción,
-*	anuncio del silenciado/desilenciado del sonido,
-*	anuncio del pasaje en pausa,
-*	vocalización del cuadro de diálogo de VLC "Ir a tiempo",
-* modificación del cuadro de diálogo del complemento "Ir a tiempo".
+*	Configuración del archivo vlcrc para cambiar las teclas de variaciones de velocidad,
+*	Anuncio de la duración reproducida durante los saltos de  reproducción,
+*	Anuncio del silenciado/desilenciado del sonido,
+*	Anuncio del pasaje en pausa,
+*	Verbalización del cuadro de diálogo de VLC "Ir a tiempo",
+* Modificación del cuadro de diálogo del complemento "Ir a tiempo".
 
 
 
@@ -239,5 +308,6 @@ Cambios:
 *	 Primera versión multilingüe.
 
 
-[1]: http://angouleme.avh.asso.fr/fichesinfo/fiches_nvda/data/VLCAccessEnhancement-1.3.1.nvda-addon
-[2]: https://rawgit.com/paulber007/AllMyNVDAAddons/master/VLC/VLCAccessEnhancement-1.3.1.nvda-addon
+[1]: http://angouleme.avh.asso.fr/fichesinfo/fiches_nvda/data/VLCAccessEnhancement-2.0.nvda-addon
+[2]: https://github.com/paulber007/AllMyNVDAAddons/raw/master/VLCAccessEnhancement/VLCAccessEnhancement-2.0.nvda-addon
+[3]: https://github.com/paulber007/AllMyNVDAAddons/tree/master/VLCAccessEnhancement/dev

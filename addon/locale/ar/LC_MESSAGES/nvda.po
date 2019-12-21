@@ -1,0 +1,629 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: VLCAccessEnhancement 2.0-dev9\n"
+"Report-Msgid-Bugs-To: nvda-translations@freelists.org\n"
+"POT-Creation-Date: 2019-10-18 11:26+0200\n"
+"PO-Revision-Date: 2019-10-18 11:27+0200\n"
+"Last-Translator: wafiqtaher <wafiqtaher@gmail.com>\n"
+"Language-Team: arabic <wafiqtaher@gmail.com>\n"
+"Language: ar\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.8.6\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-Basepath: ../../..\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: appModules/vlc/__init__.py:114 appModules/vlc/vlc_application.py:201
+msgid "No media"
+msgstr "لا توجد وسائط"
+
+#: appModules/vlc/__init__.py:124
+msgid "Report media's played duration"
+msgstr "الإعلان عن مدة التشغيل"
+
+#: appModules/vlc/__init__.py:132 appModules/vlc/__init__.py:200
+#, python-format
+msgid "Media duration %s"
+msgstr "المدة  %s"
+
+#: appModules/vlc/__init__.py:134
+msgid "Report media's totalduration"
+msgstr "الإعلان  عن المدة الإجمالية للوسائط"
+
+#: appModules/vlc/__init__.py:144
+msgid "Report media's remaining durationto be played"
+msgstr "الإعلان عن المدة المتبقية"
+
+#: appModules/vlc/__init__.py:155
+msgid "Current speed "
+msgstr "السرعة الحالية"
+
+#: appModules/vlc/__init__.py:157
+msgid "Report current speed"
+msgstr "الإعلان عن السرعة الحالية"
+
+#: appModules/vlc/__init__.py:172
+msgid "Back to normal speed"
+msgstr "العودة إلى السرعة العادية"
+
+#: appModules/vlc/__init__.py:182
+msgid ""
+"Display the dialog to set a time and move the playback cursor to this time"
+msgstr "اعرض مربع الحوار لضبط الوقت ونقل حركة مؤشر التشغيل إلى هذا الوقت"
+
+#: appModules/vlc/__init__.py:193
+msgid "Not available, jump is too big "
+msgstr "غير متوفر ، القفز كبير جدًا"
+
+#: appModules/vlc/__init__.py:228 appModules/vlc/vlc_application.py:280
+#, python-format
+msgid "Volume: %s"
+msgstr "حجم الصوت: %s"
+
+#: appModules/vlc/__init__.py:231 appModules/vlc/__init__.py:239
+#: appModules/vlc/vlc_application.py:283
+msgid "Volume mute"
+msgstr "كتم الصوت"
+
+#: appModules/vlc/__init__.py:242
+msgid "volume unmuted"
+msgstr "تشغيل الصوت"
+
+#: appModules/vlc/__init__.py:255
+msgid "Media stopped"
+msgstr "متوقف"
+
+#: appModules/vlc/__init__.py:279
+msgid "Add-on's Input gestures:"
+msgstr "إختصارات الإضافة:"
+
+#: appModules/vlc/__init__.py:290
+msgid "main window help"
+msgstr "قائمة المساعدة الرئيسية"
+
+#: appModules/vlc/__init__.py:302
+msgid "Not available, the media don't be played"
+msgstr "غير متوفر ، لا يتم تشغيل الوسائط"
+
+#: appModules/vlc/__init__.py:307
+#, python-brace-format
+msgid "Playback of {0} file  will be resume at {1}"
+msgstr "سيتم استئناف تشغيل ملف {0} في {1}"
+
+#: appModules/vlc/__init__.py:314
+msgid "Record current playing position for this media"
+msgstr "تسجيل موضع التشغيل الحالي "
+
+#: appModules/vlc/__init__.py:322
+#, python-format
+msgid "Do you want to resume Playback at %s"
+msgstr "هل تريد استئناف التشغيل في%s"
+
+#: appModules/vlc/__init__.py:324
+#: globalPlugins/vlcAccessEnhancement/vlc_configGui.py:53
+#: shared/vlc_addonConfig.py:145
+msgid "Confirmation"
+msgstr "التأكيد"
+
+#: appModules/vlc/__init__.py:342
+msgid "No resume time for this media"
+msgstr "لا وقت استئناف لهذه الوسائط"
+
+#: appModules/vlc/__init__.py:346
+msgid "Resume playback at position recoreded for this media"
+msgstr "استئناف التشغيل في الموضع المسترجع لهذه الوسائط"
+
+#: appModules/vlc/__init__.py:365
+msgid "Restart interrupted playback at position recorded by VLC"
+msgstr "أعد تشغيل مقاطعة التشغيل في الموضع المسجل بواسطة VLC"
+
+#: appModules/vlc/__init__.py:548
+msgid "Display add-on's help"
+msgstr "عرض المساعدةللإضافة"
+
+#: appModules/vlc/vlc_application.py:159
+#, python-format
+msgid "continue playback %s"
+msgstr "متابعة التشغيل %s"
+
+#: appModules/vlc/vlc_application.py:170 appModules/vlc/vlc_application.py:177
+msgid "volume muted"
+msgstr "تم كتم الصوت"
+
+#: appModules/vlc/vlc_application.py:180
+#, python-format
+msgid "Playing,%s"
+msgstr "تشغيل'%s"
+
+#: appModules/vlc/vlc_application.py:183
+#, python-format
+msgid "Pause,%s"
+msgstr "توقف'%s"
+
+#: appModules/vlc/vlc_application.py:188
+msgid "Pause"
+msgstr "توقف"
+
+#: appModules/vlc/vlc_application.py:239
+#, python-format
+msgid "Played duration %s"
+msgstr "مدة التشغيل %s"
+
+#: appModules/vlc/vlc_application.py:248
+#, python-format
+msgid "remaining duration %s"
+msgstr "المدة المتبقية%s"
+
+#: appModules/vlc/vlc_application.py:297
+msgid "repeat all"
+msgstr "كرر الكل"
+
+#: appModules/vlc/vlc_application.py:297
+msgid "repeat only  current media"
+msgstr "كرر الوسائط الحالية فقط"
+
+#: appModules/vlc/vlc_application.py:300
+msgid "no repeat"
+msgstr "عدم التكرار"
+
+#: appModules/vlc/vlc_application.py:307
+msgid "Random playback"
+msgstr "تشغيل عشوائي"
+
+#: appModules/vlc/vlc_application.py:307
+msgid "Normal playback"
+msgstr "التشغيل العادي"
+
+#: appModules/vlc/vlc_application.py:317
+msgid "With repeat and random playback"
+msgstr "مع التكرار والتشغيل العشوائي"
+
+#: appModules/vlc/vlc_application.py:320
+msgid "With repeat"
+msgstr "مع التكرار"
+
+#: appModules/vlc/vlc_application.py:323
+msgid "With random playback"
+msgstr "مع التشغيل العشوائي"
+
+#: appModules/vlc/vlc_application.py:424
+msgid "No change"
+msgstr "لا تغيير"
+
+#: appModules/vlc/vlc_application.py:466
+msgid "Jump is not possible"
+msgstr "القفز غير ممكن"
+
+#: appModules/vlc/vlc_goToTime.py:26
+msgid "Go to time"
+msgstr "الذهاب الى الوقت"
+
+#: appModules/vlc/vlc_goToTime.py:41
+msgid "hours:"
+msgstr "ساعات:"
+
+#: appModules/vlc/vlc_goToTime.py:50
+msgid "Minutes:"
+msgstr "الدقائق:"
+
+#: appModules/vlc/vlc_goToTime.py:59
+msgid "Secondes:"
+msgstr "ثانية:"
+
+#: appModules/vlc/vlc_goToTime.py:68
+msgid "&Go to time"
+msgstr "الذهاب الى الوقت"
+
+#: appModules/vlc/vlc_goToTime.py:74
+msgid "&Cancel"
+msgstr "إلغاء"
+
+#: buildVars.py:17
+msgid "VLC multimedia player: Accessibility enhancements"
+msgstr "تحسينات إمكانية الوصول : لمشغل الوسائط المتعددة VLC"
+
+#: buildVars.py:20
+msgid ""
+"This addon adds a variety of commands to enhance accessibility in playing "
+"media:\n"
+"- script to announce the duration of the media you've already played,\n"
+"- script to announce the duration of the media remaining to be play,\n"
+"- script to announce the total duration of the media,\n"
+"- script to announce the current speed,\n"
+"- automatic announcement of state's changes such as pause , mute, changing "
+"the pitch or speed of playback, and the setting repeated playback or "
+"random,\n"
+"- automatic announcement of the time after a command to jump,\n"
+"- scripts to mark playback position and start playback at this position,\n"
+"- script to restart interrupted playback  at time recorded by VLC,\n"
+"- correct reading of the status bar,\n"
+"- change of some VLC's annoying keyboard shortcuts  of VLC.\n"
+"The list of commands is obtained by Control+NVDA+H\n"
+"Compatible with VLC 3.0 or higher.\n"
+"\n"
+msgstr ""
+"يضيف هذا الملحق مجموعة متنوعة من الأوامر لتحسين إمكانية الوصول في تشغيل "
+"الوسائط:\n"
+"- إختصار للإعلان عن مدة الوسائط التي قمت بتشغيلها بالفعل،\n"
+"- إختصار للإعلان عن مدة بقاء الوسائط قيد التشغيل،\n"
+"- إختصار للإعلان عن المدة الإجمالية للوسائط،\n"
+"- إختصار للإعلان عن السرعة الحالية،\n"
+"- الإعلان التلقائي عن تغييرات الحالة مثل الإيقاف المؤقت أو كتم الصوت أو "
+"تغيير الملعب أو سرعة التشغيل ، وإعداد التشغيل المتكرر أو عشوائي،\n"
+"- الإعلان التلقائي عن الوقت بعد أمر للقفز،\n"
+"- نصوص لوضع علامة على موضع التشغيل وبدء التشغيل في هذا الموضع،\n"
+"- برنامج نصي لإعادة تشغيل التشغيل المتقطع في الوقت الذي سجلته VLC،\n"
+"- القراءة الصحيحة لشريط الحالة،\n"
+"- تغيير بعض اختصارات لوحة المفاتيح المزعجة لـ VLC لـ VLC.\n"
+"يتم الحصول على قائمة الأوامر عن طريق Control + NVDA + H\n"
+"متوافق مع VLC 3.0 أو أعلى.\n"
+"\n"
+
+#: globalPlugins/vlcAccessEnhancement/updateHandler/update_check.py:63
+msgid "The update is not compatible with this version of Windows."
+msgstr "التحديث غير متوافق مع هذا الإصدار من الويندوز."
+
+#: globalPlugins/vlcAccessEnhancement/updateHandler/update_check.py:82
+#, python-brace-format
+msgid ""
+"The update is not compatible with this version of NVDA. Minimum NVDA "
+"version: {minYear}{minMajor}, last tested: {testedYear}.{testedMajor}."
+msgstr ""
+
+#: globalPlugins/vlcAccessEnhancement/updateHandler/update_check.py:129
+#: globalPlugins/vlcAccessEnhancement/vlc_configGui.py:64
+#: globalPlugins/vlcAccessEnhancement/vlc_globalPlugin.py:60
+msgid "Update"
+msgstr "تحديث"
+
+#: globalPlugins/vlcAccessEnhancement/updateHandler/update_check.py:131
+#, python-brace-format
+msgid "Downloading {name}"
+msgstr "تنزيل {name}"
+
+#: globalPlugins/vlcAccessEnhancement/updateHandler/update_check.py:145
+#, python-brace-format
+msgid "Error downloading update for {name}."
+msgstr "حدث خطأ أثناء تنزيل التحديث لـ {name}."
+
+#: globalPlugins/vlcAccessEnhancement/updateHandler/update_check.py:201
+#, python-brace-format
+msgid "Cannot update {name} - missing file or invalid file format"
+msgstr "لا يمكن تحديث {name} - ملف مفقود أو تنسيق ملف غير صالح"
+
+#: globalPlugins/vlcAccessEnhancement/updateHandler/update_check.py:232
+msgid "Updating"
+msgstr "جاري التحديث"
+
+#: globalPlugins/vlcAccessEnhancement/updateHandler/update_check.py:234
+msgid "Please wait while the add-on is being updated."
+msgstr "الرجاء الانتظار حتى يتم تحديث الوظيفة الإضافية."
+
+#: globalPlugins/vlcAccessEnhancement/updateHandler/update_check.py:241
+#, python-brace-format
+msgid "Failed to update {name} add-on"
+msgstr "فشل تحديث الوظيفة الإضافية {name}"
+
+#: globalPlugins/vlcAccessEnhancement/updateHandler/update_check.py:297
+#, python-brace-format
+msgid "{summary} - update"
+msgstr "{summary} - التحديث"
+
+#: globalPlugins/vlcAccessEnhancement/updateHandler/update_check.py:319
+#, python-format
+msgid "New version available, version %s. Do you want download it now?"
+msgstr "الإصدار الجديد متاح ، الإصدار%s. هل تريد تنزيله الآن؟"
+
+#: globalPlugins/vlcAccessEnhancement/updateHandler/update_check.py:333
+#, python-format
+msgid "You are up-to-date. %s is the latest version."
+msgstr "%s هو أحدث إصدار حتى الآن."
+
+#: globalPlugins/vlcAccessEnhancement/updateHandler/update_check.py:339
+msgid "Oops! There was a problem checking for updates. Please retry later"
+msgstr ""
+"ياااه! حدثت مشكلة من التحقق من وجود تحديثات. الرجاء إعادة المحاولة لاحقًا"
+
+#: globalPlugins/vlcAccessEnhancement/updateHandler/update_check.py:490
+msgid "&Yes"
+msgstr "&نعم"
+
+#: globalPlugins/vlcAccessEnhancement/updateHandler/update_check.py:494
+msgid "&No"
+msgstr "&لا"
+
+#: globalPlugins/vlcAccessEnhancement/updateHandler/update_check.py:498
+msgid "&Later"
+msgstr "في وقت لاحق"
+
+#: globalPlugins/vlcAccessEnhancement/vlc_configGui.py:28
+#: globalPlugins/vlcAccessEnhancement/vlc_globalPlugin.py:54
+msgid "VLC's configuration"
+msgstr "تكوين VLC"
+
+#: globalPlugins/vlcAccessEnhancement/vlc_configGui.py:34
+msgid "&Modify vlc shortcuts"
+msgstr "تعديل اختصارات vlc"
+
+#: globalPlugins/vlcAccessEnhancement/vlc_configGui.py:37
+msgid "&Delete VLC configuration folder"
+msgstr "حذف مجلد التكوين VLC"
+
+#: globalPlugins/vlcAccessEnhancement/vlc_configGui.py:51
+msgid "Do you want really to delete VLC configuration folder ?"
+msgstr "هل تريد حقًا حذف مجلد تكوين VLC؟"
+
+#: globalPlugins/vlcAccessEnhancement/vlc_configGui.py:69
+msgid "Automatically check for &updates "
+msgstr "البحث تلقائيا عن التحديثات "
+
+#: globalPlugins/vlcAccessEnhancement/vlc_configGui.py:73
+msgid "Update also release versions to &developpement versions"
+msgstr "أيضا تحديث إصدارات المطورين وإصدارات المراجعة"
+
+#: globalPlugins/vlcAccessEnhancement/vlc_configGui.py:77
+msgid "&Check for update"
+msgstr "البحث عن التحديثات"
+
+#: globalPlugins/vlcAccessEnhancement/vlc_globalPlugin.py:49
+msgid "settings ..."
+msgstr "الإعدادات ..."
+
+#: globalPlugins/vlcAccessEnhancement/vlc_globalPlugin.py:51
+msgid "Settings menu"
+msgstr "قائمة الإعدادات"
+
+#: globalPlugins/vlcAccessEnhancement/vlc_globalPlugin.py:86
+msgid "Display the add-on 's configuration dialog "
+msgstr "عرض لمربع الحوار تكوين الوظيفة الإضافية"
+
+#: installTasks.py:49
+msgid "Do you want to keep current add-on settings ?"
+msgstr "هل تريد الاحتفاظ بإعدادات الوظيفة الإضافية الحالية؟"
+
+#: installTasks.py:51
+#, python-format
+msgid "%s - installation"
+msgstr "تثبيت- %s"
+
+#: shared/vlc_addonConfig.py:143
+msgid "Do you want to modify resume time for this media ?"
+msgstr "هل تريد تعديل وقت الاستئناف لهذه الوسائط؟"
+
+#: shared/vlc_settingsHandler.py:92
+msgid "Jump commands:"
+msgstr "أوامر القفز:"
+
+#: shared/vlc_settingsHandler.py:93
+msgid "Jump 5 minutes after"
+msgstr "القفز بعد 5 دقائق"
+
+#: shared/vlc_settingsHandler.py:94
+msgid "Jump 5 minutes before "
+msgstr "القفز قبل 5 دقائق"
+
+#: shared/vlc_settingsHandler.py:95
+msgid "Jump 1 minute after"
+msgstr "القفز بعد  1 دقيقة"
+
+#: shared/vlc_settingsHandler.py:96
+msgid "Jump 1 minute before"
+msgstr "القفز قبل 1 دقيقة"
+
+#: shared/vlc_settingsHandler.py:97 shared/vlc_settingsHandler.py:99
+msgid "Jump 10 secondes after"
+msgstr "القفز بعد 10 ثانية"
+
+#: shared/vlc_settingsHandler.py:98 shared/vlc_settingsHandler.py:100
+msgid "Jump 10 secondes before"
+msgstr "القفز قبل 10 ثانية"
+
+#: shared/vlc_settingsHandler.py:101
+msgid "Jump 3 secondes after"
+msgstr "القفز بعد 3 ثوان"
+
+#: shared/vlc_settingsHandler.py:102
+msgid "Jump 3 secondes before"
+msgstr "القفز قبل  3 ثواني"
+
+#: shared/vlc_settingsHandler.py:103
+msgid "Speed commands"
+msgstr "أوامر السرعة"
+
+#: shared/vlc_settingsHandler.py:104
+msgid "Increase the playback speed"
+msgstr "زيادة سرعة التشغيل"
+
+#: shared/vlc_settingsHandler.py:105
+msgid "Decrease the playback speed"
+msgstr "خفض سرعة التشغيل"
+
+#: shared/vlc_settingsHandler.py:106
+msgid "Slightly increase the playback speed"
+msgstr "زيادة طفيفة في سرعة التشغيل"
+
+#: shared/vlc_settingsHandler.py:107
+msgid "Slightly decrease the playback speed"
+msgstr "انخفاض طفيف في سرعة التشغيل"
+
+#: shared/vlc_settingsHandler.py:108
+msgid "Normal rate"
+msgstr "معدل طبيعي"
+
+#: shared/vlc_settingsHandler.py:109
+msgid "Volume commands:"
+msgstr "أوامر حجم الصوت:"
+
+#: shared/vlc_settingsHandler.py:110 shared/vlc_settingsHandler.py:112
+msgid "Increase volume"
+msgstr "ارتفاع الصوت"
+
+#: shared/vlc_settingsHandler.py:111 shared/vlc_settingsHandler.py:113
+msgid "Decrease volume"
+msgstr "إنخفاض حجم الصوت"
+
+#: shared/vlc_settingsHandler.py:114
+msgid "Playing commands:"
+msgstr "أوامر التشغيل:"
+
+#: shared/vlc_settingsHandler.py:115
+msgid "Play / pause"
+msgstr "تشغيل / توقف مؤقت"
+
+#: shared/vlc_settingsHandler.py:116
+msgid "Stop the media"
+msgstr "وقف الوسائط"
+
+#: shared/vlc_settingsHandler.py:117
+msgid "loop playback"
+msgstr "تكرار التشغيل"
+
+#: shared/vlc_settingsHandler.py:118
+msgid "random playback"
+msgstr "تشغيل عشوائي"
+
+#: shared/vlc_settingsHandler.py:253
+msgid "You must stop VLC application before delete configuration folder"
+msgstr "يجب إيقاف تطبيق VLC قبل حذف مجلد التكوين"
+
+#: shared/vlc_settingsHandler.py:255 shared/vlc_settingsHandler.py:262
+#: shared/vlc_settingsHandler.py:431 shared/vlc_settingsHandler.py:438
+#: shared/vlc_settingsHandler.py:446
+msgid "Warning"
+msgstr "تحذير"
+
+#: shared/vlc_settingsHandler.py:260 shared/vlc_settingsHandler.py:436
+msgid "Impossible, VLC application is not installed or initialized"
+msgstr "غير ممكن، لم يتم تثبيت أو تهيئة تطبيق VLC"
+
+#: shared/vlc_settingsHandler.py:274
+#, python-format
+msgid ""
+"VLC configuration folder (%s) has been deleted. Before modify VLC shortcuts, "
+"you must start VLC once."
+msgstr ""
+"تم حذف مجلد تكوين VLC (%s). قبل تعديل اختصارات VLC ، يجب أن تبدأ تشغيل VLC "
+"مرة واحدة."
+
+#: shared/vlc_settingsHandler.py:276 shared/vlc_settingsHandler.py:461
+#: shared/vlc_settingsHandler.py:490
+msgid "Information"
+msgstr "معلومات"
+
+#: shared/vlc_settingsHandler.py:280
+#, python-format
+msgid "VLC configuration folder \"%s\" cannot be deleted"
+msgstr "لا يمكن حذف مجلد تكوين VLC \"%s \""
+
+#: shared/vlc_settingsHandler.py:282
+msgid "Error"
+msgstr "خطأ"
+
+#: shared/vlc_settingsHandler.py:429
+msgid "You must stop VLC application before modify   VLC configuration file"
+msgstr "يجب إيقاف تطبيق VLC قبل تعديل ملف تكوين VLC"
+
+#: shared/vlc_settingsHandler.py:444
+msgid "Error, VLC configuration is not found"
+msgstr "خطأ ، لم يتم العثور على تكوين VLC"
+
+#: shared/vlc_settingsHandler.py:454
+msgid "Please wait"
+msgstr "الرجاء الإنتظار"
+
+#: shared/vlc_settingsHandler.py:459
+msgid "There is no key modification to do"
+msgstr "لا يوجد تعديل رئيسي للقيام به"
+
+#: shared/vlc_settingsHandler.py:469
+msgid "Are you OK?"
+msgstr "هل أنت بخير؟"
+
+#: shared/vlc_settingsHandler.py:471
+#, python-format
+msgid "%s add-on - Confirmation"
+msgstr "التأكيد- %s الوظيفة الإضافية"
+
+#: shared/vlc_settingsHandler.py:488
+msgid "VLC configuration file has been  updated"
+msgstr "تم تحديث ملف تكوين VLC"
+
+#: shared/vlc_settingsHandler.py:530
+msgid ""
+"The VLC command keys which will be record in the VLC configuration file are:"
+msgstr "مفاتيح أوامر VLC التي سيتم تسجيلها في ملف تكوين VLC هي:"
+
+#: shared/vlc_settingsHandler.py:543
+msgid "VLC command's keys:"
+msgstr "مفاتيح الأوامر VLC:"
+
+#: shared/vlc_utils.py:39
+msgid "one"
+msgstr "واحد"
+
+#: shared/vlc_utils.py:41
+msgid "one minute"
+msgstr "دقيقة واحدة"
+
+#: shared/vlc_utils.py:55
+msgid "one hour"
+msgstr "ساعة واحدة"
+
+#: shared/vlc_utils.py:58
+#, python-format
+msgid "%s hours"
+msgstr "%s ساعات"
+
+#: shared/vlc_utils.py:71 shared/vlc_utils.py:90
+#, python-format
+msgid "%s minuts"
+msgstr "%s دقائق"
+
+#: shared/vlc_utils.py:96
+msgid "one second"
+msgstr "ثانية واحدة"
+
+#: shared/vlc_utils.py:100 shared/vlc_utils.py:109 shared/vlc_utils.py:113
+#, python-format
+msgid "%s seconds"
+msgstr "%s ثواني"
+
+#: shared/vlc_utils.py:118
+msgid "0 second"
+msgstr "0ثانية"
+
+#: shared/vlc_utils.py:208
+msgid "Hit Escape key to close the window"
+msgstr "اضغط على مفتاح Escape لإغلاق النافذة"
+
+#~ msgid "Configur VLC..."
+#~ msgstr "تكوين VLC ..."
+
+#~ msgid "Update..."
+#~ msgstr "تحديث..."
+
+#~ msgid "%s - Confirmation"
+#~ msgstr "تأكيد - %s"
+
+#~ msgid "%s - Update"
+#~ msgstr "التحديث - %s"
+
+#~ msgid "%s - Go to time"
+#~ msgstr "%s - اذهب إلى الوقت"
+
+#~ msgid "{0} add-on - settings"
+#~ msgstr "{0} الوظيفة الإضافية - الإعدادات"
+
+#~ msgid "%s dialog is allready open"
+#~ msgstr "مربع الحوار%s مفتوح بالفعل"
+
+#~ msgid "{addonSummary}'s add-on - {dialogTitle}"
+#~ msgstr "الإضافة {addonSummary} - {dialogTitle}"

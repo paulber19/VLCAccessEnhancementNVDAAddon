@@ -1,10 +1,14 @@
 # VLC media player : accessibility enhancements - user's manual #
 
 * Authors : Paulber19 with the very active participation of Daniel Poiraud. 
-* download version 1.1.1: 
-	* [download server 1][1] 
-	* [download server 2][2] 
-
+* URL: paulber19@laposte.net
+* download
+	* [stable version download server 1][1] 
+	* [stable version download server 2][2] 
+	* Download [developpement version][3]
+* Compatibility:
+	* Minimum required NVDA version:  2019.1
+	* Last NVDA version tested:  2019.3
 
 
 The author has used a software of translation to write this document and  presents his apologies for his very bad English.
@@ -162,6 +166,9 @@ The identifiers of the scripts are:
 
 
 ## History ##
+### Version 1.4 (06/08/2019) ###
+Compatibility with NVDA 2019.3
+
 ### Version 1.3.1 (11/06/2019) ###
 - correction in the buildVars.py file
 - added Spanish translation
@@ -240,7 +247,7 @@ Changes:
 ### Changes for version 2.0 ###
 * First multi-lingual version.
 
-[1]: http://angouleme.avh.asso.fr/fichesinfo/fiches_nvda/data/VLCAccessEnhancement-1.3.nvda-addon 
-[2]: https://rawgit.com/paulber007/AllMyNVDAAddons/master/VLC/VLCAccessEnhancement-1.3.nvda-addon 
-
+[1]: http://angouleme.avh.asso.fr/fichesinfo/fiches_nvda/data/VLCAccessEnhancement-1.4.nvda-addon 
+[2]: https://rawgit.com/paulber007/AllMyNVDAAddons/master/VLC/VLCAccessEnhancement-1.4.nvda-addon 
+[3]:https://github.com/paulber007/AllMyNVDAAddons/tree/master/vlcAccessEnhancement/dev
 

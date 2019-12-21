@@ -1,8 +1,8 @@
-# shared/vlcStrings.py.
-# a part of VLC media player add-on
+# shared\vlc_strings.py.
+# a part of vlcAccessEnhancement add-on
 # Copyright 2018 paulber19
 #This file is covered by the GNU General Public License.
-#See the file COPYING for more details.
+
 
 import addonHandler
 from logHandler import log
@@ -13,7 +13,7 @@ try:
 	from configobj.validate import Validator, VdtTypeError
 except ImportError:
 	from validate import Validator, VdtTypeError
-from py3Compatibility import importStringIO
+from vlc_py3Compatibility import importStringIO
 StringIO = importStringIO()
 import api
 import winUser
@@ -22,14 +22,19 @@ from IAccessibleHandler import accessibleObjectFromEvent, accNavigate
 from oleacc import *
 import  ctypes
 from NVDAObjects.IAccessible import getNVDAObjectFromEvent
-import sys
-_curAddon = addonHandler.getCodeAddon()
-sharedPath = os.path.join(_curAddon.path, "shared")
-sys.path.append(sharedPath)
-from vlcSettingsHandler import *
-#from appModuleDebug import printDebug
+from vlc_settingsHandler import *
 def printDebug(str):  return
+_curAddon = addonHandler.getCodeAddon()
+import sys
+debugToolsPath = os.path.join(_curAddon.path, "debugTools")
+sys.path.append(debugToolsPath)
+try:
+	#from debug import printDebug, toggleDebugFlag
+	pass
+except ImportError:
+	def prindDebug(msg): return
 del sys.path[-1]
+
 
 
 # this file manage  necessary strings to recognize some objects depending of vlc language.
@@ -52,7 +57,11 @@ ID_UnMuteImageDescription = "UnMuteImageDescription"
 		# normal|loop|repeat check button description
 ID_LoopCheckButtonDescription = "LoopCheckButtonDescription"
 # Random check button description
-ID_RandomCheckButtonDescription = "RandomCheckButtonDescription"
+ID_RandomCheckButtonDescription = u"RandomCheckButtonDescription"
+# title of media information dialog
+ID_MediaInformationDialogTitle = u"MediaInformationDialogTitle"
+
+
 # singleton to store all strings dictionnaries
 _stringsDics  = None
 
@@ -76,7 +85,15 @@ _vlcSection = """
 {unMute} = string(default = "Unmute")
 {loopCheckButtonDescription} = string(default = "Click to toggle between loop all, loop one and no loop")
 {randomCheckButtonDescription} = string(default = "Random")
-""".format(module = SCTN_VLC,vlcAppTitle = ID_VLCAppTitle, playButtonDescription= ID_PlayButtonDescription, playDefault = "", pauseThePlaybackButtonDescription = ID_PauseThePlaybackButtonDescription, unMute = ID_UnMuteImageDescription, loopCheckButtonDescription = ID_LoopCheckButtonDescription, randomCheckButtonDescription = ID_RandomCheckButtonDescription)
+{mediaInformationDialogTitle} = string(default = "MetaDatasDialogTitle")
+""".format(module = SCTN_VLC,vlcAppTitle = ID_VLCAppTitle, playButtonDescription= ID_PlayButtonDescription, playDefault = "", pauseThePlaybackButtonDescription = ID_PauseThePlaybackButtonDescription, unMute = ID_UnMuteImageDescription, loopCheckButtonDescription = ID_LoopCheckButtonDescription, randomCheckButtonDescription = ID_RandomCheckButtonDescription, mediaInformationDialogTitle = ID_MediaInformationDialogTitle)
+
+_confSpec = ConfigObj(StringIO("""
+	{main}
+	{vlc}
+	""".format(main = mainSection, vlc = _vlcSection)
+	), list_values=False, encoding="UTF-8")
+_confSpec.newlines = "\r\n"
 
 _stringsFileBaseName = "strings-"
 _stringsIniFilesDirName =  "vlcLocale"
@@ -91,23 +108,41 @@ def get_stringsIniFilePath (appLanguage):
 		log.error("No strings Ini file: {}".format(file))
 		return None
 	return file
-
+def loadFileConfig(file):
+	try:
+		conf = ConfigObj(file, configspec = _confSpec, indent_type = "\t", encoding="UTF-8")
+	except ConfigObjError as e:
+		return None
+	conf.newlines = "\r\n"
+	configFileError = None
+	val = Validator()
+	result = conf.validate(val)
+	if not result :
+		return None
+	conf.newlines = "\r\n"
+	return conf
+	
 def getSupportedLanguages():
-	printDebug("vlcStrings: getSuppertedLanguages")
-	fileList = getStringsIniFilesList()
+	printDebug ("getSupportedLanguages")
+	# set path of strings ini files directory
+	currAddon = addonHandler.getCodeAddon()
+	stringsIniFilesDir = os.path.join(currAddon.path, _stringsIniFilesDirName)
+	# get list of all strings ini files
+	stringsIniFilesList = _getStringsIniFilesList(stringsIniFilesDir)
+	# search for vlc language
 	supportedLanguages = []
-	for file in fileList:
-		config = ConfigObj(file, encoding="utf-8" , default_encoding= "ascii")
-		sectionName = "Main"
-		lang1 = config[sectionName]["LanguageName"]
+	for file in stringsIniFilesList :
+		stringsIniFile = os.path.join(stringsIniFilesDir, file)
+		conf = loadFileConfig(stringsIniFile )
+		if conf is None: 
+			continue
+		lang1 = conf[SCTN_Main ]["LanguageName"]
 		temp = file.split("-")[-1]
 		lang2 = temp.split(".")[0]
 		supportedLanguages.append((lang1,lang2))
-	
-	
 	return supportedLanguages
 
-def _getstringsIniFilesList(stringsFilesDir):
+def _getStringsIniFilesList(stringsFilesDir):
 	itemList = os.listdir(stringsFilesDir)
 	FilesList = []
 	for item in itemList:
@@ -119,87 +154,85 @@ def _getstringsIniFilesList(stringsFilesDir):
 			FilesList.append(item)
 	return FilesList
 
-def _getPlayMenuLabel():
-	printDebug ("vlcStrings: _getPlayMenuLabel")
+def _getRandomCheckButtonLabel():
+	printDebug ("vlcStrings: _getRandomCheckButtonLabel")
 	hdMain=ctypes.windll.user32.GetForegroundWindow()
-	try:
-		(oIA, childID) = accessibleObjectFromEvent(hdMain, 0,0)
+	(oIA, childID) = accessibleObjectFromEvent(hdMain, 0,0)
+	(o,childID) = accNavigate(oIA,0, NAVDIR_FIRSTCHILD)
+	objList = []
+	while o:
+		if o.accRole(0) == ROLE_SYSTEM_WINDOW:
+			break
 
-		(o,childID) = accNavigate(oIA,0, NAVDIR_FIRSTCHILD)
-		(o,childID) = accNavigate(o,0, NAVDIR_NEXT)
-		(o,childID) = accNavigate(o,0, NAVDIR_NEXT)
-		(o,childID) = accNavigate(o,0, NAVDIR_FIRSTCHILD)
-		(o,childID) = accNavigate(o,0, NAVDIR_FIRSTCHILD)
-		(o,childID) = accNavigate(o,0, NAVDIR_NEXT)
-		name = o.accName(0).split(" ")[0]
+		try:
+			(o,childID) = accNavigate(o,0, NAVDIR_NEXT)
+		except:
+			o = None
+
+	try:
+
+		(o,childID) = accNavigate(o,0, NAVDIR_LASTCHILD)
+		(o,childID) = accNavigate(o,0, NAVDIR_LASTCHILD)
+		(o,childID) = accNavigate(o,0, NAVDIR_LASTCHILD)
+		if o.accRole(0) ==ROLE_SYSTEM_CHECKBUTTON:
+			return o.accDescription(0)
 	except:
-		log.warning("getPlayMenuLabel: cannot find play menu label")
-		name = None
-	return name
-	
-def loadStringsDic():
+		log.warning("vlc_strings: cannot find random check button")
+	return None
+
+def _loadStringsDic():
 	global _stringsDics
-	printDebug ("loadStringsDic")
+	printDebug ("vlc_strings: _loadStringsDic")
 	if _stringsDics is not None:
-		printDebug ("loadStringsDic: allready loaded")
-		return False
+		printDebug ("_loadStringsDic: allready loaded")
+		return
 	# get label to identify vlc language
-	# vlc 3.0 adds shortcut in label but no in vlc 2.x
-	playMenuLabel = _getPlayMenuLabel()
-	if playMenuLabel is None:
-		return False
-	printDebug ("loadStringsDic: playMenuLabel = %s" %playMenuLabel)
-	printDebug ("loadStringsDic: search vlc language")
+	label = _getRandomCheckButtonLabel()
+	if label is None:
+		printDebug ("Random Check button is not found")
+		return
+	printDebug ("_loadStringsDic: randomCheckButton description= %s" %label)
+	printDebug ("_loadStringsDic: search vlc language")
 	# set path of strings ini files directory
 	currAddon = addonHandler.getCodeAddon()
 	stringsIniFilesDir = os.path.join(currAddon.path, _stringsIniFilesDirName)
 	# get list of all strings ini files
-	stringsIniFilesList = _getstringsIniFilesList(stringsIniFilesDir)
-	confspec = ConfigObj(StringIO("""
-		{main}
-		{vlc}
-		""".format(main = mainSection, vlc = _vlcSection)
-		), list_values=False, encoding="UTF-8")
-	confspec.newlines = "\r\n"
-	configFileError = None
-	val = Validator()
+	stringsIniFilesList = _getStringsIniFilesList(stringsIniFilesDir)
 	# search for vlc language
 	languageFound =False
 	for file in stringsIniFilesList :
 		stringsIniFile = os.path.join(stringsIniFilesDir, file)
-		try:
-			conf = ConfigObj(stringsIniFile, configspec = confspec, indent_type = "\t", encoding="UTF-8")
-		except ConfigObjError as e:
+		conf = loadFileConfig(stringsIniFile )
+		if conf is None:
 			continue
-		conf.newlines = "\r\n"
-		result = conf.validate(val)
-		if not result :
-			continue
-
-		if conf[SCTN_Main][ID_StringToFindLanguage] == playMenuLabel:
+		if conf[SCTN_VLC][ID_RandomCheckButtonDescription] == label:
 			# language found
+			log.warning("VLCAccessEnhancement: VLC language found=  %s"%conf[SCTN_Main][ID_LanguageName])
 			languageFound =True
 			break
 	if not languageFound:
-		log.warning ("loadStringsDic: no language found")
-		return False
+		log.warning ("_loadStringsDic: no language found")
+		return
 	_stringsDics  = conf.copy()
-	printDebug ("loadStringsDic: loaded")
-	return True
+	printDebug ("_loadStringsDic: loaded")
+
 def getString(stringID):
+	noneString = "???None???"
 	section ="vlc"
 	printDebug("vlcStrings: _getString: section = %s, stringID = %s" %(section, stringID))
 	if _stringsDics  is None:
-		loadStringsDic()
+		_loadStringsDic()
 		if _stringsDics  is None:
-			return ""
+			printDebug ("VLC_Strings: strings are not loaded")
+			return noneString
+
 	if section not in _stringsDics:
 		log.warning("getStrings error: not section %s in _stringsDic" %module)
-		return""
+		returnnoneString
 	dic = _stringsDics [section]
 	if not stringID in dic:
 		log.warning("getStrings error: not string \"%s\" in dic" %stringID)
-		return ""
+		return noneString
 	return dic[stringID]
 
 def init():
@@ -207,3 +240,7 @@ def init():
 	global _stringsDics
 	_stringsDics  = None
 
+def terminate():
+	printDebug("vlcStrings terminate")
+	global _stringsDics
+	_stringsDics  = None

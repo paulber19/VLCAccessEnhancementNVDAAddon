@@ -1,8 +1,8 @@
-#VLCAccessEnhancement/__init__.py
+#globalPlugins\VLCAccessEnhancement\__init__.py
 # a part of NVDAExtensionGlobalPlugin add-on
 #Copyright (C) 2016-2019 Paulber19
 #This file is covered by the GNU General Public License.
-#See the file COPYING for more details.
+
 import globalVars
 import config
 
@@ -14,7 +14,7 @@ if (globalVars.appArgs.secure
 	class GlobalPlugin (globalPluginHandler.GlobalPlugin):
 		pass
 else:
-	from . import theVLCGlobalPlugin
-	class GlobalPlugin (theVLCGlobalPlugin.VLCGlobalPlugin):
+	from . import vlc_globalPlugin
+	class GlobalPlugin (vlc_globalPlugin.VLCGlobalPlugin):
 		def chooseNVDAObjectOverlayClasses(self, obj, clsList):
 			super(GlobalPlugin , self).chooseNVDAObjectOverlayClasses(obj, clsList)

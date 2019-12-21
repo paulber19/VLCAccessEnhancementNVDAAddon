@@ -1,8 +1,8 @@
-# shared/localeSettingsHandler.py.
-# a part of VLC media player add-on
-# Copyright 2018 paulber19
+# shared\vlc_localeSettingsHandler.py.
+# a part of vlcAccessEnhancement add-on
+# Copyright 2018-2019 paulber19
 #This file is covered by the GNU General Public License.
-#See the file COPYING for more details.
+
 
 
 import addonHandler
@@ -56,8 +56,10 @@ class LocaleSettings(object):
 			"reportTotalTime" : "kb:.",
 			"reportCurrentSpeed" : "kb:/",
 			"recordResumeFile":"kb:nvda+control+f5",
-			"resumePlayback":"kb:nvda+contronl+f6",
+			"resumePlayback":"kb:nvda+control+f6",
 			"continuePlayback": "kb:alt+control+r",
+			"hideShowMenusView": "kb:control+h",
+			"adjustmentsAndEffects": "kb:control+e",
 			}
 		self.scriptGestures = defaultScriptGestures.copy()
 		if (conf is None)   or ("script-gestures" not in conf.sections):
