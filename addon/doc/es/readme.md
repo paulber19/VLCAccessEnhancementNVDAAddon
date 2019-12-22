@@ -6,7 +6,7 @@
 	* [version estable servidor de descarga 1][1]
 	* [version estable servidor de descarga 2][2]
 	* [versión de desarrollo][3]
-* Compatibilitad:
+* Compatibilidad:
 	* Versión mínima de NVDA requerida: 2019.1
 	* Última versión de NVDA probada: 2019.3
 
