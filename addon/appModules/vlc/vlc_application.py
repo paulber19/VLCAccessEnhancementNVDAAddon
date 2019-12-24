@@ -917,11 +917,12 @@ class Playlist(object):
 	
 	@classmethod
 	def isInPlaylist(cls, obj):
-
+		"""
 		parent = obj.parent
 		if hasattr(parent, "playlist"):
 			obj.playlist = parent.playlist
 			return obj.playlist
+		"""
 		if controlTypes.STATE_INVISIBLE in obj.states:
 			return ID_NoPlaylist
 		o = obj.IAccessibleObject

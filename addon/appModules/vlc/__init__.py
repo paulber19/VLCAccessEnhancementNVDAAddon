@@ -163,7 +163,10 @@ Before overriding the last object, this function calls event_loseFocus on the ob
 	# #3804: handleAppSwitch should be called as late as possible,
 	# as triggers must not be out of sync with global focus variables.
 	# setFocusObject shouldn't fail earlier anyway, but it's best to be safe.
-	appModuleHandler.handleAppSwitch(oldAppModules,newAppModules)
+	try:
+		appModuleHandler.handleAppSwitch(oldAppModules,newAppModules)
+	except:
+		log.warning("appModuleHandler.handleAppSwitch error")
 	# Set global focus variables.
 	globalVars.focusDifferenceLevel=focusDifferenceLevel
 	globalVars.focusObject=obj
@@ -327,8 +330,8 @@ class InVLCViewWindow(IAccessible):
 		delay = self.appModule.jumpKeyToDelay[normalizeGestureIdentifier(identifier)]
 		totalTime = mainWindow.getTotalTime()
 		if totalTime is None: return
-		totalTime = getTimeList(totalTime)
-		totalTimeInSec = int(totalTime[0])*3600  + int(totalTime[1])*60 +int(totalTime[2])
+		totalTimeList = getTimeList(totalTime)
+		totalTimeInSec = int(totalTimeList[0])*3600  + int(totalTimeList[1])*60 +int(totalTimeList[2])
 		currentTime = mainWindow.getCurrentTime()
 		curTimeInSec = getTimeInSec(currentTime)
 		# Translators: message to the user to say  time jump is not possible.
@@ -527,6 +530,11 @@ class InVLCViewWindow(IAccessible):
 		else:
 			speech.speakMessage(_("Menu bar is hidden"))
 	def script_moveToNextControl(self, gesture):
+		from .vlc_application import ID_NoPlaylist, ID_AnchoredPlaylist, ID_EmbeddedPlaylist
+		ret = vlc_application.Playlist.isInPlaylist(self) 
+		if ret != ID_NoPlaylist:
+			gesture.send()
+			return
 		from  vlc_addonConfig import _addonConfigManager
 		if not _addonConfigManager.getPlaybackControlsAccessOption():
 			gesture.send()
@@ -624,7 +632,6 @@ class InVLCViewWindow(IAccessible):
 				if desc: msg.append(api.getMouseObject().description)
 			elif desc and description == desc:
 				msg.append(desc)
-			print ("msg: %s"%msg)
 			if len(msg):
 				text = ", ".join(msg)
 				ui.message(text)
@@ -804,7 +811,7 @@ class AppModule(AppModule):
 		
 	def __init__(self, *args, **kwargs):
 		super(AppModule, self).__init__(*args, **kwargs)
-		#toggleDebugFlag()
+		toggleDebugFlag()
 		self.chooseNVDAObjectOverlayClassesDisabled = False
 		self.hasFocus = False
 		self.lastFocusedObject = None
@@ -908,6 +915,49 @@ class AppModule(AppModule):
 		inputCore.manager._captureFunc = None
 		self.resetStatusBar()
 		super(AppModule, self).terminate()
+	def checkIfInPlaylist(self, obj, clsList):
+		from .vlc_application import ID_NoPlaylist, ID_AnchoredPlaylist, ID_EmbeddedPlaylist
+		ret = False
+		ret = vlc_application.Playlist.isInPlaylist(obj) 
+		if ret != ID_NoPlaylist:
+			if  ret == ID_AnchoredPlaylist:
+				if obj.role == controlTypes.ROLE_TREEVIEWITEM:
+					columnHeaders = vlc_playlist.getColumnHeaderCount(obj.IAccessibleObject.accParent)
+					if columnHeaders == 1:
+						clsList.insert(0, vlc_playlist.VLCAnchoredGroupTreeViewItem)
+						ret = True
+					else:
+						clsList.insert(0, vlc_playlist.VLCAnchoredPlaylistTreeViewItem)
+						ret = True
+				elif obj.role == controlTypes.ROLE_TREEVIEW:
+					clsList.insert(0, vlc_playlist.VLCAnchoredPlaylistTreeView)
+					ret = True
+				elif obj.role == controlTypes.ROLE_LISTITEM:
+					clsList.insert(0, vlc_playlist.VLCAnchoredPlaylistListItem)
+					ret = True
+				else:
+					clsList.insert(0, vlc_playlist.InAnchoredPlaylist)
+					ret = True
+			elif  ret == ID_EmbeddedPlaylist:
+				if obj.role ==controlTypes.ROLE_TREEVIEWITEM:
+					columnHeaders = vlc_playlist.getColumnHeaderCount(obj.IAccessibleObject.accParent)
+					if columnHeaders == 1:
+						clsList.insert(0, vlc_playlist.VLCEmbeddedGroupTreeViewItem)
+						ret = True
+					else:
+						clsList.insert(0, vlc_playlist.VLCEmbeddedPlaylistTreeViewItem)
+						ret = True
+				elif obj.role ==controlTypes.ROLE_TREEVIEW:
+					clsList.insert(0, vlc_playlist.VLCEmbeddedPlaylistTreeView)
+					ret = True
+				elif obj.role == controlTypes.ROLE_LISTITEM:
+					clsList.insert(0, vlc_playlist.VLCEmbeddedPlaylistListItem)
+					ret = True
+				else:
+					clsList.insert(0, vlc_playlist.InEmbeddedPlaylist)
+					ret = True
+		return ret
+
 	
 	def chooseNVDAObjectOverlayClasses(self, obj, clsList):
 		from .vlc_application import ID_NoPlaylist, ID_AnchoredPlaylist, ID_EmbeddedPlaylist
@@ -981,36 +1031,8 @@ class AppModule(AppModule):
 						return
 		
 		# check if obj is in the playlist
-		ret = vlc_application.Playlist.isInPlaylist(obj) 
-		if ret != ID_NoPlaylist:
-			if  ret == ID_AnchoredPlaylist:
-				if obj.role == controlTypes.ROLE_TREEVIEWITEM:
-					columnHeaders = vlc_playlist.getColumnHeaderCount(obj.IAccessibleObject.accParent)
-					if columnHeaders == 1:
-						clsList.insert(0, vlc_playlist.VLCAnchoredGroupTreeViewItem)
-					else:
-						clsList.insert(0, vlc_playlist.VLCAnchoredPlaylistTreeViewItem)
-				elif obj.role == controlTypes.ROLE_TREEVIEW:
-					clsList.insert(0, vlc_playlist.VLCAnchoredPlaylistTreeView)
-				elif obj.role == controlTypes.ROLE_LISTITEM:
-					clsList.insert(0, vlc_playlist.VLCAnchoredPlaylistListItem)
-				else:
-					clsList.insert(0, vlc_playlist.InAnchoredPlaylist)
-			elif  ret == ID_EmbeddedPlaylist:
-				if obj.role ==controlTypes.ROLE_TREEVIEWITEM:
-					columnHeaders = vlc_playlist.getColumnHeaderCount(obj.IAccessibleObject.accParent)
-					if columnHeaders == 1:
-						clsList.insert(0, vlc_playlist.VLCEmbeddedGroupTreeViewItem)
-					else:
-						clsList.insert(0, vlc_playlist.VLCEmbeddedPlaylistTreeViewItem)
-				elif obj.role ==controlTypes.ROLE_TREEVIEW:
-					clsList.insert(0, vlc_playlist.VLCEmbeddedPlaylistTreeView)
-				elif obj.role == controlTypes.ROLE_LISTITEM:
-					clsList.insert(0, vlc_playlist.VLCEmbeddedPlaylistListItem)
-				else:
-					clsList.insert(0, vlc_playlist.InEmbeddedPlaylist)
-			return
-			
+		
+		if self.checkIfInPlaylist(obj, clsList): return
 		if vlc_application.MainWindow.inVlcMainWindow(obj):
 			#printDebug ("AppModule VLC: chooseOverlayClass insert class InVLCViewWindow , className = %s"%obj.windowClassName)
 			clsList.insert(0, InVLCViewWindow)
