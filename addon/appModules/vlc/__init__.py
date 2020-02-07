@@ -62,6 +62,7 @@ del sys.path[-1]
 from .vlc_goToTime import GoToTimeDialog
 
 from . import vlc_application
+from .vlc_application import ID_NoPlaylist, ID_AnchoredPlaylist, ID_EmbeddedPlaylist
 from . import vlc_playlist
 _scriptCategory = _unicode(_curAddon.manifest['summary'])
 
@@ -180,7 +181,7 @@ Before overriding the last object, this function calls event_loseFocus on the ob
 
 class InVLCViewWindow(IAccessible):
 	scriptCategory = _scriptCategory
-	_gestures = {
+	_controlsPaneGestures = {
 	"kb:tab": "moveToNextControl",
 	"kb:shift+tab": "moveToPreviousControl",
 	"kb:enter": "doAction",
@@ -190,7 +191,10 @@ class InVLCViewWindow(IAccessible):
 		self.continuePlaybackScript = InVLCViewWindow.script_continuePlayback
 		self._initGestures()
 		self._initVlcGestures()
-		self.bindGestures(self._gestures)
+		from  vlc_addonConfig import _addonConfigManager
+		from .vlc_playlist import  InAnchoredPlaylist
+		if not isinstance(self, InAnchoredPlaylist) and  _addonConfigManager.getPlaybackControlsAccessOption():
+			self.bindGestures(self._controlsPaneGestures)
 		
 	
 	def event_typedCharacter(self,ch):
@@ -199,12 +203,13 @@ class InVLCViewWindow(IAccessible):
 		if ch == self.appModule.vlcrcSettings.getKeyFromName("key-loop"):
 			wx.CallAfter(mainWindow.reportLoopStateChange)
 		elif ch == self.appModule.vlcrcSettings.getKeyFromName("key-random"):
-			wx.CallAfter(mainWindow.reportRandomStateChange)
+			wx.CallLater(30, mainWindow.reportRandomStateChange)
 		elif ch == self.appModule.vlcrcSettings.getKeyFromName("key-toggle-fullscreen"):
 			wx.CallAfter(mainWindow.reportViewState)
 		else:
 			super(InVLCViewWindow  , self).event_typedCharacter(ch)
-	
+		controlPanel= mainWindow.mainPanel.controlPanel
+		controlPanel.reportCurrentControl()
 	def event_statesChange(self):
 		printDebug ("event_stateChange")
 		super(InVLCViewWindow, self).event_statesChange()
@@ -220,7 +225,7 @@ class InVLCViewWindow(IAccessible):
 			super(InVLCViewWindow  , self).event_gainFocus()
 		self.appModule.setStatusBar()
 		if self.hasFocus == False:
-			printDebug ("InViewWindow: event_gainFocus: setFocus on object with hasFocus = False")
+			printDebug ("InVLCViewWindow: event_gainFocus: setFocus on object with hasFocus = False")
 		mainWindow = self.appModule.mainWindow
 		# after anchored playlist hiding , refresh playback controls
 		mainWindow.mainPanel.controlPanel.refreshControls()
@@ -529,34 +534,23 @@ class InVLCViewWindow(IAccessible):
 			speech.speakMessage(_("Menu bar is shown"))
 		else:
 			speech.speakMessage(_("Menu bar is hidden"))
-	def script_moveToNextControl(self, gesture):
-		from .vlc_application import ID_NoPlaylist, ID_AnchoredPlaylist, ID_EmbeddedPlaylist
-		ret = vlc_application.Playlist.isInPlaylist(self) 
-		if ret != ID_NoPlaylist:
-			gesture.send()
-			return
-		from  vlc_addonConfig import _addonConfigManager
-		if not _addonConfigManager.getPlaybackControlsAccessOption():
-			gesture.send()
-			return
+	def moveToControl(self, next = True):
 		mainWindow = self.appModule.mainWindow
-		try:
-			mainWindow.mainPanel.controlPanel.moveToControl(next = True)
-		except IOError:
-			gesture.send()
+		mainPanel = self.appModule.mainWindow.mainPanel
+		anchoredPlaylist = mainPanel.anchoredPlaylist
+		if anchoredPlaylist.isAlive() and anchoredPlaylist.isVisible():
+			#anchoredPlaylist.NVDAObject.firstChild.setFocus()
+			obj = anchoredPlaylist.NVDAObject.lastChild
+			mouseClick(obj)
+			return
+		mainWindow.mainPanel.controlPanel.moveToControl(next)
 
-	def script_moveToPreviousControl(self, gesture):
-		from  vlc_addonConfig import _addonConfigManager
-		if not _addonConfigManager.getPlaybackControlsAccessOption():
-			gesture.send()
-			return
-		mainWindow = self.appModule.mainWindow
-		try:
-			mainWindow.mainPanel.controlPanel.moveToControl(next = False)
-		except:
-			gesture.send()
 	
-
+	def script_moveToNextControl(self, gesture):
+		self.moveToControl(next = True)
+	
+	def script_moveToPreviousControl(self, gesture):
+		self.moveToControl(next = False)
 	
 	def script_adjustmentsAndEffects(self, gesture):
 		def callback():
@@ -645,10 +639,8 @@ class InVLCViewWindow(IAccessible):
 				o = api.getDesktopObject().objectFromPoint(x,y) 
 				if description != o.description:
 					ui.message(api.getMouseObject().description)
-
 			else:
 				pass
-
 		newAnchoredPlaylistState = anchoredPlaylist.isVisible()
 		if not oldAnchoredPlaylistState and newAnchoredPlaylistState:
 			obj = anchoredPlaylist.NVDAObject
@@ -667,6 +659,19 @@ class VLCMainWindow(InVLCViewWindow):
 				self.appModule._mainWindow = mainWindow
 				printDebug ("VLCMainWindow: MainWindow set")
 		super(VLCMainWindow, self).event_foreground()
+	def event_gainFocus(self):
+		printDebug( "VLCMainWindow: event_gainFocus: role = %s, name = %s"%(controlTypes.roleLabels.get(self.role), self.name))
+		super(VLCMainWindow, self).event_gainFocus()
+		if True or self.hasFocus == False:
+			printDebug ("VLCMainWindow: event_gainFocus: setFocus on object with hasFocus = False")
+			# if anchored playlist is alive, put focus on it
+			mainPanel = self.appModule.mainWindow.mainPanel
+			anchoredPlaylist = mainPanel.anchoredPlaylist
+			if anchoredPlaylist.isAlive() and anchoredPlaylist.isVisible():
+				#anchoredPlaylist.NVDAObject.firstChild.setFocus()
+				obj = anchoredPlaylist.NVDAObject.lastChild
+				mouseClick(obj)
+				
 	
 class MainPanel(InVLCViewWindow):
 	def _get_name(self):
@@ -853,15 +858,12 @@ class AppModule(AppModule):
 			# when focus is on menu item but menu is not open, these keys change  only focused state without event
 			# so we need to put focus on menu bar as the menu is opened
 			wx.CallAfter(callback)
-			pass
-
 		return True
 	
 	def  stopTaskTimer(self):
 		if self._curTaskTimer is not None:
 			self._curTaskTimer.Stop()
 			self._curTaskTimer = None
-
 		
 	def setStatusBar(self):
 		if not hasattr(self, "curAPIGetStatusBar "):
@@ -889,6 +891,7 @@ class AppModule(AppModule):
 		printDebug("appModule VLC: event_appModulegainFocus")
 		self.hasFocus = True
 		self.lastFocusedObject = None
+		self._oldInputCoreManagerCaptureFunc = inputCore.manager._captureFunc 
 		inputCore.manager._captureFunc = self._inputCaptor
 		wx.CallAfter(self.initAppModule)
 		if not hasattr(self, "apiSetFocusObject "):
@@ -903,7 +906,8 @@ class AppModule(AppModule):
 		api.setFocusObject = self.apiSetFocusObject
 		self.resetStatusBar()
 		self.stopTaskTimer()
-		inputCore.manager._captureFunc = None
+		inputCore.manager._captureFunc = self._oldInputCoreManagerCaptureFunc
+		del self._oldInputCoreManagerCaptureFunc
 		if hasattr(self, "curAPIGetStatusBar"):
 			api.getStatusBar = self.curAPIGetStatusBar
 			delattr(self, "curAPIGetStatusBar")
@@ -912,51 +916,85 @@ class AppModule(AppModule):
 	def terminate(self):
 		printDebug("AppModule VLC: terminate")
 		self.stopTaskTimer()
-		inputCore.manager._captureFunc = None
+		if hasattr (self, "_oldInputCoreManagerCaptureFunc"):
+			inputCore.manager._captureFunc = self._oldInputCoreManagerCaptureFunc
+			del self._oldInputCoreManagerCaptureFunc
 		self.resetStatusBar()
 		super(AppModule, self).terminate()
-	def checkIfInPlaylist(self, obj, clsList):
-		from .vlc_application import ID_NoPlaylist, ID_AnchoredPlaylist, ID_EmbeddedPlaylist
-		ret = False
-		ret = vlc_application.Playlist.isInPlaylist(obj) 
-		if ret != ID_NoPlaylist:
+		
+
+	def getNewCls(self, obj, clsList):
+		def isInVlcMainWindow(oIA, obj, clsList):
+			desktopName = api.getDesktopObject().name
+			try:
+				name = oIA.accName(0)
+				if name and name == api.getDesktopObject().name: return False
+				if oIA.accRole(0) == oleacc.ROLE_SYSTEM_WINDOW:
+					if vlc_strings.getString(vlc_strings.ID_VLCAppTitle) in name or name == "vlc":
+						clsList.insert(0, InVLCViewWindow)
+						return True
+			except:
+				pass
+			return False
+		
+		
+		def isInsideMediaInfo(oIA, obj, clsList):
+			try:
+				name = oIA.accName(0)
+				if name and (vlc_strings.getString(vlc_strings.ID_MediaInformationDialogTitle) in name) :
+					clsList.insert(0, VLCMediaInfos)
+					return True
+			except:
+				pass
+			return False
+
+		def isInPlaylist(OIA, obj, clsList):
+			if controlTypes.STATE_INVISIBLE in obj.states:
+				return ID_NoPlaylist
+
+			ret = vlc_application.Playlist.getPlaylistID(oIA)
+			if not ret: return False
+			obj.playlist = ret
 			if  ret == ID_AnchoredPlaylist:
 				if obj.role == controlTypes.ROLE_TREEVIEWITEM:
 					columnHeaders = vlc_playlist.getColumnHeaderCount(obj.IAccessibleObject.accParent)
 					if columnHeaders == 1:
 						clsList.insert(0, vlc_playlist.VLCAnchoredGroupTreeViewItem)
-						ret = True
 					else:
 						clsList.insert(0, vlc_playlist.VLCAnchoredPlaylistTreeViewItem)
-						ret = True
 				elif obj.role == controlTypes.ROLE_TREEVIEW:
 					clsList.insert(0, vlc_playlist.VLCAnchoredPlaylistTreeView)
-					ret = True
 				elif obj.role == controlTypes.ROLE_LISTITEM:
 					clsList.insert(0, vlc_playlist.VLCAnchoredPlaylistListItem)
-					ret = True
 				else:
 					clsList.insert(0, vlc_playlist.InAnchoredPlaylist)
-					ret = True
+					if obj.role != controlTypes.ROLE_EDITABLETEXT:
+						clsList.insert(0, InVLCViewWindow)
 			elif  ret == ID_EmbeddedPlaylist:
 				if obj.role ==controlTypes.ROLE_TREEVIEWITEM:
 					columnHeaders = vlc_playlist.getColumnHeaderCount(obj.IAccessibleObject.accParent)
 					if columnHeaders == 1:
 						clsList.insert(0, vlc_playlist.VLCEmbeddedGroupTreeViewItem)
-						ret = True
 					else:
 						clsList.insert(0, vlc_playlist.VLCEmbeddedPlaylistTreeViewItem)
-						ret = True
 				elif obj.role ==controlTypes.ROLE_TREEVIEW:
 					clsList.insert(0, vlc_playlist.VLCEmbeddedPlaylistTreeView)
-					ret = True
 				elif obj.role == controlTypes.ROLE_LISTITEM:
 					clsList.insert(0, vlc_playlist.VLCEmbeddedPlaylistListItem)
-					ret = True
 				else:
 					clsList.insert(0, vlc_playlist.InEmbeddedPlaylist)
-					ret = True
-		return ret
+			return True
+		
+		oIA = obj.IAccessibleObject
+		while oIA:
+			if isInPlaylist(oIA, obj, clsList): return True
+			if isInVlcMainWindow(oIA, obj, clsList): return True
+			if isInsideMediaInfo(oIA, obj, clsList): return True
+			try:
+				oIA = oIA.accParent
+			except:
+				oIA = None
+		return False
 
 	
 	def chooseNVDAObjectOverlayClasses(self, obj, clsList):
@@ -987,17 +1025,12 @@ class AppModule(AppModule):
 		if self.chooseNVDAObjectOverlayClassesDisabled :
 			printDebug ("ChooseOverlayClass disabled")
 			return
-
 		if not self.initialized: return
 		oIA = obj.IAccessibleObject
 		if obj.windowClassName == u'Qt5QWindowIcon':
 			if obj.role == controlTypes.ROLE_EDITABLETEXT :
 				from .vlc_qtEditableText import VLCQTEditableText
 				clsList.insert(0, VLCQTEditableText)
-			# check if object is in media infos dialog
-			if VLCMediaInfos.isInside(obj):
-				clsList.insert(0, VLCMediaInfos)
-				return
 
 			elif obj.role in [oleacc.ROLE_SYSTEM_OUTLINE, oleacc.ROLE_SYSTEM_LIST]:
 				clsList.insert(0, VLCQTContenair)
@@ -1031,16 +1064,8 @@ class AppModule(AppModule):
 						return
 		
 		# check if obj is in the playlist
-		
-		if self.checkIfInPlaylist(obj, clsList): return
-		if vlc_application.MainWindow.inVlcMainWindow(obj):
-			#printDebug ("AppModule VLC: chooseOverlayClass insert class InVLCViewWindow , className = %s"%obj.windowClassName)
-			clsList.insert(0, InVLCViewWindow)
-			return
-		
-		if obj.role == controlTypes.ROLE_DIALOG and (obj.windowClassName == u'Qt5QWindowToolSaveBits' or obj.windowClassName == u'Qt5QWindowIcon'):
-			clsList.insert(0, VLCBehaviorsDialog)
-
+		#if self.checkIfInPlaylist(obj, clsList): return
+		self.getNewCls(obj, clsList)
 	
 	def event_typedCharacter(self,obj, nextHandler, ch):
 		printDebug ("appModule VLC: event_typedCharacter: role = %s, name = %s, ch = %s (%s)" %(controlTypes.roleLabels.get(obj.role), obj.name, ch, ord(ch)))
@@ -1089,6 +1114,9 @@ class AppModule(AppModule):
 	def event_stateChange(self, obj, nextHandler):
 		printDebug ("appModule VLC: event_stateChange: role = %s, name = %s" %(controlTypes.roleLabels.get(obj.role),obj.name))
 		nextHandler()
+	def event_NVDAObject_init(self,obj):
+		pass
+
 	
 	def event_gainFocus(self, obj, nextHandler):
 		printDebug ("appModule VLC: event_gainFocus: role = %s, name = %s" %(controlTypes.roleLabels.get(obj.role),obj.name))

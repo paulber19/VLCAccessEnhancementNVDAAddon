@@ -70,7 +70,6 @@ class MainWindow (object):
 	
 	@property
 	def topNVDAObject(self):
-		printDebug ("topNVDAObject")
 		if hasattr(self, "_topNVDAObject"):
 			return self._topNVDAObject
 		printDebug ("topNVDAObject init")
@@ -91,30 +90,6 @@ class MainWindow (object):
 		printDebug ("topNVDAObject not found")
 		return None
 
-
-	
-	@classmethod
-	def inVlcMainWindow(cls, obj):
-		try:
-			o = obj.IAccessibleObject
-		except:
-			log.debugWarning("MainWindow: inVlcMainWindow: no IAccessible object")
-			return False
-		desktopName = api.getDesktopObject().name
-		while o:
-			try:
-				name = o.accName(0)
-				if name and name == api.getDesktopObject().name: break
-				if o.accRole(0) == oleacc.ROLE_SYSTEM_WINDOW:
-					if vlc_strings.getString(vlc_strings.ID_VLCAppTitle) in name or name == "vlc":
-						return True
-			except:
-				pass
-			try:
-				o = o.accParent
-			except:
-				o = None
-		return False
 
 	def getStatusBar(self):
 		try:
@@ -776,6 +751,7 @@ class ControlPanel(object):
 			o= oDeb.accChild(i)
 			i= i+1
 			if o and o.accRole(0) ==oleacc.ROLE_SYSTEM_CHECKBUTTON and vlc_strings.getString(vlc_strings.ID_RandomCheckButtonDescription) in o.accDescription(0):
+				print ("state: %s"%o.accState(0))
 				return True if o.accState(0)  & oleacc.STATE_SYSTEM_CHECKED else False
 				log.warning("random checkButton not found")
 		return False
@@ -791,21 +767,23 @@ class ControlPanel(object):
 				or role ==oleacc.ROLE_SYSTEM_PUSHBUTTON and vlc_strings.getString(vlc_strings.ID_PauseThePlaybackButtonDescription ) in o.accDescription(0)):
 					return o
 		return None
-	
+		
 	def clickPlayPauseButton(self):
-		button = self.getPlayPauseButton()
-		if button is None: return
-		name = button.name
-		self.clickButton(button)
-		# verify if it is done: after click name has changed
-		if button.name == name: return
+		oIA = self.getPlayPauseButton()
+		if oIA is None: return
+		name = oIA.accName(0)
+		left,top,width,height = oIA.accLocation(0)
+		leftClick (left+int(width/2),top+int(height/2))
+		# verify if it is done
+		if oIA.accName(0) == name: return
 		#no, so try other thing
 		oldSpeechMode = speech.speechMode
 		speech.speechMode = speech.speechMode_off
 		keyboardHandler.KeyboardInputGesture.fromName("space").send()
 		time.sleep(0.1)
 		api.processPendingEvents()
-		speech.speechMode= oldSpeechMode	
+		speech.speechMode= oldSpeechMode
+	
 	def clickButton(self, button):
 		printDebug ("ControlPanel: clickButton")
 		left,top,width,height = button.location
@@ -842,6 +820,8 @@ class ControlPanel(object):
 	def moveToControl(self, next = True):
 		controls = self.controls
 		if len(controls) == 1:
+			self.refreshControls()
+		if len(controls) == 1:
 			#TRANSLATORS: Message when there are no controls visible on screen, or the addon can't find them.
 			ui.message(_("There are no controls available"))
 			return None
@@ -858,6 +838,15 @@ class ControlPanel(object):
 		api.setMouseObject(control)
 		speech.speakObject(control)
 		self.curControlIndex = index
+
+	def reportCurrentControl(self):
+		if self.curControlIndex == 0: return
+		controls = self.controls
+		if len(controls) == 1: return
+		control = controls[self.curControlIndex]
+		# Translators: message to user to report navigator object in control panel.
+		wx.CallLater(100,speech.speakMessage, _("Control Panel"))
+		wx.CallLater(110, speech.speakObject, control)
 		
 class Menubar(object):
 	def __init__(self, mainWindow):
@@ -906,7 +895,11 @@ class Playlist(object):
 	@classmethod
 	def getPlaylistID(cls, oIA):
 		if  not cls.isAPlaylist(oIA): return ID_NoPlaylist 
-		(parent, childID) = accParent(oIA, 0)
+		try:
+			(parent, childID) = accParent(oIA, 0)
+		except:
+			return ID_NoPlaylist 
+
 		if  parent and parent.accRole(0) == oleacc.ROLE_SYSTEM_WINDOW:
 			# embedded window playlist
 			id = ID_EmbeddedPlaylist
@@ -914,28 +907,6 @@ class Playlist(object):
 			#anchored playlist
 			id = ID_AnchoredPlaylist
 		return id
-	
-	@classmethod
-	def isInPlaylist(cls, obj):
-		"""
-		parent = obj.parent
-		if hasattr(parent, "playlist"):
-			obj.playlist = parent.playlist
-			return obj.playlist
-		"""
-		if controlTypes.STATE_INVISIBLE in obj.states:
-			return ID_NoPlaylist
-		o = obj.IAccessibleObject
-		while o:
-			ret = cls.getPlaylistID(o)
-			if ret:
-				obj.playlist = ret
-				return ret
-			try:
-				o = o.accParent
-			except:
-				o = None
-		return ID_NoPlaylist 
 		
 		
 	def getGroupButtonName(self):
@@ -961,17 +932,16 @@ class AnchoredPlaylist(Playlist):
 		self.mainPanel = mainPanel
 	@property
 	def  NVDAObject(self):
-		if hasattr(self, "_NVDAObject"):
-			return self._NVDAObject		
 		if self.mainPanel.NVDAObject:
 			try:
-				self._NVDAObject =  self.mainPanel.NVDAObject.getChild(1).getChild(2)
-				return self._NVDAObject
+				NVDAObject =  self.mainPanel.NVDAObject.getChild(1).getChild(2)
+				return NVDAObject
 			except:
 				pass
 		return None
 
 	def isVisible(self):
+		print ("nvdaobject: %s"%self.NVDAObject)
 		if self.NVDAObject  is None: return False
 		if controlTypes.STATE_INVISIBLE in self.NVDAObject.states:
 			return False

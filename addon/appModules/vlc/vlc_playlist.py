@@ -81,8 +81,10 @@ def _getActiveChild(obj):
 	step= 1
 	if obj.role == controlTypes.ROLE_TREEVIEW:
 		step= getColumnHeaderCount(oIA)
+		if step >1 and obj.childCount > 20000:
+			speech.speakMessage(_("Please wait"))
 	for i in rangeGen(0, obj.childCount, step):
-		if i >20000 and obj.role == controlTypes.ROLE_TREEVIEW: break
+		if i >20000 and obj.role in [controlTypes.ROLE_TREEVIEW, controlTypes.ROLE_LIST]: break
 		oldChild = child
 		child = oIA.accChild(i+1)
 		# my modification to remove an NVDA error
@@ -113,6 +115,9 @@ class InAnchoredPlaylist(InPlaylist):
 		self.inAnchoredPlaylist = True
 		self.playlistSpoken = False
 	
+	def _get_activeChild(self):
+		printDebug ("InAnchoredPlaylist: _get_activeChild")
+		return _getActiveChild(self)
 	def event_gainFocus(self):
 		printDebug ("InAnchoredPlaylist: event_gainFocus: %s, isFocusable: %s, "%(controlTypes.roleLabels[self.role], self.isFocusable))
 		# speak anchored playlist  name if it's  first event_gainFocus  in anchored playlist
@@ -142,13 +147,21 @@ class InEmbeddedPlaylist(InPlaylist):
 
 
 class VLCQTContainer(qt.Container):
+	def event_gainFocus(self):
+		printDebug ("VLCQTContainer: event_gainFocus")
+		super(VLCQTContainer, self).event_gainFocus()
 	def _get_activeChild(self):
 		return _getActiveChild(self)
 	def _get_shouldAllowIAccessibleFocusEvent(self):
+		printDebug ("VLCQTContainer: _get_shouldAllowIAccessibleFocusEvent")
 		ret = super(VLCQTContainer, self)._get_shouldAllowIAccessibleFocusEvent()
 		if not ret :
 			# we don't where is the focus, so return to the top of tree view
-			wx.CallLater(400, keyboardHandler.KeyboardInputGesture.fromName("home").send)
+			def moveUpAndDown():
+				keyboardHandler.KeyboardInputGesture.fromName("upArrow").send()
+				speech.cancelSpeech()
+				keyboardHandler.KeyboardInputGesture.fromName("downArrow").send()
+			wx.CallLater(300, moveUpAndDown)
 
 		return ret
 class VLCAnchoredPlaylistTreeView(InAnchoredPlaylist, VLCQTContainer):
@@ -174,6 +187,7 @@ class VLCEmbeddedPlaylistTreeViewItem(InEmbeddedPlaylist, VLCTreeViewItem):
 class VLCListItem(IAccessible):
 	def script_nextItem(self, gesture):
 		self.selectItem(self.simpleNext)
+	
 	def script_previousItem(self, gesture):
 		self.selectItem(self.simplePrevious)
 
@@ -194,7 +208,6 @@ class VLCListItem(IAccessible):
 				if item.name: ui.message(item.name)
 			else:
 				pass
-
 
 
 	__gestures = {
@@ -219,11 +232,8 @@ class VLCGroupTreeViewItem(qt.TreeViewItem):
 		self.playlist.reportGroupButtonName()
 		
 	def script_selectionChange(self, gesture):
-		#gesture.send()
 		queueHandler.queueFunction(queueHandler.eventQueue,  gesture.send)
-		#wx.CallLater(50,  keyboardHandler.KeyboardInputGesture.fromName("Enter").send)
 		queueHandler.queueFunction(queueHandler.eventQueue,  keyboardHandler.KeyboardInputGesture.fromName("Enter").send)
-
 
 
 		
