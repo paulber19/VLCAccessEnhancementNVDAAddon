@@ -41,14 +41,12 @@ import sys
 debugToolsPath = os.path.join(_curAddon.path, "debugTools")
 sys.path.append(debugToolsPath)
 try:
-	from debug import printDebug, toggleDebugFlag
-except ImportError:
-	def prindDebug(msg): return
-	def toggleDebugFlag(): return
-try:
 	from appModuleDebug import AppModuleDebug as AppModule
+	from appModuleDebug import printDebug, toggleDebugFlag
 except ImportError:
 	from appModuleHandler import AppModule as AppModule
+	def prindDebug(msg): return
+	def toggleDebugFlag(): return
 del sys.path[-1]
 sharedPath = os.path.join(_curAddon.path, "shared")
 sys.path.append(sharedPath)
@@ -816,7 +814,7 @@ class AppModule(AppModule):
 		
 	def __init__(self, *args, **kwargs):
 		super(AppModule, self).__init__(*args, **kwargs)
-		toggleDebugFlag()
+#		toggleDebugFlag()
 		self.chooseNVDAObjectOverlayClassesDisabled = False
 		self.hasFocus = False
 		self.lastFocusedObject = None

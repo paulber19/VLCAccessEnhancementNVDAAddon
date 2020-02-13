@@ -39,14 +39,10 @@ import sys
 debugToolsPath = os.path.join(_curAddon.path, "debugTools")
 sys.path.append(debugToolsPath)
 try:
-	from debug import printDebug, toggleDebugFlag
+	from appModuleDebug import printDebug, toggleDebugFlag
 except ImportError:
 	def prindDebug(msg): return
 	def toggleDebugFlag(): return
-try:
-	from appModuleDebug import AppModuleDebug as AppModule
-except ImportError:
-	from appModuleHandler import AppModule as AppModule
 del sys.path[-1]
 sharedPath = os.path.join(_curAddon.path, "shared")
 sys.path.append(sharedPath)

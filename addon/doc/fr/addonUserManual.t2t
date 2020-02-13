@@ -234,6 +234,11 @@ Le bouton "Rechercher une mise à jour" placé dans les paramètres de l'extensi
 
 
 + Historique +
+++ Version 2.0.1 (09/13/2020) ++
+- correction de la non présentation du message  demandant à l'utilisateur d'arrêter VLC.
+- suppression d'instructions de trace.
+
+
 ++ Version 2.0 (07/02/2020) ++
 - Compatibilité avec NVDA 2019.3
 - ajout de la mise à jour automatique de l'extension

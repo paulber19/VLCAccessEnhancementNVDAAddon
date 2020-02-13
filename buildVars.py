@@ -40,7 +40,7 @@ Compatible with VLC 3.0.
 """),
 
 	# version
-	"addon_version" : "2.0",
+	"addon_version" : "2.0.1",
 	# Author(s)
 	"addon_author" : "PaulBer19",
 	# URL for the add-on documentation support

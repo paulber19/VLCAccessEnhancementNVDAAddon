@@ -1,6 +1,6 @@
 % NOTHING TO TRANSLATE
 % -----
-%!PostProc (html):ADDON_VERSION 2.0
+%!PostProc (html):ADDON_VERSION 2.0.1
 %!PostProc (html):MINIMUM_NVDA_VERSION  2019.1
 %!PostProc (html):LAST_TESTED_NVDA_VERSION  2019.3
 %!PreProc:ADDON_DOWNLOAD_SERVER1 http://angouleme.avh.asso.fr/fichesinfo/fiches_nvda/data/VLCAccessEnhancement-2.0.nvda-addon

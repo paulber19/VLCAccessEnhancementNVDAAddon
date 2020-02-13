@@ -33,7 +33,7 @@ import sys
 debugToolsPath = os.path.join(_curAddon.path, "debugTools")
 sys.path.append(debugToolsPath)
 try:
-	from debug import printDebug
+	from appModuleDebug import printDebug
 except ImportError:
 	def printDebug (msg): return
 del sys.path[-1]
@@ -751,7 +751,6 @@ class ControlPanel(object):
 			o= oDeb.accChild(i)
 			i= i+1
 			if o and o.accRole(0) ==oleacc.ROLE_SYSTEM_CHECKBUTTON and vlc_strings.getString(vlc_strings.ID_RandomCheckButtonDescription) in o.accDescription(0):
-				print ("state: %s"%o.accState(0))
 				return True if o.accState(0)  & oleacc.STATE_SYSTEM_CHECKED else False
 				log.warning("random checkButton not found")
 		return False
@@ -941,7 +940,6 @@ class AnchoredPlaylist(Playlist):
 		return None
 
 	def isVisible(self):
-		print ("nvdaobject: %s"%self.NVDAObject)
 		if self.NVDAObject  is None: return False
 		if controlTypes.STATE_INVISIBLE in self.NVDAObject.states:
 			return False

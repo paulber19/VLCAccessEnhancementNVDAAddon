@@ -28,7 +28,7 @@ except ImportError:
 del sys.path[-1]
 from vlc_localeSettingsHandler import LocaleSettings
 from vlc_special import makeAddonWindowTitle, messageBox
-from vlc_py3Compatibility import urllib_unquote
+from vlc_py3Compatibility import py3, urllib_unquote
 
 
 _defaultVlcKeysAssignment  =  {
@@ -241,9 +241,10 @@ class VLCSettings(object):
 		from subprocess import check_output
 		c = ["tasklist","/v"]
 		p = check_output(c).strip()
-		l = str(p).split(r"\r\n")
-		#rp = os.popen('tasklist /v').read().strip().split('\n')
-		#for process in rp:
+		if py3:
+			l = str(p).split(r"\r\n")
+		else:
+			l = str(p).split("\r\n")
 		for process in l:
 			if name == process[: len(name)]:
 				return True

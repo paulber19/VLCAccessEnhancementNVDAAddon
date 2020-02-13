@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: VLCAccessEnhancement 2.0\n"
+"Project-Id-Version: VLCAccessEnhancement 2.0.1\n"
 "Report-Msgid-Bugs-To: nvda-translations@freelists.org\n"
-"POT-Creation-Date: 2020-02-07 12:43+0100\n"
+"POT-Creation-Date: 2020-02-13 14:57+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -94,12 +94,12 @@ msgid "Pause"
 msgstr ""
 
 #. Translators: message to user to report menubar is not visible
-#: appModules\vlc\vlc_application.py:187 appModules\vlc\__init__.py:536
+#: appModules\vlc\vlc_application.py:187 appModules\vlc\__init__.py:534
 msgid "Menu bar is hidden"
 msgstr ""
 
 #. Translators: message to the user to say there is no media.
-#: appModules\vlc\vlc_application.py:200 appModules\vlc\__init__.py:255
+#: appModules\vlc\vlc_application.py:200 appModules\vlc\__init__.py:253
 msgid "No media"
 msgstr ""
 
@@ -122,20 +122,20 @@ msgstr ""
 
 #. Translators: remaing time is unknow.
 #. Translators: media duration is unknown.
-#: appModules\vlc\vlc_application.py:266 appModules\vlc\__init__.py:276
+#: appModules\vlc\vlc_application.py:266 appModules\vlc\__init__.py:274
 msgid "unknown"
 msgstr ""
 
 #. Translators: message to the user to report  volume level.
-#: appModules\vlc\vlc_application.py:298 appModules\vlc\__init__.py:382
+#: appModules\vlc\vlc_application.py:298 appModules\vlc\__init__.py:380
 #, python-format
 msgid "Volume: %s"
 msgstr ""
 
 #. Translators: message to the user to say volume is muted.
 #. Translators: message To  the user to report volume is muted.
-#: appModules\vlc\vlc_application.py:301 appModules\vlc\__init__.py:385
-#: appModules\vlc\__init__.py:396
+#: appModules\vlc\vlc_application.py:301 appModules\vlc\__init__.py:383
+#: appModules\vlc\__init__.py:394
 msgid "Volume mute"
 msgstr ""
 
@@ -189,20 +189,20 @@ msgid "Jump is not possible"
 msgstr ""
 
 #. TRANSLATORS: Message when there are no controls visible on screen, or the addon can't find them.
-#: appModules\vlc\vlc_application.py:826
+#: appModules\vlc\vlc_application.py:825
 msgid "There are no controls available"
 msgstr ""
 
 #. Translators: message to user to report navigator object in control panel.
-#: appModules\vlc\vlc_application.py:836 appModules\vlc\vlc_application.py:848
+#: appModules\vlc\vlc_application.py:835 appModules\vlc\vlc_application.py:847
 msgid "Control Panel"
 msgstr ""
 
-#: appModules\vlc\vlc_application.py:955
+#: appModules\vlc\vlc_application.py:953
 msgid "Anchored playlist shown"
 msgstr ""
 
-#: appModules\vlc\vlc_application.py:957
+#: appModules\vlc\vlc_application.py:955
 msgid "Anchored playlist hidden"
 msgstr ""
 
@@ -242,12 +242,12 @@ msgid "&Cancel"
 msgstr ""
 
 #. Translators: message to the user.
-#: appModules\vlc\vlc_playlist.py:85 shared\vlc_settingsHandler.py:456
+#: appModules\vlc\vlc_playlist.py:81 shared\vlc_settingsHandler.py:457
 msgid "Please wait"
 msgstr ""
 
 #. Translators: name of anchored playlist panel.
-#: appModules\vlc\vlc_playlist.py:227
+#: appModules\vlc\vlc_playlist.py:223
 msgid "Anchored playlist"
 msgstr ""
 
@@ -287,150 +287,150 @@ msgid "SpecialAlphanumericCharactersInYourLanguage"
 msgstr ""
 
 #. Translators: Input help mode message for  report elapsed time command.
-#: appModules\vlc\__init__.py:265
+#: appModules\vlc\__init__.py:263
 msgid "Report media's played duration"
 msgstr ""
 
 #. Translators: message to the user to report media duration.
-#: appModules\vlc\__init__.py:271 appModules\vlc\__init__.py:350
+#: appModules\vlc\__init__.py:269 appModules\vlc\__init__.py:348
 #, python-format
 msgid "Media duration %s"
 msgstr ""
 
 #. Translators: Input help mode message for report total time command.
-#: appModules\vlc\__init__.py:282
+#: appModules\vlc\__init__.py:280
 msgid "Report media's totalduration"
 msgstr ""
 
 #. Translators: Input help mode message for  report remaining time command.
-#: appModules\vlc\__init__.py:291
+#: appModules\vlc\__init__.py:289
 msgid "Report media's remaining durationto be played"
 msgstr ""
 
 #. Translators:  part of message to report speed.
-#: appModules\vlc\__init__.py:301
+#: appModules\vlc\__init__.py:299
 msgid "Current speed "
 msgstr ""
 
 #. Translators: Input help mode message for  report current speed command.
-#: appModules\vlc\__init__.py:303
+#: appModules\vlc\__init__.py:301
 msgid "Report current speed"
 msgstr ""
 
 #. Translators: part of message to report speed.
-#: appModules\vlc\__init__.py:317
+#: appModules\vlc\__init__.py:315
 msgid "Back to normal speed"
 msgstr ""
 
 #. Translators: Input help mode message for  go to time command.
-#: appModules\vlc\__init__.py:330
+#: appModules\vlc\__init__.py:328
 msgid ""
 "Display the dialog to set a time and move the playback cursor to this time"
 msgstr ""
 
 #. Translators: message to the user to say  time jump is not possible.
-#: appModules\vlc\__init__.py:343
+#: appModules\vlc\__init__.py:341
 msgid "Not available, jump is too big "
 msgstr ""
 
 #. Translators: message to the user to report volume is not muted.
-#: appModules\vlc\__init__.py:399
+#: appModules\vlc\__init__.py:397
 msgid "volume unmuted"
 msgstr ""
 
 #. Translators: message to the user to say the media is stopped.
-#: appModules\vlc\__init__.py:412
+#: appModules\vlc\__init__.py:410
 msgid "Media stopped"
 msgstr ""
 
 #. Translators: title of script gesture help.
-#: appModules\vlc\__init__.py:436
+#: appModules\vlc\__init__.py:434
 msgid "Add-on's Input gestures:"
 msgstr ""
 
 #. Translators: title of main window shortcut help window.
-#: appModules\vlc\__init__.py:447
+#: appModules\vlc\__init__.py:445
 msgid "main window help"
 msgstr ""
 
 #. Translators: message to user to say media cannot be played.
-#: appModules\vlc\__init__.py:460
+#: appModules\vlc\__init__.py:458
 msgid "Not available, the media don't be played"
 msgstr ""
 
 #. Translators: message to user to say the resume playback time.
-#: appModules\vlc\__init__.py:465
+#: appModules\vlc\__init__.py:463
 msgid "Playback of {0} file  will be resume at {1}"
 msgstr ""
 
 #. Translators: message to user : not available for this media
-#: appModules\vlc\__init__.py:473
+#: appModules\vlc\__init__.py:471
 msgid "No available for this media"
 msgstr ""
 
 #. Translators: Input help mode message for  record resume file command.
-#: appModules\vlc\__init__.py:478
+#: appModules\vlc\__init__.py:476
 msgid "Record current playing position for this media"
 msgstr ""
 
 #. Translators:  message to ask the user if he want to resume playback.
-#: appModules\vlc\__init__.py:485
+#: appModules\vlc\__init__.py:483
 #, python-format
 msgid "Do you want to resume Playback at %s"
 msgstr ""
 
 #. Translators: title of message box.
 #. Translators: title of message box
-#: appModules\vlc\__init__.py:487
+#: appModules\vlc\__init__.py:485
 #: globalPlugins\vlcAccessEnhancement\vlc_configGui.py:130
 #: shared\vlc_addonConfig.py:160
 msgid "Confirmation"
 msgstr ""
 
 #. Translators: message to user to say  no resume time for this media
-#: appModules\vlc\__init__.py:505
+#: appModules\vlc\__init__.py:503
 msgid "No resume time for this media"
 msgstr ""
 
 #. Translators: Input help mode message for  resume playback command.
-#: appModules\vlc\__init__.py:509
+#: appModules\vlc\__init__.py:507
 msgid "Resume playback at position recoreded for this media"
 msgstr ""
 
-#: appModules\vlc\__init__.py:527
+#: appModules\vlc\__init__.py:525
 msgid "Restart interrupted playback at position recorded by VLC"
 msgstr ""
 
-#: appModules\vlc\__init__.py:534
+#: appModules\vlc\__init__.py:532
 msgid "Menu bar is shown"
 msgstr ""
 
-#: appModules\vlc\__init__.py:569
+#: appModules\vlc\__init__.py:567
 msgid "Toggle automatic volume level report option"
 msgstr ""
 
-#: appModules\vlc\__init__.py:574
+#: appModules\vlc\__init__.py:572
 msgid "Toggle automatic elapsed time report option"
 msgstr ""
 
-#: appModules\vlc\__init__.py:584
+#: appModules\vlc\__init__.py:582
 msgid "Playlist closed"
 msgstr ""
 
-#: appModules\vlc\__init__.py:625
+#: appModules\vlc\__init__.py:623
 msgid "unchecked"
 msgstr ""
 
-#: appModules\vlc\__init__.py:678
+#: appModules\vlc\__init__.py:676
 msgid "Main Panel"
 msgstr ""
 
-#: appModules\vlc\__init__.py:720
+#: appModules\vlc\__init__.py:718
 msgid "None"
 msgstr ""
 
 #. Translators: Input help mode message for hot key help command.
-#: appModules\vlc\__init__.py:1153
+#: appModules\vlc\__init__.py:1151
 msgid "Display add-on's help"
 msgstr ""
 
@@ -712,24 +712,24 @@ msgid "Leave full screen"
 msgstr ""
 
 #. Translators:  message to inform the user  than VLC is running.
-#: shared\vlc_settingsHandler.py:255
+#: shared\vlc_settingsHandler.py:256
 msgid "You must stop VLC application before delete configuration folder"
 msgstr ""
 
 #. Translators: title of message box.
-#: shared\vlc_settingsHandler.py:257 shared\vlc_settingsHandler.py:264
-#: shared\vlc_settingsHandler.py:433 shared\vlc_settingsHandler.py:440
-#: shared\vlc_settingsHandler.py:448
+#: shared\vlc_settingsHandler.py:258 shared\vlc_settingsHandler.py:265
+#: shared\vlc_settingsHandler.py:434 shared\vlc_settingsHandler.py:441
+#: shared\vlc_settingsHandler.py:449
 msgid "Warning"
 msgstr ""
 
 #. Translators:  message to inform the user  than VLC is not initialized.
-#: shared\vlc_settingsHandler.py:262 shared\vlc_settingsHandler.py:438
+#: shared\vlc_settingsHandler.py:263 shared\vlc_settingsHandler.py:439
 msgid "Impossible, VLC application is not installed or initialized"
 msgstr ""
 
 #. Translators:  message to inform the user  that VLC configuration folder has been deleted"),
-#: shared\vlc_settingsHandler.py:276
+#: shared\vlc_settingsHandler.py:277
 #, python-format
 msgid ""
 "VLC configuration folder (%s) has been deleted. Before modify VLC shortcuts, "
@@ -737,61 +737,61 @@ msgid ""
 msgstr ""
 
 #. Translators: title of message box.
-#: shared\vlc_settingsHandler.py:278 shared\vlc_settingsHandler.py:463
-#: shared\vlc_settingsHandler.py:492
+#: shared\vlc_settingsHandler.py:279 shared\vlc_settingsHandler.py:464
+#: shared\vlc_settingsHandler.py:493
 msgid "Information"
 msgstr ""
 
 #. Translators:  message to inform the user  that VLC configuration folder cannot be deleted.
-#: shared\vlc_settingsHandler.py:282
+#: shared\vlc_settingsHandler.py:283
 #, python-format
 msgid "VLC configuration folder \"%s\" cannot be deleted"
 msgstr ""
 
 #. Translators: title of message box.
-#: shared\vlc_settingsHandler.py:284
+#: shared\vlc_settingsHandler.py:285
 msgid "Error"
 msgstr ""
 
 #. Translators:  message to inform the user  than VLC is running.
-#: shared\vlc_settingsHandler.py:431
+#: shared\vlc_settingsHandler.py:432
 msgid "You must stop VLC application before modify   VLC configuration file"
 msgstr ""
 
 #. Translators:  message to inform the user  than VLC is not initialized.
-#: shared\vlc_settingsHandler.py:446
+#: shared\vlc_settingsHandler.py:447
 msgid "Error, VLC configuration is not found"
 msgstr ""
 
 #. no vlcrc modification
 #. Translators:  message to inform the user  than there is no  VLC keys to modify.
-#: shared\vlc_settingsHandler.py:461
+#: shared\vlc_settingsHandler.py:462
 msgid "There is no key modification to do"
 msgstr ""
 
 #. Translators:  message to ask the user if he  accepts the update.
-#: shared\vlc_settingsHandler.py:471
+#: shared\vlc_settingsHandler.py:472
 msgid "Are you OK?"
 msgstr ""
 
 #. Translators: title of message box.
-#: shared\vlc_settingsHandler.py:473
+#: shared\vlc_settingsHandler.py:474
 #, python-format
 msgid "%s add-on - Confirmation"
 msgstr ""
 
 #. Translators:  message to inform the user  than olcrc file has been updated.
-#: shared\vlc_settingsHandler.py:490
+#: shared\vlc_settingsHandler.py:491
 msgid "VLC configuration file has been  updated"
 msgstr ""
 
 #. Translators: message to the user.
-#: shared\vlc_settingsHandler.py:533
+#: shared\vlc_settingsHandler.py:534
 msgid ""
 "The VLC command keys which will be record in the VLC configuration file are:"
 msgstr ""
 
-#: shared\vlc_settingsHandler.py:546
+#: shared\vlc_settingsHandler.py:547
 msgid "VLC command's keys:"
 msgstr ""
 
