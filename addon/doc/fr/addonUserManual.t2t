@@ -234,7 +234,10 @@ Le bouton "Rechercher une mise à jour" placé dans les paramètres de l'extensi
 
 
 + Historique +
-++ Version 2.0.1 (09/13/2020) ++
+++ Version 2.0.2 (14/02/2020) ++
+Correction du lien de téléchargement de l'extension.
+
+++ Version 2.0.1 (09/02/2020) ++
 - correction de la non présentation du message  demandant à l'utilisateur d'arrêter VLC.
 - suppression d'instructions de trace.
 
