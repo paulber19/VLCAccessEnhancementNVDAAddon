@@ -8,7 +8,7 @@
 	* Download [developpement version][3]
 * Compatibility:
 	* Minimum required NVDA version:  2019.1
-	* Last NVDA version tested:  2019.3
+	* Last NVDA version tested:  2020.1
 
 
 This addon adds a variety of commands to enhance accessibility in playing media:
@@ -36,6 +36,6 @@ Compatible with VLC 3.0.
 
 
 [1]: http://angouleme.avh.asso.fr/fichesinfo/fiches_nvda/data/VLCAccessEnhancement-2.0.nvda-addon
-[2]: https://github.com/paulber007/AllMyNVDAAddons/raw/master/VLC/VLCAccessEnhancement-2.0.nvda-addon
+[2]: https://github.com/paulber007/AllMyNVDAAddons/raw/master/VLC/VLCAccessEnhancement-2.1.nvda-addon
 
 [3]:https://github.com/paulber007/AllMyNVDAAddons/tree/master/vlcAccessEnhancement/dev
