@@ -234,6 +234,15 @@ The button "Search for update" placed in the extension settings, sub-menu "updat
 
 
 + History + 
+++ Version 2.1.1 (03/04/2020) ++
+updating of    history of add-on's changes.
+
+
+++ Version 2.1 (03/04/2020) ++
+- compatibility with NVDA 2020.1,
+- compliance for NVDA extension compatibility test
+
+
 ++ Version 2.0.2 (14/02/2020) ++
 Fixed extension download link.
 
