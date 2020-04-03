@@ -234,6 +234,11 @@ Le bouton "Rechercher une mise à jour" placé dans les paramètres de l'extensi
 
 
 + Historique +
+++ Version 2.1 (03/04/2020) ++
+- mise en compatibilité avec NVDA 2020.1,
+- mise en conformité avec NVDA pour le test de compatibilité des extensions avec NVDA.
+
+
 ++ Version 2.0.2 (14/02/2020) ++
 Correction du lien de téléchargement de l'extension.
 
