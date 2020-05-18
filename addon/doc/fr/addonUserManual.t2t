@@ -234,6 +234,11 @@ Le bouton "Rechercher une mise à jour" placé dans les paramètres de l'extensi
 
 
 + Historique +
+++ Version 2.2 (18/05/2020) ++
+- correction  de la régression dans la reprise de la lecture d'un média.
+- mise en pause du média lors d'un saut   avant dans les 3 dernières secondes pour éviter l'arrêt du média par VLC.
+
+
 ++ Version 2.1.1 (03/04/2020) ++
 Correction de l'historique des changements de l'extension.
 

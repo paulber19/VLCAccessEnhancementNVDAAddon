@@ -212,10 +212,10 @@ jumpDelays = {
 		
 
 class VLCSettings(object):
-	def __init__(self, addon):
+	def __init__(self, addon = None):
 		printDebug ("VLCSettings __init__")
-		self.addon = addon
-		self.addonDir= addon.path
+		self.addon = addon if addon else addonHandler.getCodeAddon()
+		self.addonDir= self.addon.path
 		self.vlcSettingsDir = self.getVlcSettingsFolderPath()
 		if self.vlcInitialized:
 			printDebug ("VLCSettings: VLC initialized")
@@ -286,8 +286,8 @@ class VLCSettings(object):
 			messageBox(msg, makeAddonWindowTitle(dialogTitle),  wx.OK|wx.ICON_WARNING)
 
 class QTInterface (VLCSettings):
-	def __init__(self, addon):
-		super(QTInterface , self).__init__(addon)
+	def __init__(self):
+		super(QTInterface , self).__init__()
 		self._loadRecentFiles()
 	
 	def _loadRecentFiles(self):
@@ -322,8 +322,6 @@ class QTInterface (VLCSettings):
 				# for python 2
 				file = urllib_unquote(item.encode("utf-8"))
 				filesList.append(file.decode("utf-8"))
-
-		
 		if "times" in recents:
 			timesList = recents["times"]
 			if type(timesList) is not list:
@@ -332,22 +330,26 @@ class QTInterface (VLCSettings):
 			# error,
 			log.warning("Error: number of recent files  and time count are different")
 			return
+		self.firstRecentFile = None
 		for index in range(0, len(filesList)):
 			f =filesList[index]
 			if f[:5] != "file:":
 				continue
 			p = f[6:]
-			#p = p.replace("%20", " ")
-			p = p.split("/")[-1]
+			#p = p.split("/")[-1]
+
 			if p in self.recents:
 				continue
+			if index == 0:
+				# memorize first recent file (probably current file)
+				self.firstRecentFile = p
 			self.recents[p] = timesList[index]
 		return True
 
 class Vlcrc(VLCSettings):
-	def __init__(self, addon):
+	def __init__(self):
 		self.initialized = False
-		super(Vlcrc, self).__init__(addon)
+		super(Vlcrc, self).__init__()
 		# get addon settings
 		self.localeSettings = LocaleSettings()
 		self.vlcrcFile = None

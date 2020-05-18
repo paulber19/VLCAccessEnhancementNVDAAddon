@@ -230,6 +230,19 @@ El botón "Buscar actualización" situado en las opciones del complemento, subme
 
 
 + Historial +
+++ Versión 2.2 (18/05/2020) ++
+- corrección de la regresión en la reanudación de la reproducción de medios.
+- pausar los medios durante un salto hacia adelante en los últimos 3 segundos para evitar detener los medios mediante VLC.
+
+
+++ Versión 2.1.1 (03/04/2020) ++
+Se corrigió el historial de cambios de extensión.
+
+++ Versión 2.1 (03/04/2020) ++
+- compatibilidad con NVDA 2020.1,
+- cumplimiento de NVDA para la prueba de compatibilidad de extensiones con NVDA.
+
+
 ++ Version 2.0.2 (14/02/2020) ++
 Enlace de descarga de extensión fija.
 

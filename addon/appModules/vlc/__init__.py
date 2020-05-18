@@ -10,6 +10,7 @@ addonHandler.initTranslation()
 from logHandler import log
 import winUser
 import controlTypes
+import scriptHandler
 import textInfos
 import api
 import re
@@ -63,6 +64,9 @@ from . import vlc_application
 from .vlc_application import ID_NoPlaylist, ID_AnchoredPlaylist, ID_EmbeddedPlaylist
 from . import vlc_playlist
 _scriptCategory = _unicode(_curAddon.manifest['summary'])
+
+# timer for script
+_scriptTimer = None
 
 def sendGesture(gesture):
 	gesture.send()
@@ -332,7 +336,7 @@ class InVLCViewWindow(IAccessible):
 		(layout, identifier) = gesture._get_identifiers()
 		delay = self.appModule.jumpKeyToDelay[normalizeGestureIdentifier(identifier)]
 		totalTime = mainWindow.getTotalTime()
-		if totalTime is None: return
+		if totalTime is None: returnFalse
 		totalTimeList = getTimeList(totalTime)
 		totalTimeInSec = int(totalTimeList[0])*3600  + int(totalTimeList[1])*60 +int(totalTimeList[2])
 		currentTime = mainWindow.getCurrentTime()
@@ -341,30 +345,48 @@ class InVLCViewWindow(IAccessible):
 		msg = _("Not available, jump is too big ")
 		if delay >0:
 			diff = totalTimeInSec - curTimeInSec
-			if diff < abs(delay):
-				ui.message(msg)
+			if diff <= 3:
+				# to prevent vlc to stop media, we pause the media
+				isPlaying = mainWindow.isPlaying()
+				if isPlaying:
+					mainWindow.togglePlayOrPause()
+			
+			if diff <= 3 or diff < abs(delay):
+				queueHandler.queueFunction(queueHandler.eventQueue, ui.message, msg)
 				mainWindow.sayElapsedTime(True)
 				# Translators: message to the user to report media duration.
-				ui.message(_("Media duration %s") %formatTime(totalTime))
+				queueHandler.queueFunction(queueHandler.eventQueue, ui.message, _("Media duration %s") %formatTime(totalTime))
 				return True
-		
 		elif delay <0:
 			if curTimeInSec < abs(delay):
-				ui.message(msg)
+				queueHandler.queueFunction(queueHandler.eventQueue, ui.message, msg)
 				mainWindow.sayElapsedTime(True)
 				return True
-				return False
+		return False
 	
 	def script_jumpAndReportTime(self,gesture):
 		if self.hasNoMedia():
 			return
-		if self.isAJumpOutOfMedia(gesture):
-			return
+		def callback(gesture):
+			global _scriptTimer
+			_scriptTimer = None
+			if self.isAJumpOutOfMedia(gesture):
+				return
+			else:
+				sendGesture(gesture)
+				mainWindow = self.appModule.mainWindow
+				mainWindow.sayElapsedTime()
+		
+		global _scriptTimer
+		if _scriptTimer is not None:
+			_scriptTimer.Stop()
+			_scriptTimer = None
+		count = scriptHandler.getLastScriptRepeatCount()
+		if count:
+			_scriptTimer = wx.CallLater(20, callback, gesture)
 		else:
-			sendGesture(gesture)
-			mainWindow = self.appModule.mainWindow
-			mainWindow.sayElapsedTime()
-	
+			callback(gesture)
+			
 	def script_sayVolume(self, gesture):
 		printDebug ("InVLCViewWindow: sayVolume")
 		mainWindow = self.appModule.mainWindow
@@ -458,7 +480,7 @@ class InVLCViewWindow(IAccessible):
 				ui.message(_("Not available, the media don't be played"))
 				return
 			from  vlc_addonConfig import _addonConfigManager
-			if _addonConfigManager.recordFileToResume(mediaName, curTime):
+			if _addonConfigManager.recordFileToResume(curTime):
 				# Translators: message to user to say the resume playback time.
 				msg = _("Playback of {0} file  will be resume at {1}")
 				wx.CallLater(1500, ui.message, msg.format(mediaName, formatTime(":".join(curTime))))
@@ -493,11 +515,9 @@ class InVLCViewWindow(IAccessible):
 
 		if self.hasNoMedia():
 			return
-		mainWindow = self.appModule.mainWindow
-		mediaInfos= vlc_application.MediaInfos(mainWindow)
-		mediaName = mediaInfos.getName()
+		
 		from  vlc_addonConfig import _addonConfigManager
-		resumeTime = _addonConfigManager.getResumeFileTime(mediaName)
+		resumeTime = _addonConfigManager.getResumeFileTime()
 		if resumeTime == None or resumeTime == 0:
 			#Translators: message to user to say  no resume time for this media
 			ui.message(_("No resume time for this media"))
@@ -832,7 +852,7 @@ class AppModule(AppModule):
 			self.apiSetFocusObject = api.setFocusObject
 			api.setFocusObject = mySetFocusObject
 		if not hasattr(self, "vlcrcSettings "):
-			self.vlcrcSettings = Vlcrc(_curAddon)
+			self.vlcrcSettings = Vlcrc()
 		if self.vlcrcSettings .initialized:
 			vlc_strings.init()
 			self.initVLCGestures()

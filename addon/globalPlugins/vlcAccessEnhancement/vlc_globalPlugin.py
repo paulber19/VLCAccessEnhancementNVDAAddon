@@ -35,7 +35,7 @@ class VLCGlobalPlugin (globalPluginHandler.GlobalPlugin):
 	def __init__(self, *args, **kwargs):
 		super (VLCGlobalPlugin, self).__init__(*args, **kwargs)
 		self.createSubMenu ()
-		self.vlcrcSettings = vlc_settingsHandler.Vlcrc(_curAddon)
+		self.vlcrcSettings = vlc_settingsHandler.Vlcrc()
 		from . import updateHandler
 		vlc_addonConfig.initialize()
 		if vlc_addonConfig._addonConfigManager.getAutoUpdateCheck():

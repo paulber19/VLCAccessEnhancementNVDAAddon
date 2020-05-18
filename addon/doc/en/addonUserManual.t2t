@@ -234,6 +234,11 @@ The button "Search for update" placed in the extension settings, sub-menu "updat
 
 
 + History + 
+++ Version 2.2 (18/05/2020) ++
+- correction of the regression to   resume media playback.
+- pausing the media during a forward jump in the last 3 seconds to avoid stopping the media by VLC.
+
+
 ++ Version 2.1.1 (03/04/2020) ++
 updating of    history of add-on's changes.
 

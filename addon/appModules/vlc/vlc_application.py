@@ -249,7 +249,8 @@ class MainWindow (object):
 		if elapsedTime:
 			# Translators: message to the user to say played duration.
 			msg = _("Played duration %s") if forced else "%s"
-			ui.message(msg % formatTime(elapsedTime))
+			#ui.message(msg % formatTime(elapsedTime))
+			queueHandler.queueFunction(queueHandler.eventQueue, ui.message, msg % formatTime(elapsedTime))
 	
 	def sayRemainingTime(self):
 		if not self.hasMedia() :
@@ -546,8 +547,7 @@ class MediaInfos(object):
 		if self.statusBar is None: return ""
 		o = self.statusBar.getChild(1)
 		return o.name
-
-		
+	
 	def getTotalTime(self) :
 		# media total time is on forth childof status bar
 		try:

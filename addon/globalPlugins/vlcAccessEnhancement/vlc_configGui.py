@@ -120,7 +120,7 @@ class VLCConfigurationDialog (SettingsDialog):
 		self.modifyVLCShortcutsButton .SetFocus()
 	
 	def onModify(self, evt):
-		vlcrc = vlc_settingsHandler.Vlcrc(_curAddon)
+		vlcrc = vlc_settingsHandler.Vlcrc()
 		wx.CallLater(100, vlcrc.update)
 		self.Destroy()
 	def onDeleteVLCFolder(self, evt):

@@ -108,14 +108,13 @@ class AddonConfigManager(object):
 	
 	def _updateResumeFiles(self):
 		resumeFiles = self._conf[SCT_ResumeFiles]
-		QTI = QTInterface (self.addon)
+		QTI = QTInterface ()
 		fileList = []
-		for f in QTI.recents:
-			file = f.split("/")[-1]
-			fileList.append(file)
+
+		recents = QTI.recents
 		change = False
 		for f in resumeFiles:
-			if f in fileList:
+			if f in recents :
 				continue
 			del resumeFiles[f]
 			change = True
@@ -125,7 +124,7 @@ class AddonConfigManager(object):
 	def getAltRTime(self, mediaName):
 		#printDebug ("AddonConfigManager: getAltRTime mediaName = %s"%mediaName)
 		resumeFiles = self._conf[SCT_ResumeFiles]
-		QTI = QTInterface (self.addon)
+		QTI = QTInterface ()
 		try:
 			return QTI.recents[mediaName]
 		except:
@@ -150,10 +149,19 @@ class AddonConfigManager(object):
 			log.warning("Could not save configuration - probably read only file system")
 	
 	
-	def recordFileToResume(self, fileName, resumeTime):
-		if fileName in self._conf[SCT_ResumeFiles]:
-			curAddon = addonHandler.getCodeAddon()
-			
+	
+	def getFullFilePath(self):
+		# current full  file path is the first item in recent files
+		QTI = QTInterface ()
+		firstRecentFile = QTI.firstRecentFile
+		return firstRecentFile
+
+
+
+
+	def recordFileToResume(self, resumeTime):
+		currentFileName = self.getFullFilePath()
+		if currentFileName in self._conf[SCT_ResumeFiles]:
 			# Translators: Message shown to ask user  to modify resume time.
 			msg = _("Do you want to modify resume time for this media ?") 
 			# Translators: title of message box
@@ -161,14 +169,15 @@ class AddonConfigManager(object):
 			res = messageBox(msg, title, wx.OK|wx.CANCEL)
 			if res== wx.CANCEL:
 				return False
-		self._conf[SCT_ResumeFiles][fileName] = getTimeString(resumeTime)
+		self._conf[SCT_ResumeFiles][currentFileName] = getTimeString(resumeTime)
 		self.save()
 		return True
 		
-	def getResumeFileTime(self, fileName):
-		if not fileName in self._conf[SCT_ResumeFiles]:
+	def getResumeFileTime(self):
+		currentFileName = self.getFullFilePath()
+		if  currentFileName not in self._conf[SCT_ResumeFiles]:
 			return None
-		return self._conf[SCT_ResumeFiles][fileName]
+		return self._conf[SCT_ResumeFiles][currentFileName]
 	def toggleOption (self, sct, id, toggle = True):
 		conf = self._conf
 		if toggle:
