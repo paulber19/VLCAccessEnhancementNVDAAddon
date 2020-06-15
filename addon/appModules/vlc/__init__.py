@@ -66,7 +66,7 @@ from . import vlc_playlist
 _scriptCategory = _unicode(_curAddon.manifest['summary'])
 
 # timer for script
-_scriptTimer = None
+GB_scriptTimer = None
 
 def sendGesture(gesture):
 	gesture.send()
@@ -305,9 +305,9 @@ class InVLCViewWindow(IAccessible):
 	script_reportCurrentSpeed.__doc__ = _("Report current speed")
 	
 	def _setAndReportSpeed(self, gesture, msg = ""):
-		if self.hasNoMedia():
-			return
-		sendGesture(gesture)
+		if self.hasNoMedia(): return
+		#sendGesture(gesture)
+		gesture.send()
 		wx.CallAfter(speech.cancelSpeech)
 		wx.CallAfter(self.saySpeed,msg)
 	
@@ -336,7 +336,7 @@ class InVLCViewWindow(IAccessible):
 		(layout, identifier) = gesture._get_identifiers()
 		delay = self.appModule.jumpKeyToDelay[normalizeGestureIdentifier(identifier)]
 		totalTime = mainWindow.getTotalTime()
-		if totalTime is None: returnFalse
+		if totalTime is None: return False
 		totalTimeList = getTimeList(totalTime)
 		totalTimeInSec = int(totalTimeList[0])*3600  + int(totalTimeList[1])*60 +int(totalTimeList[2])
 		currentTime = mainWindow.getCurrentTime()
@@ -345,13 +345,14 @@ class InVLCViewWindow(IAccessible):
 		msg = _("Not available, jump is too big ")
 		if delay >0:
 			diff = totalTimeInSec - curTimeInSec
-			if diff <= 3:
+			pause = True if ((diff <= 10) or (diff >= delay and diff -delay <= 10)) else False
+			if pause:
 				# to prevent vlc to stop media, we pause the media
 				isPlaying = mainWindow.isPlaying()
 				if isPlaying:
 					mainWindow.togglePlayOrPause()
-			
-			if diff <= 3 or diff < abs(delay):
+					queueHandler.queueFunction(queueHandler.eventQueue, speech.speakMessage, _("Pause"))
+			if diff <= abs(delay):
 				queueHandler.queueFunction(queueHandler.eventQueue, ui.message, msg)
 				mainWindow.sayElapsedTime(True)
 				# Translators: message to the user to report media duration.
@@ -365,33 +366,38 @@ class InVLCViewWindow(IAccessible):
 		return False
 	
 	def script_jumpAndReportTime(self,gesture):
-		if self.hasNoMedia():
-			return
+		def callback1(gesture):
+			global GB_scriptTimer
+			GB_scriptTimer = None
+			# for unknown reason gesture.send call in this function cause error and NVDA stops speaking.
+			# but not if calback is put in queue.
+			queueHandler.queueFunction(queueHandler.eventQueue, callback, gesture)
+
+			
 		def callback(gesture):
-			global _scriptTimer
-			_scriptTimer = None
-			if self.isAJumpOutOfMedia(gesture):
-				return
-			else:
-				sendGesture(gesture)
-				mainWindow = self.appModule.mainWindow
-				mainWindow.sayElapsedTime()
+			global GB_scriptTimer
+			GB_scriptTimer = None
+			#if self.isAJumpOutOfMedia(gesture): return
+			gesture.send()
+			mainWindow = self.appModule.mainWindow
+			mainWindow.sayElapsedTime()
+
+
 		
-		global _scriptTimer
-		if _scriptTimer is not None:
-			_scriptTimer.Stop()
-			_scriptTimer = None
-		count = scriptHandler.getLastScriptRepeatCount()
-		if count:
-			_scriptTimer = wx.CallLater(20, callback, gesture)
-		else:
-			callback(gesture)
+		global GB_scriptTimer
+		if GB_scriptTimer is not None:
+			GB_scriptTimer.Stop()
+			GB_scriptTimer = None
+		if self.hasNoMedia(): return
+		if self.isAJumpOutOfMedia(gesture): return
+		GB_scriptTimer = wx.CallLater(80, callback1, gesture)
+
 			
 	def script_sayVolume(self, gesture):
 		printDebug ("InVLCViewWindow: sayVolume")
 		mainWindow = self.appModule.mainWindow
 		(oldMuteState, oldLevel) = mainWindow.getVolumeMuteStateAndLevel()
-		sendGesture(gesture)
+		gesture.send()
 		time.sleep(0.05)
 		from  vlc_addonConfig import _addonConfigManager
 		if not _addonConfigManager.getAutoVolumeLevelReportOption(): return
@@ -418,12 +424,12 @@ class InVLCViewWindow(IAccessible):
 				# Translators: message to the user to report volume is not muted.
 				speech.speakMessage( _("volume unmuted"))
 		
-		sendGesture(gesture)
+		gesture.send()
 		wx.CallAfter(callback)
 
 	
 	def script_stopMedia(self, gesture):
-		sendGesture(gesture)
+		gesture.send()
 		wx.CallAfter(speech.cancelSpeech)
 		mainWindow = self.appModule.mainWindow
 		if not mainWindow.hasMedia():
@@ -1083,7 +1089,10 @@ class AppModule(AppModule):
 		
 		# check if obj is in the playlist
 		#if self.checkIfInPlaylist(obj, clsList): return
-		self.getNewCls(obj, clsList)
+		try:
+			self.getNewCls(obj, clsList)
+		except:
+			pass  
 	
 	def event_typedCharacter(self,obj, nextHandler, ch):
 		printDebug ("appModule VLC: event_typedCharacter: role = %s, name = %s, ch = %s (%s)" %(controlTypes.roleLabels.get(obj.role), obj.name, ch, ord(ch)))
@@ -1173,6 +1182,3 @@ class AppModule(AppModule):
 	def script_test (self, gesture):
 		ui.message("test VLC")
 		print ("test VLC")
-
-
-

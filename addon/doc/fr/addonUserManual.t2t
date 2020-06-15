@@ -97,6 +97,8 @@ Pour ne pas gêner l'utilisateur, la  durée lue automatiquement  est vocalisée
 
 Un contrôle est fait pour empêcher un saut en dehors  des limites du média. Par exemple, il n'est pas possible de faire un saut de 5 minutes s'il ne reste que 2 minutes restantes à lire ou bien reculer de 10 secondes si la durée déjà lue est de 3 secondes.  
 
+Le média  est automatiquement mis en pause lorsque la durée restante à lire  après un saut est inférieure à 10 secondes,  ceci pour éviter l'arrêt du média par VLC et permettre de revenir en arrière si désiré.
+
 L'état "son coupé" est signalé lors  du lancement de la lecture.
 
 Le niveau du volume est annoncé à chaque modification.
@@ -234,9 +236,14 @@ Le bouton "Rechercher une mise à jour" placé dans les paramètres de l'extensi
 
 
 + Historique +
+
+++ Version 2.2.1 (15/06/2020) ++
+Correction du problème de l'arrêt de NVDA lors de l'avance rapide par petits sauts répétés.
+
+
 ++ Version 2.2 (18/05/2020) ++
 - correction  de la régression dans la reprise de la lecture d'un média.
-- mise en pause du média lors d'un saut   avant dans les 3 dernières secondes pour éviter l'arrêt du média par VLC.
+- mise en pause du média lors d'un saut   en avant dans les 10 dernières secondes pour éviter l'arrêt du média par VLC.
 
 
 ++ Version 2.1.1 (03/04/2020) ++

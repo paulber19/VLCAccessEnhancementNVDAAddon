@@ -97,6 +97,8 @@ So as not to disturb the user, the played time automatically is vocalized only w
 
 A control is done to prevent jumping outside of the boundaries of the media. For example, it is not possible to make a break of 5 minutes if he only stays 2 minutes remaining to play, or back 10 seconds if the term already read is 3 seconds. 
 
+The media is automatically paused when the time remaining to play after a jump is less than 10 seconds, this to avoid stopping the media by VLC and allow to go back if desired.
+
 The state "mute state" is mentioned at the launch of the reading. 
 
 The volume level is announced at each change. 
@@ -234,6 +236,9 @@ The button "Search for update" placed in the extension settings, sub-menu "updat
 
 
 + History + 
+++ Version 2.2.1 (15/06/2020) ++
+Fixed issue with NVDA stopping during fast forward by repeated small jumps.
+
 ++ Version 2.2 (18/05/2020) ++
 - correction of the regression to   resume media playback.
 - pausing the media during a forward jump in the last 3 seconds to avoid stopping the media by VLC.

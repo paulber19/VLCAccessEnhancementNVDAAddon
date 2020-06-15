@@ -302,11 +302,7 @@ class MainWindow (object):
 				ui.message(_("Volume mute"))
 	
 	def togglePlayOrPause(self):
-		isPlaying = self.isPlaying()
 		self.mainPanel.togglePlayPause()
-	
-	#def reportLoopStateChange(self):
-		#self.mainPanel.controlPanel.reportLoopStateChange()
 	
 	def reportLoopStateChange(self):
 		speech.cancelSpeech()
@@ -546,7 +542,7 @@ class MediaInfos(object):
 		# name of media is the second child of status bar
 		if self.statusBar is None: return ""
 		o = self.statusBar.getChild(1)
-		return o.name
+		return o.name if o is not None else ""
 	
 	def getTotalTime(self) :
 		# media total time is on forth childof status bar
@@ -713,6 +709,7 @@ class MainPanel(object):
 		return self.controlPanel.getRandomCheckButtonState()
 	def togglePlayPause(self):
 		self.controlPanel.clickPlayPauseButton()
+		
 if py3:
 	__filter_class__ = filter
 	def filter(*args):
