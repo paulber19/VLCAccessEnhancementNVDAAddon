@@ -8,7 +8,7 @@
 	* Télécharger [version de développement][3]
 * Compatibilité:
 	* Version minimum de NVDA requise: 2019.1
-	* Dernière version  de NVDA testée: 2020.1
+	* Dernière version  de NVDA testée: 2020.2
 
 
 Cette extension ajoute diverses commandes pour faciliter la lecture des médias:
@@ -35,7 +35,7 @@ La liste des commandes est obtenue par le geste de commande "Control + NVDA +h"
 Compatible avec VLC 3.0.
 
 
-[1]: http://angouleme.avh.asso.fr/fichesinfo/fiches_nvda/data/VLCAccessEnhancement-2.2.1.nvda-addon
-[2]: https://github.com/paulber007/AllMyNVDAAddons/raw/master/VLCAccessEnhancement/VLCAccessEnhancement-2.2.1.nvda-addon
+[1]: http://angouleme.avh.asso.fr/fichesinfo/fiches_nvda/data/VLCAccessEnhancement-2.3.nvda-addon
+[2]: https://github.com/paulber007/AllMyNVDAAddons/raw/master/VLCAccessEnhancement/VLCAccessEnhancement-2.3.nvda-addon
 
 [3]:https://github.com/paulber007/AllMyNVDAAddons/tree/master/VLCAccessEnhancement/dev

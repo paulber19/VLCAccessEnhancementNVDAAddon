@@ -8,7 +8,7 @@
 	* [versión de desarrollo][3]
 * Compatibilidad:
 	* Versión mínima de NVDA requerida: 2019.1
-	* Última versión de NVDA probada: 2020.1
+	* Última versión de NVDA probada: 2020.2
 
 
 Este complemento añade varias órdenes para facilitar la reproducción de medios:
@@ -36,7 +36,7 @@ Compatible con VLC 3.0.
 
 
 
-[1]: http://angouleme.avh.asso.fr/fichesinfo/fiches_nvda/data/VLCAccessEnhancement-2.2.1.nvda-addon
-[2]: https://github.com/paulber007/AllMyNVDAAddons/raw/master/VLCAccessEnhancement/VLCAccessEnhancement-2.2.1.nvda-addon
+[1]: http://angouleme.avh.asso.fr/fichesinfo/fiches_nvda/data/VLCAccessEnhancement-2.3.nvda-addon
+[2]: https://github.com/paulber007/AllMyNVDAAddons/raw/master/VLCAccessEnhancement/VLCAccessEnhancement-2.3.nvda-addon
 
 [3]:https://github.com/paulber007/AllMyNVDAAddons/tree/master/VLCAccessEnhancement/dev

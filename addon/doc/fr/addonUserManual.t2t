@@ -237,6 +237,9 @@ Le bouton "Rechercher une mise à jour" placé dans les paramètres de l'extensi
 
 + Historique +
 
+++ Version 2.3 (28/07/2020) ++
+Compatibilité avecNVDA 2020.2.
+
 ++ Version 2.2.1 (15/06/2020) ++
 Correction du problème de l'arrêt de NVDA lors de l'avance rapide par petits sauts répétés.
 
