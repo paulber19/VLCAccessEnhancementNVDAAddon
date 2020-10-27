@@ -1,14 +1,15 @@
 # -*- coding: UTF-8 -*-
-
+# appModules\vlc\vlc_qtEditableText.py
+# a part of VLCAccessEnhancement add-on
+# Copyright (C) 2018 Javi Dominguez <fjavids@gmail.com>
+# modified by paulber19 (2020)
+# This file is covered by the GNU General Public License.
+# See the file COPYING.txt for more details.
 # NVDA object class for editable text in QT interfaces
-#This file is covered by the GNU General Public License.
-#See the file COPYING.txt for more details.
-#Copyright (C) 2018 Javi Dominguez <fjavids@gmail.com>
+
 import addonHandler
-addonHandler.initTranslation()
 from NVDAObjects.behaviors import EditableTextWithAutoSelectDetection
 from string import printable, punctuation
-from keyboardHandler import KeyboardInputGesture
 from globalCommands import commands
 from locale import getdefaultlocale
 import scriptHandler
@@ -17,13 +18,15 @@ import config
 import speech
 import braille
 
+addonHandler.initTranslation()
+
 SpecialAlphanumeric = {
-"en": printable[:62],
-#"es": printable[:62]+u"·ÈÌÛ˙‡ËÏÚ˘‰ÎÔˆ¸‚ÍÓÙ˚ÒÁ¡…Õ”⁄¿»Ã“ŸƒÀœ÷‹¬ Œ‘€—«"
+	"en": printable[:62],
+	# "es": printable[:62]+u"·ÈÌÛ˙‡ËÏÚ˘‰ÎÔˆ¸‚ÍÓÙ˚ÒÁ¡…Õ”⁄¿»Ã“ŸƒÀœ÷‹¬ Œ‘€—«"
 }
 
-class QTEditableText(EditableTextWithAutoSelectDetection):
 
+class QTEditableText(EditableTextWithAutoSelectDetection):
 	def _get_language(self):
 		return getdefaultlocale()[0].split("_")[0]
 
@@ -32,22 +35,25 @@ class QTEditableText(EditableTextWithAutoSelectDetection):
 		self.fakeCaret = len(self.value)-1 if self.value else 0
 		self.startSelection = -1
 		self.typeBuffer = ""
-		self.alphanumeric = SpecialAlphanumeric[self.language] if self.language in SpecialAlphanumeric else SpecialAlphanumeric["en"]
+		self.alphanumeric = SpecialAlphanumeric[self.language]\
+			if self.language in SpecialAlphanumeric\
+			else SpecialAlphanumeric["en"]
 		self.sign = ""
 		for k in commands._gestureMap:
 			if commands._gestureMap[k].__name__ == "script_reportCurrentSelection":
 				self.bindGesture(k, "reportCurrentSelection")
+
 	def _get_name(self):
 		name = super(QTEditableText, self)._get_name()
-		if name is not None: return name
+		if name is not None:
+			return name
 		try:
 			previous = self.previous
-			if previous and previous.role in [controlTypes.ROLE_STATICTEXT,]:
+			if previous and previous.role in [controlTypes.ROLE_STATICTEXT, ]:
 				return previous.name
-		except:
+		except:  # noqa:E722
 			pass
 		return None
-
 
 	def event_gainFocus(self):
 		self.reportFocus()
@@ -60,16 +66,20 @@ class QTEditableText(EditableTextWithAutoSelectDetection):
 		if ch in self.alphanumeric+punctuation:
 			self.typeBuffer = self.typeBuffer+ch
 			self.fakeCaret = self.fakeCaret+1
-			if config.conf["keyboard"]["speakTypedCharacters"]: speech.speakText(ch)
+			if config.conf["keyboard"]["speakTypedCharacters"]:
+				speech.speakText(ch)
 		else:
 			if self.typeBuffer:
-				if config.conf["keyboard"]["speakTypedWords"]: speech.speakText(self.typeBuffer)
+				if config.conf["keyboard"]["speakTypedWords"]:
+					speech.speakText(self.typeBuffer)
 				self.typeBuffer = ""
-		if ch == " ": self.fakeCaret = self.fakeCaret+1
+		if ch == " ":
+			self.fakeCaret = self.fakeCaret+1
 		self.displayBraille()
 
 	def event_caret(self):
-		if self.debug: speech.speakText(str(self.fakeCaret))
+		if self.debug:
+			speech.speakText(str(self.fakeCaret))
 
 	def script_nextCh(self, gesture):
 		self.typeBuffer = ""
@@ -80,22 +90,30 @@ class QTEditableText(EditableTextWithAutoSelectDetection):
 
 	def script_selectNextCh(self, gesture):
 		self.typeBuffer = ""
-		if self.startSelection < 0: self.startSelection = self.fakeCaret
-		sizeBefore = self.startSelection-self.fakeCaret if self.startSelection > self.fakeCaret else self.fakeCaret-self.startSelection
+		if self.startSelection < 0:
+			self.startSelection = self.fakeCaret
+		sizeBefore = self.startSelection-self.fakeCaret\
+			if self.startSelection > self.fakeCaret\
+			else self.fakeCaret-self.startSelection
 		gesture.send()
 		self.nextCh(1)
-		sizeAfter = self.startSelection-self.fakeCaret if self.startSelection > self.fakeCaret else self.fakeCaret-self.startSelection
+		sizeAfter = self.startSelection-self.fakeCaret\
+			if self.startSelection > self.fakeCaret\
+			else self.fakeCaret-self.startSelection
 		if sizeAfter > sizeBefore:
 			speech.speakText(_("selected"))
 		else:
-			if self.value and self.fakeCaret < len(self.value): speech.speakText(_("deselected"))
+			if self.value and self.fakeCaret < len(self.value):
+				speech.speakText(_("deselected"))
 		self.displayBraille()
 
 	def nextCh(self, selection=0):
 		if self.value:
-			if self.fakeCaret < len(self.value): self.fakeCaret = self.fakeCaret+1
+			if self.fakeCaret < len(self.value):
+				self.fakeCaret = self.fakeCaret+1
 			try:
-				if self.fakeCaret < len(self.value)+1: speech.speakText(self.value[self.fakeCaret-selection])
+				if self.fakeCaret < len(self.value) + 1:
+					speech.speakText(self.value[self.fakeCaret-selection])
 			except IndexError:
 				pass
 
@@ -108,23 +126,32 @@ class QTEditableText(EditableTextWithAutoSelectDetection):
 
 	def script_selectPreviousCh(self, gesture):
 		self.typeBuffer = ""
-		if self.startSelection < 0: self.startSelection = self.fakeCaret
-		sizeBefore = self.startSelection-self.fakeCaret if self.startSelection > self.fakeCaret else self.fakeCaret-self.startSelection
+		if self.startSelection < 0:
+			self.startSelection = self.fakeCaret
+		sizeBefore = self.startSelection-self.fakeCaret\
+			if self.startSelection > self.fakeCaret\
+			else self.fakeCaret-self.startSelection
 		gesture.send()
 		self.previousCh(1)
-		sizeAfter = self.startSelection-self.fakeCaret if self.startSelection > self.fakeCaret else self.fakeCaret-self.startSelection
+		sizeAfter = self.startSelection-self.fakeCaret\
+			if self.startSelection > self.fakeCaret\
+			else self.fakeCaret-self.startSelection
 		if sizeAfter > sizeBefore:
 			speech.speakText(_("selected"))
 		else:
-			if self.fakeCaret > 0: speech.speakText(_("deselected"))
+			if self.fakeCaret > 0:
+				speech.speakText(_("deselected"))
 		self.displayBraille()
 
 	def previousCh(self, selection=0):
 		if self.value:
-			if self.fakeCaret > 0: self.fakeCaret = self.fakeCaret-1
-			if selection and self.fakeCaret == 0: speech.speakText(self.value[self.fakeCaret])
+			if self.fakeCaret > 0:
+				self.fakeCaret = self.fakeCaret-1
+			if selection and self.fakeCaret == 0:
+				speech.speakText(self.value[self.fakeCaret])
 			else:
-				if self.fakeCaret < len(self.value): speech.speakText(self.value[self.fakeCaret])
+				if self.fakeCaret < len(self.value):
+					speech.speakText(self.value[self.fakeCaret])
 
 	def script_end(self, gesture):
 		self.typeBuffer = ""
@@ -132,7 +159,8 @@ class QTEditableText(EditableTextWithAutoSelectDetection):
 		gesture.send()
 		if self.value:
 			self.fakeCaret = len(self.value)
-			if self.fakeCaret < len(self.value): speech.speakText(self.value[self.fakeCaret ])
+			if self.fakeCaret < len(self.value):
+				speech.speakText(self.value[self.fakeCaret])
 		self.displayBraille()
 
 	def script_selectEnd(self, gesture):
@@ -156,8 +184,10 @@ class QTEditableText(EditableTextWithAutoSelectDetection):
 		self.typeBuffer = ""
 		self.startSelection = -1
 		gesture.send()
-		if self.fakeCaret > 0: self.fakeCaret = 0
-		if self.value: speech.speakText(self.value[self.fakeCaret ])
+		if self.fakeCaret > 0:
+			self.fakeCaret = 0
+		if self.value:
+			speech.speakText(self.value[self.fakeCaret])
 		self.displayBraille()
 
 	def script_selectHome(self, gesture):
@@ -185,7 +215,8 @@ class QTEditableText(EditableTextWithAutoSelectDetection):
 			self.removeSelection(value)
 			return
 		try:
-			if self.value: speech.speakText(self.value[self.fakeCaret+1])
+			if self.value:
+				speech.speakText(self.value[self.fakeCaret+1])
 		except IndexError:
 			pass
 		self.displayBraille()
@@ -197,9 +228,11 @@ class QTEditableText(EditableTextWithAutoSelectDetection):
 			gesture.send()
 			self.removeSelection(value)
 			return
-		if self.value and self.fakeCaret > 0: speech.speakText(self.value[self.fakeCaret-1])
+		if self.value and self.fakeCaret > 0:
+			speech.speakText(self.value[self.fakeCaret-1])
 		gesture.send()
-		if self.fakeCaret > 0: self.fakeCaret = self.fakeCaret - 1
+		if self.fakeCaret > 0:
+			self.fakeCaret = self.fakeCaret - 1
 		self.displayBraille()
 
 	def script_removeWords(self, gesture):
@@ -245,7 +278,9 @@ class QTEditableText(EditableTextWithAutoSelectDetection):
 		self.displayBraille()
 
 	def removeSelection(self, value=""):
-		if self.startSelection <0 or self.fakeCaret == self.startSelection or not value: return
+		if self.startSelection < 0\
+			or self.fakeCaret == self.startSelection or not value:
+			return
 		if self.startSelection > self.fakeCaret:
 			speech.speakText(value[self.fakeCaret:self.startSelection])
 		else:
@@ -263,21 +298,28 @@ class QTEditableText(EditableTextWithAutoSelectDetection):
 
 	def script_selectNextWord(self, gesture):
 		self.typeBuffer = ""
-		if self.startSelection < 0: self.startSelection = self.fakeCaret
-		sizeBefore = self.startSelection-self.fakeCaret if self.startSelection > self.fakeCaret else self.fakeCaret-self.startSelection
+		if self.startSelection < 0:
+			self.startSelection = self.fakeCaret
+		sizeBefore = self.startSelection-self.fakeCaret\
+			if self.startSelection > self.fakeCaret\
+			else self.fakeCaret-self.startSelection
 		gesture.send()
 		self.nextWord(1)
-		sizeAfter = self.startSelection-self.fakeCaret if self.startSelection > self.fakeCaret else self.fakeCaret-self.startSelection
-		if sizeAfter>sizeBefore:
+		sizeAfter = self.startSelection-self.fakeCaret\
+			if self.startSelection > self.fakeCaret\
+			else self.fakeCaret-self.startSelection
+		if sizeAfter > sizeBefore:
 			speech.speakText(_("selected"))
 		else:
-			if self.value and self.fakeCaret < len(self.value): speech.speakText(_("deselected"))
+			if self.value and self.fakeCaret < len(self.value):
+				speech.speakText(_("deselected"))
 		self.displayBraille()
 
 	def nextWord(self, selection=0):
 		if self.value:
 			oldCaret = self.fakeCaret
-			if self.fakeCaret >= len(self.value): return
+			if self.fakeCaret >= len(self.value):
+				return
 			if self.value[self.fakeCaret] in punctuation:
 				try:
 					while self.value[self.fakeCaret] in punctuation:
@@ -295,14 +337,16 @@ class QTEditableText(EditableTextWithAutoSelectDetection):
 						self.fakeCaret = self.fakeCaret+1
 				except IndexError:
 					if selection:
-						speech.speakText("%s%s" % (self.value[oldCaret:self.fakeCaret-1], self.value[self.fakeCaret-1]))
+						speech.speakText("%s%s" % (
+							self.value[oldCaret:self.fakeCaret-1], self.value[self.fakeCaret-1]))
 					return
 				try:
 					while self.value[self.fakeCaret] == " ":
 						self.fakeCaret = self.fakeCaret+1
 				except IndexError:
 					if selection:
-						speech.speakText("%s%s" % (self.value[oldCaret:self.fakeCaret-1], self.value[self.fakeCaret-1]))
+						speech.speakText("%s%s" % (
+							self.value[oldCaret:self.fakeCaret-1], self.value[self.fakeCaret-1]))
 					return
 			try:
 				if selection:
@@ -321,15 +365,21 @@ class QTEditableText(EditableTextWithAutoSelectDetection):
 
 	def script_selectPreviousWord(self, gesture):
 		self.typeBuffer = ""
-		if self.startSelection < 0: self.startSelection = self.fakeCaret
-		sizeBefore = self.startSelection-self.fakeCaret if self.startSelection > self.fakeCaret else self.fakeCaret-self.startSelection
+		if self.startSelection < 0:
+			self.startSelection = self.fakeCaret
+		sizeBefore = self.startSelection-self.fakeCaret\
+			if self.startSelection > self.fakeCaret\
+			else self.fakeCaret-self.startSelection
 		gesture.send()
 		self.previousWord(True)
-		sizeAfter = self.startSelection-self.fakeCaret if self.startSelection > self.fakeCaret else self.fakeCaret-self.startSelection
+		sizeAfter = self.startSelection-self.fakeCaret\
+			if self.startSelection > self.fakeCaret\
+			else self.fakeCaret-self.startSelection
 		if sizeAfter > sizeBefore:
 			speech.speakText(_("selected"))
 		else:
-			if self.fakeCaret > 0: speech.speakText(_("deselected"))
+			if self.fakeCaret > 0:
+				speech.speakText(_("deselected"))
 		self.displayBraille()
 
 	def previousWord(self, selection=False):
@@ -340,7 +390,9 @@ class QTEditableText(EditableTextWithAutoSelectDetection):
 				self.fakeCaret = self.fakeCaret-1
 			oldCaret = self.fakeCaret
 			# Current character is a punctuation mark
-			if self.fakeCaret >0 and self.value[self.fakeCaret] in punctuation and self.value[self.fakeCaret-1] not in punctuation:
+			if self.fakeCaret > 0\
+				and self.value[self.fakeCaret] in punctuation\
+				and self.value[self.fakeCaret - 1] not in punctuation:
 				self.fakeCaret = self.fakeCaret-1
 			if self.value[self.fakeCaret] in punctuation and self.fakeCaret >= 0:
 				while self.value[self.fakeCaret] in punctuation and self.fakeCaret >= 0:
@@ -355,23 +407,25 @@ class QTEditableText(EditableTextWithAutoSelectDetection):
 			if self.value[self.fakeCaret] == " " and self.fakeCaret > 0:
 				while self.value[self.fakeCaret] == " " and self.fakeCaret > 0:
 					self.fakeCaret = self.fakeCaret-1
-				group = self.alphanumeric if self.value[self.fakeCaret] in self.alphanumeric else punctuation
+				group = self.alphanumeric\
+					if self.value[self.fakeCaret] in self.alphanumeric\
+					else punctuation
 				self.fakeCaret = self.fakeCaret-1 if self.fakeCaret > 0 else 0
-				while self.value[self.fakeCaret] in group and self.fakeCaret >0:
+				while self.value[self.fakeCaret] in group and self.fakeCaret > 0:
 					self.fakeCaret = self.fakeCaret-1
 				if self.fakeCaret > 0:
 					self.fakeCaret = self.fakeCaret+1
 				speech.speakText(self.value[self.fakeCaret:oldCaret])
 				return
 			# Current character is alphanumeric
-			if self.fakeCaret > 0 and self.value[self.fakeCaret-1] in self.alphanumeric+" ":
+			if self.fakeCaret > 0 and\
+				self.value[self.fakeCaret-1] in self.alphanumeric+" ":
 				self.fakeCaret = self.fakeCaret-1
 			if self.value[self.fakeCaret] in self.alphanumeric and self.fakeCaret > 0:
-				while self.value[self.fakeCaret] in self.alphanumeric and self.fakeCaret > 0:
+				while self.value[self.fakeCaret] in self.alphanumeric and self.fakeCaret > 0:  # noqa:E501
 					self.fakeCaret = self.fakeCaret-1
-				if self.fakeCaret>0:
+				if self.fakeCaret > 0:
 					self.fakeCaret = self.fakeCaret+1
-				#@ speech.speakText(str(oldCaret))
 				if oldCaret == len(self.value)-1:
 					oldCaret = oldCaret+1
 				speech.speakText(self.value[self.fakeCaret:oldCaret])
@@ -381,7 +435,8 @@ class QTEditableText(EditableTextWithAutoSelectDetection):
 				while self.value[self.fakeCaret] in group and self.fakeCaret > 0:
 					self.fakeCaret = self.fakeCaret-1
 				if self.value[self.fakeCaret+1] == " ":
-					group = punctuation if self.value[self.fakeCaret] in punctuation else self.alphanumeric
+					group = punctuation if self.value[self.fakeCaret] in punctuation\
+						else self.alphanumeric
 					while self.value[self.fakeCaret] in group and self.fakeCaret > 0:
 						self.fakeCaret = self.fakeCaret-1
 				if self.fakeCaret > 0:
@@ -389,7 +444,8 @@ class QTEditableText(EditableTextWithAutoSelectDetection):
 			speech.speakText(self.value[self.fakeCaret:oldCaret])
 
 	def script_reportCurrentSelection(self, gesture):
-		if self.startSelection <0 or self.fakeCaret == self.startSelection or not self.value:
+		if self.startSelection < 0\
+			or self.fakeCaret == self.startSelection or not self.value:
 			scriptHandler.executeScript(commands.script_reportCurrentSelection, None)
 			return
 		speech.speakText(_("selected"))
@@ -397,16 +453,17 @@ class QTEditableText(EditableTextWithAutoSelectDetection):
 			speech.speakText(self.value[self.fakeCaret:self.startSelection])
 		else:
 			speech.speakText(self.value[self.startSelection:self.fakeCaret])
-	script_reportCurrentSelection.__doc__ = commands.script_reportCurrentSelection.__doc__
+	script_reportCurrentSelection.__doc__ = commands.script_reportCurrentSelection.__doc__  # noqa:E501
 
 	def displayBraille(self):
-		if not self.value: return
+		if not self.value:
+			return
 		try:
 			fragment = self.fakeCaret / braille.handler.displaySize
 			start = 0 + fragment * braille.handler.displaySize
 			end = braille.handler.displaySize * (fragment+1)
 			braille.handler.message(self.value[start:end])
-			if braille.handler._messageCallLater :
+			if braille.handler._messageCallLater:
 				braille.handler._messageCallLater .Stop()
 				braille.handler._messageCallLater = None
 			braille.handler.buffer.cursorWindowPos = self.fakeCaret - start
@@ -416,29 +473,34 @@ class QTEditableText(EditableTextWithAutoSelectDetection):
 			pass
 
 	__gestures = {
-	"kb:rightArrow":"nextCh",
-	"kb:shift+rightArrow":"selectNextCh",
-	"kb:leftArrow":"previousCh",
-	"kb:shift+leftArrow":"selectPreviousCh",
-	"kb:end":"end",
-	"kb:shift+end":"selectEnd",
-	"kb:home":"home",
-	"kb:shift+home":"selectHome",
-	"kb:delete":"supr",
-	"kb:backspace":"back",
-	"kb:control+backspace":"removeWords",
-	"kb:control+delete":"removeWords",
-	"kb:control+rightArrow":"nextWord",
-	"kb:control+shift+rightArrow":"selectNextWord",
-	"kb:control+leftArrow":"previousWord",
-	"kb:control+shift+leftArrow":"selectPreviousWord"
+		"kb:rightArrow": "nextCh",
+		"kb:shift+rightArrow": "selectNextCh",
+		"kb:leftArrow": "previousCh",
+		"kb:shift+leftArrow": "selectPreviousCh",
+		"kb:end": "end",
+		"kb:shift+end": "selectEnd",
+		"kb:home": "home",
+		"kb:shift+home": "selectHome",
+		"kb:delete": "supr",
+		"kb:backspace": "back",
+		"kb:control+backspace": "removeWords",
+		"kb:control+delete": "removeWords",
+		"kb:control+rightArrow": "nextWord",
+		"kb:control+shift+rightArrow": "selectNextWord",
+		"kb:control+leftArrow": "previousWord",
+		"kb:control+shift+leftArrow": "selectPreviousWord"
 	}
 
-class VLCQTEditableText(QTEditableText):
 
+class VLCQTEditableText(QTEditableText):
 	def initOverlayClass(self):
-		super(QTEditableText,self).initOverlayClass()
+		super(QTEditableText, self).initOverlayClass()
 		if self.language not in SpecialAlphanumeric:
-			#TRANSLATORS: To successfully synchronize the cursor when it is moved by words, it is necessary to distinguish the alphanumeric characters of the punctuation signs.
-			#TRANSLATORS: This string should not be translated literally. Should be a list of the special characters that are considered to be alphanumeric in your local alphabet, for example the Ò in Spanish.
-			self.alphanumeric = printable[:62]+_("SpecialAlphanumericCharactersInYourLanguage")
+			# TRANSLATORS: To successfully synchronize the cursor
+			# when it is moved by words,
+			# it is necessary to distinguish
+			# the alphanumeric characters of the punctuation signs.
+			# TRANSLATORS: This string should not be translated literally. Should be
+			# a list of the special characters that are considered to be alphanumeric
+			# in your local alphabet, for example the Ò in Spanish.
+			self.alphanumeric = printable[:62]+_("SpecialAlphanumericCharactersInYourLanguage")  # noqa:E501

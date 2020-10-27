@@ -1,14 +1,13 @@
 # appModules\vlc\vlc_application.py.
 # a part of vlcAccessEnhancement add-on
-# Copyright 2019 paulber19
-#This file is covered by the GNU General Public License.
+# Copyright 2019-2020 paulber19
+# This file is covered by the GNU General Public License.
 
 
 import addonHandler
-addonHandler.initTranslation()
+
 from logHandler import log
 import controlTypes
-import textInfos
 import api
 import speech
 import queueHandler
@@ -16,45 +15,44 @@ import ui
 import keyboardHandler
 import time
 import wx
-import gui
 import os
-import eventHandler
-import tones
 import mouseHandler
 import oleacc
 import ctypes
 from NVDAObjects.IAccessible import getNVDAObjectFromEvent
 import winUser
-import scriptHandler
 from IAccessibleHandler import accNavigate, accParent
+import sys
 
 _curAddon = addonHandler.getCodeAddon()
-import sys
+
 debugToolsPath = os.path.join(_curAddon.path, "debugTools")
 sys.path.append(debugToolsPath)
 try:
 	from appModuleDebug import printDebug
 except ImportError:
-	def printDebug (msg): return
+	def printDebug(msg): return
 del sys.path[-1]
 sharedPath = os.path.join(_curAddon.path, "shared")
 sys.path.append(sharedPath)
-import vlc_addonConfig
-import vlc_strings
-from vlc_utils import *
-from vlc_py3Compatibility import py3
+import vlc_strings  # noqa:E402
+from vlc_strings import getString  # noqa:E402
+from vlc_utils import *  # noqa:F403,E402
+from vlc_py3Compatibility import py3  # noqa:E402
 del sys.path[-1]
 
-ID_NoPlaylist  = 0
+addonHandler.initTranslation()
+
+ID_NoPlaylist = 0
 ID_AnchoredPlaylist = 1
 ID_EmbeddedPlaylist = 2
 
 
 def getForegroundObject():
-	hdMain=ctypes.windll.user32.GetForegroundWindow()
-	if not vlc_strings.getString(vlc_strings.ID_VLCAppTitle) in winUser.getWindowText(hdMain):
-		hdMain= winUser.getWindow(winUser.getWindow(hdMain,2),2)
-	o =getNVDAObjectFromEvent(hdMain,-4,0)
+	hdMain = ctypes.windll.user32.GetForegroundWindow()
+	if not getString(vlc_strings.ID_VLCAppTitle) in winUser.getWindowText(hdMain):
+		hdMain = winUser.getWindow(winUser.getWindow(hdMain, 2), 2)
+	o = getNVDAObjectFromEvent(hdMain, -4, 0)
 	return o
 
 
@@ -63,313 +61,297 @@ class MainWindow (object):
 	_continuePlayback = None
 	_volumeState = (None, None)
 	_loopState = None
-	
-	def __init__(self, appModule):
+
+	def __init__(self, vlcrcSettings):
 		super(MainWindow, self).__init__()
-		self.appModule = appModule
-	
+		self.vlcrcSettings = vlcrcSettings
+
 	@property
 	def topNVDAObject(self):
 		if hasattr(self, "_topNVDAObject"):
 			return self._topNVDAObject
-		printDebug ("topNVDAObject init")
-		oDesktop= api.getDesktopObject()
+		printDebug("topNVDAObject init")
+		oDesktop = api.getDesktopObject()
 		for i in range(0, oDesktop.childCount):
 			obj = oDesktop.getChild(i)
-			if obj.windowClassName == u'Qt5QWindowIcon'and obj.childCount == 7:
+			if obj.windowClassName == u'Qt5QWindowIcon' and obj.childCount == 7:
 				o = obj.getChild(3)
 				first = o.firstChild
-				if first  and first.role == controlTypes.ROLE_MENUBAR and first.childCount == 8:
+				if first and first.role == controlTypes.ROLE_MENUBAR\
+					and first.childCount == 8:
 					self._topNVDAObject = o
-					self.mainPanel = MainPanel(self)
-					self.volumeInfos = VolumeInfos(self)
+					#self.mainPanel = MainPanel(self)
+					#self.volumeInfos = VolumeInfos(self)
 					return o
-			if obj == obj.next: break
+			if obj == obj.next:
+				break
 			obj = obj.next
-
-		printDebug ("topNVDAObject not found")
+		printDebug("topNVDAObject not found")
 		return None
 
+	@property
+	def mainPanel(self):
+		if hasattr(self, "_mainPanel"):
+			return self._mainPanel
+		mainPanel = MainPanel(self)
+		if mainPanel is not None:
+			self._mainPanel = mainPanel
+			self.volumeInfos = VolumeInfos(self)
 
+			return mainPanel
+		return None
 	def getStatusBar(self):
 		try:
-			statusBar =self.topNVDAObject.firstChild.next
-		except:
+			statusBar = self.topNVDAObject.firstChild.next
+		except:  # noqa:E722
 			statusBar = None
 		if statusBar is None:
-			log.warning( "getStatusBar: status bar not found")
+			log.warning("getStatusBar: status bar not found")
 		return statusBar
-	"""
-	def setStatusBar(self):
-		if not hasattr(self.appModule, "curAPIGetStatusBar"):
-			self.appModule.curAPIGetStatusBar = api.getStatusBar
-			api.getStatusBar = self.getStatusBar
-"""	
+
 	def getMediaViewNVDAObject(self):
 		mediaInfos = MediaInfos(self)
 		return mediaInfos.getViewNVDAObject()
 
-
-	def giveFocusToViewWindow(self):
-		printDebug ("MainWindow: giveFocusToViewWindow")
-		self.resetMediaStates()
-		obj = self.topNVDAObject
-		oldSpeechMode = speech.speechMode
-		speech.speechMode = speech.speechMode_off
-		mouseClick(obj, True, False)
-		time.sleep(0.2)
-		obj = api.getFocusObject()
-		mouseClick(obj, False, False)
-		api.processPendingEvents()
-		speech.speechMode = oldSpeechMode
-		speech.cancelSpeech()
-		wx.CallAfter( self.reportMediaStates)
-		wx.CallAfter(self.reportContinuePlayback)
-	def getContinuePlaybackScriptGesture(self):
-		focus = api.getFocusObject()
-		if not hasattr(focus, "continuePlaybackScript"): return
-		continuePlaybackScript = focus.continuePlaybackScript
-		from inputCore import manager
-		all = manager.getAllGestureMappings()[_curAddon.manifest['summary']]
-		for item in all:
-			infos = all[item]
-			if infos.scriptName == "continuePlayback":
-				gestures = infos.gestures
-				if len(gestures):
-					return gestures[0].split(":")[1]
-		return None
-	
-	def reportContinuePlayback(self):
+	def reportContinuePlayback(self, continuePlaybackScriptGesture):
 		if not self.hasMedia:
 			return
 		(continuePlayback, msg) = self.mainPanel.getcontinuePlayback()
 		if (continuePlayback != self._continuePlayback):
-			if continuePlayback: 
-				continuePlaybackScriptGesture = self.getContinuePlaybackScriptGesture()
+			if continuePlayback:
 				if continuePlaybackScriptGesture is not None:
 					# Translators: message to user when continue playing is available.
-					msg = _("continue playback %s")%continuePlaybackScriptGesture
-					wx.CallAfter(speech.speakMessage,msg)
-					printDebug ("MainWindow: reportContinuePlayback, start = %s"%msg)
+					msg = _("continue playback %s") % continuePlaybackScriptGesture
+				else:
+					# Translators: message to user when continue playing is available.
+					msg = _("continue playback %s") % "alt+r"
+				wx.CallAfter(speech.speakMessage, msg)
+				printDebug("MainWindow: reportContinuePlayback, start = %s" % msg)
 			self._continuePlayback = continuePlayback
 
-	
 	def reportMediaStates(self):
 		(muteState, level) = self.getVolumeMuteStateAndLevel()
 		if not self.hasMedia():
-			if muteState  :
+			if muteState:
 				# Translators: message to the user to say volume is muted.
 				speech.speakMessage(_("volume muted"))
 			return
 		isPlaying = self.isPlaying()
-		printDebug ("MainWindow: reportMediaStates playing= %s, oldPlaying= %s, mute = %s" %(isPlaying, self._curMediaState,muteState))
-		if self._curMediaState  is not None and (isPlaying == self._curMediaState): return
-		if muteState  :
+		printDebug("MainWindow: reportMediaStates playing= %s, oldPlaying= %s, mute = %s" % (isPlaying, self._curMediaState, muteState))  # noqa:E501
+		if self._curMediaState is not None and (isPlaying == self._curMediaState):
+			return
+		if muteState:
 			# Translators: message to user when volume is muted
-			msg  = _("volume muted")
-			if  isPlaying:
-				# Translators: message to the user to say  playing with muted volume.
-				speech.speakMessage(_("Playing,%s")%msg)
+			msg = _("volume muted")
+			if isPlaying:
+				# Translators: message to the user to say playing with muted volume.
+				msg = _("Playing,%s") % msg
 			else:
 				# translators: message to the user to say pause with muted volume.
-				speech.speakMessage(_("Pause,%s")%msg)
-
-
+				msg = _("Pause,%s") % msg
+			queueHandler.queueFunction(
+				queueHandler.eventQueue, speech.speakMessage, msg)
 		elif not isPlaying:
 			# Translators: message to the user to say media is paused.
 			speech.speakMessage(_("Pause"))
 		self._curMediaState = isPlaying
+
 	def reportMenubarState(self):
 		menubar = Menubar(self)
-		if menubar is None: return
-		if  not menubar.isVisible():
+		if menubar is None:
+			return
+		if not menubar.isVisible():
 			# Translators: message to user to report menubar is not visible
 			speech.speakMessage(_("Menu bar is hidden"))
-		
-	
-	def resetMediaStates(self, alsoContinuePlayback = True):
+
+	def resetMediaStates(self, alsoContinuePlayback=True):
 		self._curMediaState = None
 		if alsoContinuePlayback:
 			self._continuePlayback = None
 
 	def reportMediaName(self):
-		mediaInfos= MediaInfos(self)
+		mediaInfos = MediaInfos(self)
 		mediaName = mediaInfos.getName()
 		if mediaName is None:
 			# Translators: message to the user to say there is no media.
-			speech.speakMessage( _("No media"))
+			speech.speakMessage(_("No media"))
 		else:
 			speech.speakMessage(mediaName)
+
 	def reportMediaChange(self):
 		speech.cancelSpeech()
 		self.reportMediaName()
 		self.resetMediaStates()
 		self.reportMediaStates()
+
 	def reportViewState(self):
 		screenSize = wx.GetDisplaySize()
 		try:
-			delattr (self, "topNVDAObject")
+			delattr(self, "topNVDAObject")
 			(x, y, h, w) = self.mainPanel.NVDAObject.location
-			if (x,y) == (0,0) and (h,w) == screenSize:
+			if (x, y) == (0, 0) and (h, w) == screenSize:
 				# Translators: message to user to report full screen state.
 				speech.speakMessage(_("full screen"))
-		except:
+		except:  # noqa:E722
 			pass
+
 	def hasMedia(self):
-		mediaInfos= MediaInfos(self)
-		if mediaInfos is None: return False
+		mediaInfos = MediaInfos(self)
+		if mediaInfos is None:
+			return False
 		mediaName = mediaInfos.getName()
 		if mediaName is None:
 			return False
 		return True
-	
+
 	def isPlaying(self):
-		mediaInfos= MediaInfos(self)
+		mediaInfos = MediaInfos(self)
 		if mediaInfos:
 			return mediaInfos.isPlaying()
-	
-	def getTotalTime(self) :
-		mediaInfos= MediaInfos(self)
+
+	def getTotalTime(self):
+		mediaInfos = MediaInfos(self)
 		return mediaInfos.getTotalTime()
-		
+
 	def getCurrentTime(self):
-		mediaInfos= MediaInfos(self)
+		mediaInfos = MediaInfos(self)
 		return mediaInfos.getCurrentTime()
 
-	def sayElapsedTime(self, forced = False) :
+	def sayElapsedTime(self, forced=False):
 		if not self.hasMedia():
 			return
 		(muteState, level) = self.volumeInfos.getMuteAndLevel()
 		if not muteState and not forced and self.isPlaying():
 			return
-		mediaInfos= MediaInfos(self)
+		mediaInfos = MediaInfos(self)
 		from vlc_addonConfig import _addonConfigManager
-		if not forced and not _addonConfigManager.getAutoElapsedTimeReportOption(): return
+		if not forced and not _addonConfigManager.getAutoElapsedTimeReportOption():
+			return
 		elapsedTime = mediaInfos.getElapsedTime()
 		if elapsedTime:
 			# Translators: message to the user to say played duration.
 			msg = _("Played duration %s") if forced else "%s"
-			#ui.message(msg % formatTime(elapsedTime))
-			queueHandler.queueFunction(queueHandler.eventQueue, ui.message, msg % formatTime(elapsedTime))
-	
+			queueHandler.queueFunction(
+				queueHandler.eventQueue, ui.message, msg % formatTime(elapsedTime))
+
 	def sayRemainingTime(self):
-		if not self.hasMedia() :
+		if not self.hasMedia():
 			return
-		mediaInfos= MediaInfos(self)
+		mediaInfos = MediaInfos(self)
 		remainingTime = mediaInfos.getRemainingTime()
-		# Translators: message to the user to report  remaining duration.
+		# Translators: message to the user to report remaining duration.
 		msg = _("remaining duration %s")
 		if remainingTime:
 
-			ui.message(msg%formatTime(remainingTime))
+			ui.message(msg % formatTime(remainingTime))
 			return
 # Translators: remaing time is unknow.
-		ui.message(msg%_("unknown"))
+		ui.message(msg % _("unknown"))
 
-	
 	def getVolumeMuteStateAndLevel(self):
 		return self.volumeInfos.getMuteAndLevel()
-		
 
-	def getSpeedValue(self) :
+	def getSpeedValue(self):
 		# speed value is on third child of status bar
 		statusBar = StatusBar(self).NVDAObject
 		o = statusBar.getChild(2)
-		if o and "x" in o.name :
+		if o and "x" in o.name:
 			st1, st, st2 = o.name, "", ""
 			sst1 = st1.split(".")
 			st2 = sst1[-1]
-			if st2[-2]=="0" :
-				st2 = st2.replace("0","")
-			if st2 == "x" :
+			if st2[-2] == "0":
+				st2 = st2.replace("0", "")
+			if st2 == "x":
 				st = "".join(sst1[0]+st2)
-			else :
+			else:
 				st = "".join(sst1[0]+"."+st2)
 			return st
 		return ""
-	
-		
+
 	def reportVolumeStateChange(self):
 		(muteState, level) = self.volumeInfos.getMuteAndLevel()
-		printDebug ("MainWindow: reportVolumeStateChange: mute= %s, level= %s"%(muteState, level))
-		if (muteState, level)  == self._volumeState: return
+		printDebug("MainWindow: reportVolumeStateChange: mute= %s, level= %s" % (muteState, level))  # noqa:E501
+		if (muteState, level) == self._volumeState:
+			return
 		self._volumeState = (muteState, level)
-		if not self.isPlaying() or muteState :
-			# Translators: message to the user to report  volume level.
-			ui.message(_("Volume: %s")%str(level))
+		if not self.isPlaying() or muteState:
+			# Translators: message to the user to report volume level.
+			ui.message(_("Volume: %s") % str(level))
 			if muteState:
 				# Translators: message to the user to say volume is muted.
 				ui.message(_("Volume mute"))
-	
+
 	def togglePlayOrPause(self):
 		self.mainPanel.togglePlayPause()
-	
+
 	def reportLoopStateChange(self):
 		speech.cancelSpeech()
-		loopState =  self.mainPanel.getLoopState()
-		if loopState :
-			# Translators: message to user to report loop state : repeat all or repeat only current media.
-			msg = _("repeat all") if not self._loopState else _("repeat only  current media")
+		loopState = self.mainPanel.getLoopState()
+		if loopState:
+			# Translators: message to user to report loop state :
+			# repeat all or repeat only current media.
+			msg = _("repeat all") if not self._loopState else _("repeat only current media")  # noqa:E501
 		else:
 			# Translators: message to user to report no repeat state.
 			msg = _("no repeat")
-		speech.speakMessage( msg)
+		speech.speakMessage(msg)
 		self._loopState = loopState
+
 	def reportRandomStateChange(self):
 		speech.cancelSpeech()
-		randomState =  self.mainPanel.getRandomState()
+		randomState = self.mainPanel.getRandomState()
 		# Translators: message to user to report random or normal playback state.
 		msg = _("Random playback") if randomState else _("Normal playback")
 		speech.speakMessage(msg)
-	
-	
+
 	def reportLoopAndRandomStates(self):
-		self._loopState =  self.mainPanel.getLoopState()
+		self._loopState = self.mainPanel.getLoopState()
 		randomState = self.mainPanel.getRandomState()
 		msg = None
 		if self._loopState and randomState:
 			# Translators: message to user to report repeat and random playback state.
 			msg = _("With repeat and random playback")
-		elif self._loopState :
+		elif self._loopState:
 			# Translators: message to user to report only repeat playback state
 			msg = _("With repeat")
-		elif  randomState:
+		elif randomState:
 			# Translators: message to user to report only random playback state.
 			msg = _("With random playback")
 		if msg is not None:
 			wx.CallAfter(speech.speakMessage, msg)
-	def  calculatePosition(self, jumpTimeInSec, totalTimeInSec, isPlaying):
+
+	def calculatePosition(self, jumpTimeInSec, totalTimeInSec, isPlaying):
 		mainWindow = self
 		o1 = mainWindow.getMediaViewNVDAObject()
-		(x,y,l,h) = o1.location
-		iX=(int(x)+5)+(int(l)-10)*jumpTimeInSec/totalTimeInSec
+		(x, y, l, h) = o1.location
+		iX = (int(x) + 5) + (int(l)-10)*jumpTimeInSec/totalTimeInSec
 		return (iX, int(y)+int(h)/2)
-	
+
 	def adjustPosition(self, jumpTimeInSec, totalTimeInSec, x, y):
-		def moveBy10Sec(count, direction ):
-			printDebug ("MainWindow: moveBy10sec: count= %s, direction = %s"%(count, direction))
-			keyToRight =  self.appModule.vlcrcSettings.getKeyFromName("key-jump+short")
-			keyToLeft = self.appModule.vlcrcSettings.getKeyFromName("key-jump-short")
-			key = keyToRight if direction>0 else keyToLeft
-			d= 0
+		def moveBy10Sec(count, direction):
+			printDebug("MainWindow: moveBy10sec: count= %s, direction = %s" % (count, direction))  # noqa:E501
+			keyToRight = self.vlcrcSettings.getKeyFromName("key-jump+short")
+			keyToLeft = self.vlcrcSettings.getKeyFromName("key-jump-short")
+			key = keyToRight if direction > 0 else keyToLeft
+			d = 0
 			if count:
 				for i in range(1, count+1):
 					keyboardHandler.KeyboardInputGesture.fromName(key).send()
 					d += direction*10
 			return d
-		
-		def moveBy3Sec(count, direction ):
-			printDebug ("MainWindow: moveBy3sec: count= %s, direction = %s"%(count, direction))
-			keyToRight =  self.appModule.vlcrcSettings.getKeyFromName("key-jump+extrashort" )
-			keyToLeft = self.appModule.vlcrcSettings.getKeyFromName("key-jump-extrashort")
-			key = keyToRight if direction>0 else keyToLeft
-			d= 0
+
+		def moveBy3Sec(count, direction):
+			printDebug("MainWindow: moveBy3sec: count= %s, direction = %s" % (count, direction))  # noqa:E501
+			keyToRight = self.vlcrcSettings.getKeyFromName("key-jump+extrashort")
+			keyToLeft = self.vlcrcSettings.getKeyFromName("key-jump-extrashort")
+			key = keyToRight if direction > 0 else keyToLeft
+			d = 0
 			if count != 0:
 				for i in range(1, count+1):
 					keyboardHandler.KeyboardInputGesture.fromName(key).send()
-					d  += direction*3
+					d += direction*3
 			return d
-		printDebug ("MainWindow: adjustPosition")		
+		printDebug("MainWindow: adjustPosition")
 		actionsForOffset = {
 			1: ((3, moveBy3Sec, -1), (1, moveBy10Sec, 1)),
 			2: ((1, moveBy10Sec, -1), (4, moveBy3Sec, 1)),
@@ -381,64 +363,62 @@ class MainWindow (object):
 			8: ((1, moveBy10Sec, -1), (6, moveBy3Sec, 1)),
 			9: ((3, moveBy3Sec, 1),)
 			}
-		mainWindow = self.appModule.mainWindow
-		curTimeInSec = getTimeInSec(mainWindow.getCurrentTime())
-		diff = curTimeInSec -jumpTimeInSec
-		direction= 1 if diff <0 else -1
+		curTimeInSec = getTimeInSec(self.getCurrentTime())
+		diff = curTimeInSec - jumpTimeInSec
+		direction = 1 if diff < 0 else -1
 		diff = abs(diff)
 		if diff == 0:
-			#nothing to do
+			# nothing to do
 			return
-		if diff >20:
-			leftClick(x,y)
+		if diff > 20:
+			leftClick(x, y)
 			time.sleep(0.2)
 			api.processPendingEvents()
-			mainWindow = self.appModule.mainWindow
-			curTimeInSec = getTimeInSec(mainWindow.getCurrentTime())
-			diff = curTimeInSec -jumpTimeInSec
-			direction= 1 if diff <0 else -1
+
+			curTimeInSec = getTimeInSec(self.getCurrentTime())
+			diff = curTimeInSec - jumpTimeInSec
+			direction = 1 if diff < 0 else -1
 			diff = abs(diff)
-			
-		if diff%10 == 0:
+		if diff % 10 == 0:
 			moveBy10Sec(diff/10, direction)
 			return
-		if diff%3 == 0:
+		if (diff % 3) == 0:
 			moveBy3Sec(diff/3, direction)
 			return
-		
-		if (curTimeInSec <=19  and direction>0
-			or totalTimeInSec -curTimeInSec <= 19 and direction <0):
-			moveBy10Sec(1,direction)
-			diff  = 10 - diff
-			direction =  (-1)*direction
-		
+		if curTimeInSec <= 19 and direction > 0\
+			or totalTimeInSec - curTimeInSec <= 19 and direction < 0:
+			moveBy10Sec(1, direction)
+			diff = 10 - diff
+			direction = (-1)*direction
 		if diff > 9:
 			moveBy10Sec(diff/10, direction)
-			diff = diff%10
+			diff = diff % 10
 			if diff == 0:
 				return
 		actions = actionsForOffset[diff]
 		for action in actions:
 			move = action[1]
 			count = action[0]
-			d = action [2]
+			d = action[2]
 			move(count, d*direction)
-			
-	
-	def jumpToTime(self, jumpTime, totalTime, startPlaying = False):
-		printDebug ("MainWindow: jumpToTime")
+
+	def jumpToTime(self, jumpTime, totalTime, startPlaying=False):
+		printDebug("MainWindow: jumpToTime")
 		mainWindow = self
 		speech.cancelSpeech()
 		oldSpeechMode = speech.speechMode
-		speechMode = speech.speechMode_off
+		speech.speechMode = speech.speechMode_off
 		api.processPendingEvents()
 		speech.cancelSpeech()
-		if jumpTime == None or jumpTime ==0:
+		if jumpTime is None or jumpTime == 0:
 			speech.speechMode = oldSpeechMode
 			# Translators: message to the user to report no time change.
-			queueHandler.queueFunction(queueHandler.eventQueue, speech.speakMessage, _("No change"))
-			queueHandler.queueFunction(queueHandler.eventQueue, mainWindow.sayElapsedTime,True)
-			queueHandler.queueFunction(queueHandler.eventQueue, mainWindow.reportMediaStates)
+			queueHandler.queueFunction(
+				queueHandler.eventQueue, speech.speakMessage, _("No change"))
+			queueHandler.queueFunction(
+				queueHandler.eventQueue, mainWindow.sayElapsedTime, True)
+			queueHandler.queueFunction(
+				queueHandler.eventQueue, mainWindow.reportMediaStates)
 			return
 		isPlaying = mainWindow.isPlaying()
 		curTimeInSec = getTimeInSec(mainWindow.getCurrentTime())
@@ -447,41 +427,46 @@ class MainWindow (object):
 		else:
 			jumpTimeInSec = getTimeInSec(jumpTime)
 
-		if abs(curTimeInSec - jumpTimeInSec) <=2:
+		if abs(curTimeInSec - jumpTimeInSec) <= 2:
 			# we are at time
 			speech.speechMode = oldSpeechMode
-			queueHandler.queueFunction(queueHandler.eventQueue, mainWindow.sayElapsedTime)
-			queueHandler.queueFunction(queueHandler.eventQueue, mainWindow.reportMediaStates)
+			queueHandler.queueFunction(
+				queueHandler.eventQueue, mainWindow.sayElapsedTime)
+			queueHandler.queueFunction(
+				queueHandler.eventQueue, mainWindow.reportMediaStates)
 			if not isPlaying and startPlaying:
 				mainWindow.togglePlayOrPause()
 				return
 		if isPlaying:
 			# pause playing
 			mainWindow.togglePlayOrPause()
-			time.sleep(0.2  )
+			time.sleep(0.2)
 		totalTimeInSec = getTimeInSec(totalTime)
-		(x, y)  = self.calculatePosition(jumpTimeInSec, totalTimeInSec, isPlaying)
-		leftClick(int(x),int(y))
+		(x, y) = self.calculatePosition(jumpTimeInSec, totalTimeInSec, isPlaying)
+		leftClick(int(x), int(y))
 		api.processPendingEvents()
 		time.sleep(0.2)
-		winUser.setCursorPos(int(x),int(y-20))
-		mouseHandler.executeMouseMoveEvent(x,y)
+		winUser.setCursorPos(int(x), int(y-20))
+		mouseHandler.executeMouseMoveEvent(x, y)
 		speech.cancelSpeech()
 		speech.speechMode = oldSpeechMode
 		# wait for new time
 		api.processPendingEvents()
-		i= 20
+		i = 20
 		newCurTimeInSec = getTimeInSec(mainWindow.getCurrentTime())
-		while  i>0 and newCurTimeInSec == curTimeInSec:
+		while i > 0 and newCurTimeInSec == curTimeInSec:
 			time.sleep(0.05)
 			i = i-1
 			if i == 0:
 				# time out
 				# Translators: message to the user to say that jump is not possible.
-				queueHandler.queueFunction(queueHandler.eventQueue,  speech.speakMessage, _("Jump is not possible"))
-				queueHandler.queueFunction(queueHandler.eventQueue,  mainWindow.sayElapsedTime)
-				queueHandler.queueFunction(queueHandler.eventQueue,  mainWindow.reportMediaStates)
-				printDebug ("MainWindow: jump is not completed")
+				queueHandler.queueFunction(
+					queueHandler.eventQueue, speech.speakMessage, _("Jump is not possible"))
+				queueHandler.queueFunction(
+					queueHandler.eventQueue, mainWindow.sayElapsedTime)
+				queueHandler.queueFunction(
+					queueHandler.eventQueue, mainWindow.reportMediaStates)
+				printDebug("MainWindow: jump is not completed")
 				return
 
 			newCurTimeInSec = getTimeInSec(mainWindow.getCurrentTime())
@@ -489,344 +474,371 @@ class MainWindow (object):
 			self.adjustPosition(jumpTimeInSec, totalTimeInSec, x, y)
 		if not startPlaying and isPlaying:
 			mainWindow.togglePlayOrPause()
-			queueHandler.queueFunction(queueHandler.eventQueue, mainWindow.reportMediaStates)
+			queueHandler.queueFunction(
+				queueHandler.eventQueue, mainWindow.reportMediaStates)
 			return
 
-		queueHandler.queueFunction(queueHandler.eventQueue,  mainWindow.sayElapsedTime)
+		queueHandler.queueFunction(
+			queueHandler.eventQueue, mainWindow.sayElapsedTime)
 		if startPlaying:
 			mainWindow.togglePlayOrPause()
-		queueHandler.queueFunction(queueHandler.eventQueue, mainWindow.reportMediaStates)
+		queueHandler.queueFunction(
+			queueHandler.eventQueue, mainWindow.reportMediaStates)
+
 
 class MediaInfos(object):
 	def __init__(self, mainWindow):
-		#printDebug ("MediaInfo")
 		super(MediaInfos, self).__init__()
 		self.mainWindow = mainWindow
-		self.statusBar = StatusBar(self.mainWindow).NVDAObject
-	
+		self.mainPanelNVDAObject = self.mainWindow.mainPanel.NVDAObject
+		self.statusBar = StatusBar(mainWindow).NVDAObject
+
 	@property
 	def timesNVDAObject(self):
-		if hasattr(self, "_timesNVDAObject")and self._timesNVDAObject is not None:
+		if hasattr(self, "_timesNVDAObject") and self._timesNVDAObject is not None:
 			return self._timesNVDAObject
-		oMain = self.mainWindow.mainPanel.NVDAObject
-		#try:
+		oMain = self.mainPanelNVDAObject
+		# try:
 		if True:
 			for o in oMain.children:
-				if o.role==controlTypes.ROLE_BORDER:
+				if o.role == controlTypes.ROLE_BORDER:
 					self._timesNVDAObject = o
 					return o
-		#except:
+		# except:
 		else:
 			self._timesNVDAObject = None
 		log.warning("ObjectTime not found")
 		return self._timesNVDAObject
-	
+
 	def isPlaying(self):
 		try:
-			oDeb= self.timesNVDAObject.next.IAccessibleObject
-		except:
+			oDeb = self.timesNVDAObject.next.IAccessibleObject
+		except:  # noqa:E722
 			return False
 		count = oDeb.accChildCount
-		i= 0
-		while i <count:
-			o= oDeb.accChild(i)
-			i= i+1
-			if o.accRole(0) ==oleacc.ROLE_SYSTEM_PUSHBUTTON and vlc_strings.getString(vlc_strings.ID_PauseThePlaybackButtonDescription) == o.accDescription(0):
+		i = 0
+		while i < count:
+			o = oDeb.accChild(i)
+			i = i+1
+			if o.accRole(0) == oleacc.ROLE_SYSTEM_PUSHBUTTON and getString(
+				vlc_strings.ID_PauseThePlaybackButtonDescription) == o.accDescription(0):
 				return True
 		return False
-	
+
 	def getViewNVDAObject(self):
 		return self.timesNVDAObject.getChild(1)
 
 	def getName(self):
 		# name of media is the second child of status bar
-		if self.statusBar is None: return ""
+		if self.statusBar is None:
+			return ""
 		o = self.statusBar.getChild(1)
 		return o.name if o is not None else ""
-	
-	def getTotalTime(self) :
+
+	def getTotalTime(self):
 		# media total time is on forth childof status bar
 		try:
 			o = self.statusBar.getChild(3)
 			t1 = o.name
-			st1=t1.split("/")
-			t1 =st1[-1]
+			st1 = t1.split("/")
+			t1 = st1[-1]
 			return t1 if t1 != u"--:--" else None
-		except:
+		except:  # noqa:E722
 			return None
-	
+
 	def getCurrentTime(self):
-		topNVDAObject = self.mainWindow.topNVDAObject
 		o = self.timesNVDAObject.getChild(0)
-		if o == None  or o.name == None:
+		if o is None or o.name is None:
 			log.warning("CurTime object not found or nottime")
 			return None
 		return o.name
+
 	def getCurrentTimeInSeconds(self):
 		t = getTimeInSec(self.timesNVDAObject.getChild(0).name)
 		return t
-	
+
 	def getRemainingTime(self):
 		totalTime = self.mainWindow.getTotalTime()
-		if totalTime is None: return None
+		if totalTime is None:
+			return None
 		t2sec = getTimeInSec(totalTime)
 		o1 = self.timesNVDAObject.children[0]
-		if o1 is None or o1.name is None: return None
+		if o1 is None or o1.name is None:
+			return None
 		t1 = o1.name
 		t1sec = getTimeInSec(t1)
 		t3sec = t2sec-t1sec
-		if t3sec<3600 :
-			st = "".join(str(int(t3sec /60))+":"+str(t3sec %60))
-		if t3sec>=3600 :
-			th = int(t3sec /3600)
-			tm =  int((t3sec - 3600*th) /60)
-			if tm<10 :
+		if t3sec < 3600:
+			st = "".join(str(int(t3sec / 60)) + ":" + str(t3sec % 60))
+		if t3sec >= 3600:
+			th = int(t3sec / 3600)
+			tm = int((t3sec - 3600*th) / 60)
+			if tm < 10:
 				stm = "".join("0"+str(tm))
-			else :
-				stm =str(tm)
-			ts =   t3sec - 3600*th -60*tm
-			if ts<10 :
+			else:
+				stm = str(tm)
+			ts = t3sec - 3600*th - 60*tm
+			if ts < 10:
 				sts = "".join("0"+str(ts))
-			else :
-				sts =str(ts)
+			else:
+				sts = str(ts)
 			st = "".join(str(th)+":"+stm+":"+sts)
 		return st
-	def getElapsedTime(self) :
+
+	def getElapsedTime(self):
 		o = self.timesNVDAObject.getChild(0)
-		if o is None: return None
+		if o is None:
+			return None
 		t1 = o.name
-		if t1 is None or t1 == "--:--": return None
+		if t1 is None or t1 == "--:--":
+			return None
 		return t1
 
 
 class StatusBar (object):
 	def __init__(self, mainWindow):
-		#printDebug ("StatusBar")
 		super(StatusBar, self).__init__()
-		self.topNVDAObject= mainWindow.topNVDAObject
+		self.topNVDAObject = mainWindow.topNVDAObject
+
 	@property
 	def NVDAObject(self):
 		if hasattr(self, "_NVDAObject"):
 			return self._NVDAObject
-		top=self.topNVDAObject
+		top = self.topNVDAObject
 		for o in top.children:
 			if o.role == controlTypes.ROLE_STATUSBAR:
 				self._NVDAObject = o
 				return o
-		log.warning( "getStatusBar: status bar not found")
+		log.warning("getStatusBar: status bar not found")
 		return None
+
 
 class VolumeInfos(object):
 	def __init__(self, mainWindow):
-		printDebug ("VolumeInfo: init")
+		printDebug("VolumeInfo: init")
 		super(VolumeInfos, self).__init__()
-		self.mainWindow = mainWindow
-		self.volumeIAObject = self.getVolumeIAObject()
+		self.mainPanelNVDAObject = mainWindow.mainPanel.NVDAObject
+		#self.volumeIAObject = self.getVolumeIAObject()
+
 	@property
 	def NVDAObject(self):
 		if hasattr(self, "_NVDAObject"):
 			return self._NVDAObject
-		oMain = self.mainWindow.mainPanel.NVDAObject
+		oMain = self.mainPanelNVDAObject
 		try:
 			for o in oMain.children:
-				if o.role==controlTypes.ROLE_BORDER:
+				if o.role == controlTypes.ROLE_BORDER:
 					self._NVDAObject = o
 					return o
-		except:
+		except:  # noqa:E722
 			pass
 		log.warning("VolumeInfos Object not found")
 		return None
-	def getVolumeIAObject(self):
+	@property
+	def volumeIAObject(self):
+		if hasattr(self, "_volumeIAObject"):
+			return self._volumeIAObject
 		try:
 			oDeb = self.NVDAObject.next.IAccessibleObject
-		except:
+		except:  # noqa:E722
+			log.warning("VolumeInfos:  getVolumeIAObject  exception")
 			return None
 		count = oDeb.accChildCount
-		i= 0
-		while i <count:
-			o= oDeb.accChild(i)
-			i= i+1
+		i = 0
+		while i < count:
+			o = oDeb.accChild(i)
+			i = i+1
 			if o and o.accChildCount:
-				if o.accRole(0) ==oleacc.ROLE_SYSTEM_CLIENT:
+				if o.accRole(0) == oleacc.ROLE_SYSTEM_CLIENT:
+					self._volumeIAObject = o
 					return o
 		return None
-	
+
 	def getMuteAndLevel(self):
 		o = self.volumeIAObject
-		label = vlc_strings.getString(vlc_strings.ID_UnMuteImageDescription) 
+		label = getString(vlc_strings.ID_UnMuteImageDescription)
 		if o is None or len(label) == 0:
 			return (None, None)
 		muteState = False
-		if  label in o.accChild(1).accDescription(0):
+		if label in o.accChild(1).accDescription(0):
 			muteState = True
 		level = o.accChild(2).accValue(0)
 		return (muteState, level)
 
-		
 
 class MainPanel(object):
 	def __init__(self, mainWindow):
-		printDebug ("MainPanel: init")
+		printDebug("MainPanel: init")
 		super(MainPanel, self).__init__()
-		self.mainWindow = mainWindow
+		self.topNVDAObject = mainWindow.topNVDAObject
 		self.controlPanel = ControlPanel(self)
 		self.anchoredPlaylist = AnchoredPlaylist(self)
-		
+
 	@property
 	def NVDAObject(self):
 		if hasattr(self, "_NVDAObject"):
 			return self._NVDAObject
-		printDebug ("mainPanel: NVDAObject init")
-		top= self.mainWindow.topNVDAObject
+		printDebug("mainPanel: NVDAObject init")
+		top = self.topNVDAObject
 		for o in top.children:
 			if o.role == controlTypes.ROLE_PANE:
-				printDebug ("mainPanel: NVDAObject found")
+				printDebug("mainPanel: NVDAObject found")
 				self._NVDAObject = o
 				return o
-		printDebug ("mainPanel NVDAObject not found")
+		printDebug("mainPanel NVDAObject not found")
 		return None
-	
+
 	def getcontinuePlayback(self):
 		try:
 			obj = self.NVDAObject.firstChild
 			if controlTypes.STATE_INVISIBLE in obj.states:
 				return (False, None)
-			return (True,  obj.lastChild.name)
-		except:
+			return (True, obj.lastChild.name)
+		except:  # noqa:E722
 			return (False, None)
-	
+
 	def pushContinuePlaybackButton(self):
 		try:
 			obj = self.NVDAObject.firstChild.lastChild
 			if obj.role == controlTypes.ROLE_BUTTON:
 				obj.IAccessibleObject.accdoDefaultAction(0)
-		except:
+		except:  # noqa:E722
 			pass
-		
+
 	def getLoopState(self):
 		return self.controlPanel.getLoopCheckButtonState()
+
 	def getRandomState(self):
 		return self.controlPanel.getRandomCheckButtonState()
+
 	def togglePlayPause(self):
 		self.controlPanel.clickPlayPauseButton()
-		
+
+
 if py3:
 	__filter_class__ = filter
+
 	def filter(*args):
 		return [item for item in __filter_class__(*args)]
 
+
 class ControlPanel(object):
 	def __init__(self, mainPanel):
-		printDebug ("ControlPanel: init")
-		super(ControlPanel, self).__init__()	
-		self.mainPanel = mainPanel
+		printDebug("ControlPanel: init")
+		super(ControlPanel, self).__init__()
 		self.curControlIndex = 0
-		if self.mainPanel.NVDAObject is None: return
+		if mainPanel.NVDAObject is None:
+			return
 		self.NVDAObject = mainPanel.NVDAObject.lastChild
 		self.IAObject = self.NVDAObject.IAccessibleObject
 		self.refreshControls()
 
-
-
-	
 	def getLoopCheckButtonState(self):
-		oDeb= self.IAObject
+		oDeb = self.IAObject
 		count = oDeb.accChildCount
-		i= 0
+		i = 0
 		while i <= count:
-			o= oDeb.accChild(i)
-			i= i+1
-			if o and o.accRole(0) ==oleacc.ROLE_SYSTEM_CHECKBUTTON and vlc_strings.getString(vlc_strings.ID_LoopCheckButtonDescription) in o.accDescription(0):
-				return True if o.accState(0)  & oleacc.STATE_SYSTEM_CHECKED else False
+			o = oDeb.accChild(i)
+			i = i+1
+			if o and o.accRole(0) == oleacc.ROLE_SYSTEM_CHECKBUTTON and getString(
+				vlc_strings.ID_LoopCheckButtonDescription) in o.accDescription(0):
+				return True if o.accState(0) & oleacc.STATE_SYSTEM_CHECKED else False
 		return False
-	
+
 	def getRandomCheckButtonState(self):
-		oDeb= self.IAObject
+		oDeb = self.IAObject
 		count = oDeb.accChildCount
-		i= 0
-		while i <=count:
-			o= oDeb.accChild(i)
-			i= i+1
-			if o and o.accRole(0) ==oleacc.ROLE_SYSTEM_CHECKBUTTON and vlc_strings.getString(vlc_strings.ID_RandomCheckButtonDescription) in o.accDescription(0):
-				return True if o.accState(0)  & oleacc.STATE_SYSTEM_CHECKED else False
+		i = 0
+		while i <= count:
+			o = oDeb.accChild(i)
+			i = i+1
+			if o and o.accRole(0) == oleacc.ROLE_SYSTEM_CHECKBUTTON and getString(
+				vlc_strings.ID_RandomCheckButtonDescription) in o.accDescription(0):
+				return True if o.accState(0) & oleacc.STATE_SYSTEM_CHECKED else False
 				log.warning("random checkButton not found")
 		return False
+
 	def getPlayPauseButton(self):
-		oDeb= self.IAObject
+		oDeb = self.IAObject
 		count = oDeb.accChildCount
-		i= 0
-		while i <count:
-			o= oDeb.accChild(i)
-			i= i+1
+		i = 0
+		while i < count:
+			o = oDeb.accChild(i)
+			i = i+1
 			role = o.accRole(0)
-			if ( role ==oleacc.ROLE_SYSTEM_PUSHBUTTON and vlc_strings.getString(vlc_strings.ID_PlayButtonDescription) in o.accDescription(0)
-				or role ==oleacc.ROLE_SYSTEM_PUSHBUTTON and vlc_strings.getString(vlc_strings.ID_PauseThePlaybackButtonDescription ) in o.accDescription(0)):
-					return o
+			if role == oleacc.ROLE_SYSTEM_PUSHBUTTON and (
+				getString(vlc_strings.ID_PlayButtonDescription) in o.accDescription(0)
+				or getString(
+					vlc_strings.ID_PauseThePlaybackButtonDescription) in o.accDescription(0)):
+				return o
 		return None
-		
+
 	def clickPlayPauseButton(self):
 		oIA = self.getPlayPauseButton()
-		if oIA is None: return
+		if oIA is None:
+			return
 		name = oIA.accName(0)
-		left,top,width,height = oIA.accLocation(0)
-		leftClick (left+int(width/2),top+int(height/2))
+		left, top, width, height = oIA.accLocation(0)
+		leftClick(left + int(width/2), top + int(height/2))
 		# verify if it is done
-		if oIA.accName(0) == name: return
-		#no, so try other thing
+		if oIA.accName(0) == name:
+			return
+		# no, so try other thing
 		oldSpeechMode = speech.speechMode
 		speech.speechMode = speech.speechMode_off
 		keyboardHandler.KeyboardInputGesture.fromName("space").send()
 		time.sleep(0.1)
 		api.processPendingEvents()
-		speech.speechMode= oldSpeechMode
-	
+		speech.speechMode = oldSpeechMode
+
 	def clickButton(self, button):
-		printDebug ("ControlPanel: clickButton")
-		left,top,width,height = button.location
-		leftClick (int(left+(width/2)),int(top+(height/2)))
-		
+		printDebug("ControlPanel: clickButton")
+		left, top, width, height = button.location
+		leftClick(int(left + (width/2)), int(top + (height/2)))
+
 	def refreshControls(self):
 		self.curControlIndex = 0
-		self.controls = [api.getForegroundObject(),]
+		self.controls = [api.getForegroundObject(), ]
 		self.controls .extend(self.getAllControls())
 
-		
 	def getAllControls(self):
 		controls = []
 		o = self.NVDAObject
 		try:
 			controls = filter(lambda c: c.role not in [
 				controlTypes.ROLE_GRIP, controlTypes.ROLE_BORDER, controlTypes.ROLE_PANE],
-				o.children+\
-				o.getChild(0).children+\
-				o.getChild(1).children+\
-				#list(o.getChild(2).recursiveDescendants)+\
-				o.getChild(2).firstChild.children+\
+				o.children +
+				o.getChild(0).children +
+				o.getChild(1).children +
+				o.getChild(2).firstChild.children +
 				o.getChild(3).firstChild.children
 				)
 			# Add mute button
 			if controlTypes.STATE_INVISIBLE not in o.getChild(3).firstChild.states:
 				controls.append(o.getChild(3).firstChild)
-		except:
+		except:  # noqa:E722
 			return []
-		return filter(lambda item: controlTypes.STATE_INVISIBLE not in item.states and controlTypes.STATE_UNAVAILABLE not in item.states, controls)
+		return filter(
+			lambda item: controlTypes.STATE_INVISIBLE not in item.states
+			and controlTypes.STATE_UNAVAILABLE not in item.states, controls)
 
-
-
-	def moveToControl(self, next = True):
+	def moveToControl(self, next=True):
 		controls = self.controls
 		if len(controls) == 1:
 			self.refreshControls()
 		if len(controls) == 1:
-			#TRANSLATORS: Message when there are no controls visible on screen, or the addon can't find them.
+			# TRANSLATORS: Message when there are no controls visible on screen,
+			# or the addon can't find them.
 			ui.message(_("There are no controls available"))
 			return None
-		index = self.curControlIndex+ 1 if next else self.curControlIndex -1
+		index = self.curControlIndex + 1 if next else self.curControlIndex - 1
 		if index >= len(controls):
 			index = 0
 		if index < 0:
 			index = len(controls)-1
 		control = controls[index]
+		if control.name is None or len(control.name) == 0:
+			control.name = control.description
 		if self.curControlIndex == 0:
 			# Translators: message to user to report navigator object in control panel.
 			speech.speakMessage(_("Control Panel"))
@@ -836,24 +848,28 @@ class ControlPanel(object):
 		self.curControlIndex = index
 
 	def reportCurrentControl(self):
-		if self.curControlIndex == 0: return
+		if self.curControlIndex == 0:
+			return
 		controls = self.controls
-		if len(controls) == 1: return
+		if len(controls) == 1:
+			return
 		control = controls[self.curControlIndex]
 		# Translators: message to user to report navigator object in control panel.
-		wx.CallLater(100,speech.speakMessage, _("Control Panel"))
+		wx.CallLater(100, speech.speakMessage, _("Control Panel"))
 		wx.CallLater(110, speech.speakObject, control)
-		
+
+
 class Menubar(object):
 	def __init__(self, mainWindow):
-		printDebug ("Menubar: init")
+		printDebug("Menubar: init")
 		super(Menubar, self).__init__()
-		self.mainWindow = mainWindow
+		self.topNVDAObject = mainWindow.topNVDAObject
+
 	@property
 	def NVDAObject(self):
 		if hasattr(self, "_NVDAObject"):
-			return  self._NVDAObject
-		top= self.mainWindow.topNVDAObject
+			return self._NVDAObject
+		top = self.topNVDAObject
 		for o in top.children:
 			if o.role == controlTypes.ROLE_MENUBAR:
 				self._NVDAObject = o
@@ -863,107 +879,118 @@ class Menubar(object):
 	def isVisible(self):
 		try:
 			return controlTypes.STATE_INVISIBLE not in self.NVDAObject.states
-		except:
+		except:  # noqa:E722
 			return False
+
+
 _count = 0
+
 
 class Playlist(object):
 	def __init__(self):
 		super(Playlist, self).__init__()
 		self.groupButton = None
-	
-	
+
 	def isAlive(self):
 		return True if self.NVDAObject else False
-		
+
 	@classmethod
 	def isAPlaylist(cls, oIA):
 		try:
-			if oIA.accRole(0) != oleacc.ROLE_SYSTEM_CLIENT or oIA.accChildCount != 4 : return False
-			(client, childID) = accNavigate(oIA,0, oleacc.NAVDIR_FIRSTCHILD)
-			(buttonMenu, childID) = accNavigate(client,0, oleacc.NAVDIR_FIRSTCHILD)
+			if oIA.accRole(0) != oleacc.ROLE_SYSTEM_CLIENT or oIA.accChildCount != 4:
+				return False
+			(client, childID) = accNavigate(oIA, 0, oleacc.NAVDIR_FIRSTCHILD)
+			(buttonMenu, childID) = accNavigate(client, 0, oleacc.NAVDIR_FIRSTCHILD)
 			if buttonMenu and buttonMenu.accRole(0) == oleacc.ROLE_SYSTEM_BUTTONMENU:
 				return True
-		except:
+		except:  # noqa:E722
 			pass
 		return False
-		
+
 	@classmethod
 	def getPlaylistID(cls, oIA):
-		if  not cls.isAPlaylist(oIA): return ID_NoPlaylist 
+		if not cls.isAPlaylist(oIA):
+			return ID_NoPlaylist
 		try:
 			(parent, childID) = accParent(oIA, 0)
-		except:
-			return ID_NoPlaylist 
+		except:  # noqa:E722
+			return ID_NoPlaylist
 
-		if  parent and parent.accRole(0) == oleacc.ROLE_SYSTEM_WINDOW:
+		if parent and parent.accRole(0) == oleacc.ROLE_SYSTEM_WINDOW:
 			# embedded window playlist
 			id = ID_EmbeddedPlaylist
 		else:
-			#anchored playlist
+			# anchored playlist
 			id = ID_AnchoredPlaylist
 		return id
-		
-		
+
 	def getGroupButtonName(self):
-		if self.NVDAObject is None: return None
+		if self.NVDAObject is None:
+			return None
 		oIA = self.NVDAObject.IAccessibleObject
 		try:
-			(client, childID) = accNavigate(oIA,0, oleacc.NAVDIR_FIRSTCHILD)
-			(buttonMenu, childID) = accNavigate(client,0, oleacc.NAVDIR_FIRSTCHILD)
-			(groupButton, childID) = accNavigate(buttonMenu,0, oleacc.NAVDIR_NEXT)
+			(client, childID) = accNavigate(oIA, 0, oleacc.NAVDIR_FIRSTCHILD)
+			(buttonMenu, childID) = accNavigate(client, 0, oleacc.NAVDIR_FIRSTCHILD)
+			(groupButton, childID) = accNavigate(buttonMenu, 0, oleacc.NAVDIR_NEXT)
 			if groupButton and groupButton.accRole(0) == oleacc.ROLE_SYSTEM_PUSHBUTTON:
 				return groupButton.accName(0)
-		except:
+		except:  # noqa:E722
 			pass
 		return None
+
 	def reportGroupButtonName(self):
 		name = self.getGroupButtonName()
-		if name is None: return
+		if name is None:
+			return
 		ui.message(name)
+
+
 class AnchoredPlaylist(Playlist):
 	def __init__(self, mainPanel):
-		printDebug ("AnchoredPlaylist: init")
+		printDebug("AnchoredPlaylist: init")
 		super(AnchoredPlaylist, self).__init__()
-		self.mainPanel = mainPanel
+		self.mainPanelNVDAObject = mainPanel.NVDAObject
+
 	@property
-	def  NVDAObject(self):
-		if self.mainPanel.NVDAObject:
+	def NVDAObject(self):
+		if self.mainPanelNVDAObject:
 			try:
-				NVDAObject =  self.mainPanel.NVDAObject.getChild(1).getChild(2)
+				NVDAObject = self.mainPanelNVDAObject.getChild(1).getChild(2)
 				return NVDAObject
-			except:
+			except:  # noqa:E722
 				pass
 		return None
 
 	def isVisible(self):
-		if self.NVDAObject  is None: return False
+		if self.NVDAObject is None:
+			return False
 		if controlTypes.STATE_INVISIBLE in self.NVDAObject.states:
 			return False
 		return True
 
-
-			
-		pass
 	def reportViewState(self):
-			if self.isVisible():
-				speech.speakMessage(_("Anchored playlist shown"))
-			else:
-				speech.speakMessage(_("Anchored playlist hidden"))
+		if self.isVisible():
+			# Translators: message to user to report state of anchored playlist.
+			speech.speakMessage(_("Anchored playlist shown"))
+		else:
+			# Translators: message to user to report state of anchored playlist.
+			speech.speakMessage(_("Anchored playlist hidden"))
+
+
 class EmbeddedPlaylist(Playlist):
 
 	@property
-	def NVDAObject (self):
+	def NVDAObject(self):
 		if hasattr(self, "_NVDAObject"):
 			return self._NVDAObject
-		obj= api.getDesktopObject().firstChild
+		obj = api.getDesktopObject().firstChild
 		while obj:
-			if obj.windowClassName == u'Qt5QWindowIcon'and obj.childCount == 7:
+			if obj.windowClassName == u'Qt5QWindowIcon' and obj.childCount == 7:
 				o = obj.getChild(3).firstChild
 				if o and Playlist.isAPlaylist(o.IAccessibleObject):
 					self._NVDAObject = o
 					return o
-			if obj is None or obj == obj.next: break
+			if obj is None or obj == obj.next:
+				break
 			obj = obj.next
 		return None
-

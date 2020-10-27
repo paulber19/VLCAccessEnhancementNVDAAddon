@@ -1,26 +1,28 @@
 # shared\vlc_localeSettingsHandler.py.
 # a part of vlcAccessEnhancement add-on
-# Copyright 2018-2019 paulber19
-#This file is covered by the GNU General Public License.
-
+# Copyright 2018-2020 paulber19
+# This file is covered by the GNU General Public License.
 
 
 import addonHandler
-addonHandler.initTranslation()
 import os
 from logHandler import log
-_curAddon = addonHandler.getCodeAddon()
+from configobj import ConfigObj
+from languageHandler import curLang
 import sys
+
+_curAddon = addonHandler.getCodeAddon()
 debugToolsPath = os.path.join(_curAddon.path, "debugTools")
 sys.path.append(debugToolsPath)
 try:
 	from debug import printDebug
 except ImportError:
-	def printDebug (msg): return
+	def printDebug(msg): return
 del sys.path[-1]
-from configobj import ConfigObj, DuplicateError
-import wx
-from languageHandler import curLang
+
+
+addonHandler.initTranslation()
+
 
 class LocaleSettings(object):
 	def __init__(self):
@@ -31,49 +33,52 @@ class LocaleSettings(object):
 			printDebug("LocaleSettings __init__ :Default config")
 			self.conf = None
 		else:
-			self.conf = ConfigObj(localeSettingsFile, encoding = "utf-8", list_values= False)
+			self.conf = ConfigObj(
+				localeSettingsFile, encoding="utf-8", list_values=False)
 		self.loadScriptGestures()
-	
+
 	def getLocaleSettingsIniFilePath(self):
-		from languageHandler import curLang
 		settingsIniFileName = "settings.ini"
-		settingsIniFilePath = os.path.join(self.addonDir,"locale",curLang, settingsIniFileName)
+		lang = curLang
+		settingsIniFilePath = os.path.join(
+			self.addonDir, "locale", curLang, settingsIniFileName)
 		if not os.path.exists(settingsIniFilePath):
 			lang = curLang.split("_")[0]
-			settingsIniFilePath = os.path.join(self.addonDir,"locale",lang, settingsIniFileName)
+			settingsIniFilePath = os.path.join(
+				self.addonDir, "locale", lang, settingsIniFileName)
 			if not os.path.exists(settingsIniFilePath):
-				log.warning("No settingsIniFile %s for %s" %(settingsIniFilePath,curLang))
+				log.warning("No settingsIniFile %s for %s" % (settingsIniFilePath, curLang))  # noqa:E501
 				settingsIniFilePath = None
 
 		return settingsIniFilePath
-	
-	def loadScriptGestures(self, ):
+
+	def loadScriptGestures(self):
 		conf = self.conf
 		defaultScriptGestures = {
-			"goToTime" : "kb:control+;",
-			"reportElapsedTime" : "kb:;", 
-			"reportRemainingTime" : "kb:,",
-			"reportTotalTime" : "kb:.",
-			"reportCurrentSpeed" : "kb:/",
-			"recordResumeFile":"kb:nvda+control+f5",
-			"resumePlayback":"kb:nvda+control+f6",
+			"goToTime": "kb:control+;",
+			"reportElapsedTime": "kb:;",
+			"reportRemainingTime": "kb:,",
+			"reportTotalTime": "kb:.",
+			"reportCurrentSpeed": "kb:/",
+			"recordResumeFile": "kb:nvda+control+f5",
+			"resumePlayback": "kb:nvda+control+f6",
 			"continuePlayback": "kb:alt+control+r",
 			"hideShowMenusView": "kb:control+h",
 			"adjustmentsAndEffects": "kb:control+e",
 			}
 		self.scriptGestures = defaultScriptGestures.copy()
-		if (conf is None)   or ("script-gestures" not in conf.sections):
+		if (conf is None) or ("script-gestures" not in conf.sections):
 			printDebug("loadScriptGestures: Default script gestures assignment loaded")
 			return
 		section = conf["script-gestures"]
 		for scriptName in defaultScriptGestures:
 			if scriptName in section:
 				self.scriptGestures[scriptName] = section[scriptName]
-		printDebug ("loadScriptGestures: script gestures assignment loaded")
+		printDebug("loadScriptGestures: script gestures assignment loaded")
+
 	def getVLCKeysToUpdate(self):
 		conf = self.conf
 		sectionName = "vlc-assignements"
-		if conf is  None or sectionName not in conf:
+		if conf is None or sectionName not in conf:
 			return None
 		return conf[sectionName].copy() if len(conf[sectionName]) else None
-		

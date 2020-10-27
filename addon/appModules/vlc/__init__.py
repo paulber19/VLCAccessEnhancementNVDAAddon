@@ -1,44 +1,43 @@
 # appModules\vlc\__init__.py.
 # a part of vlcAccessEnhancement add-on
-# Copyright 2019 paulber19
-#This file is covered by the GNU General Public License.
+# Copyright 2019-2020paulber19
+# This file is covered by the GNU General Public License.
 # some code source comes from VLC add-on written by Javi Dominguez.
 
 
 import addonHandler
-addonHandler.initTranslation()
 from logHandler import log
 import winUser
 import controlTypes
-import scriptHandler
-import textInfos
 import api
 import re
 import appModuleHandler
 import speech
 import queueHandler
 import ui
-import tones
 import keyboardHandler
-from NVDAObjects.window import Window
+import globalVars
+import watchdog
+import treeInterceptorHandler
+import braille
 from NVDAObjects.IAccessible import IAccessible, qt
 from NVDAObjects.behaviors import Dialog
 import NVDAObjects
 import time
 import wx
-import gui
 import os
-import winsound
 import eventHandler
-import mouseHandler
 import oleacc
-from IAccessibleHandler import accNavigate, accParent
 from inputCore import normalizeGestureIdentifier
 import inputCore
-import core
+import sys
+from .vlc_goToTime import GoToTimeDialog
+from . import vlc_application
+from .vlc_application import ID_NoPlaylist, ID_AnchoredPlaylist, ID_EmbeddedPlaylist  # noqa:E501
+from . import vlc_playlist
+
 
 _curAddon = addonHandler.getCodeAddon()
-import sys
 debugToolsPath = os.path.join(_curAddon.path, "debugTools")
 sys.path.append(debugToolsPath)
 try:
@@ -46,210 +45,225 @@ try:
 	from appModuleDebug import printDebug, toggleDebugFlag
 except ImportError:
 	from appModuleHandler import AppModule as AppModule
+
 	def prindDebug(msg): return
+
 	def toggleDebugFlag(): return
 del sys.path[-1]
 sharedPath = os.path.join(_curAddon.path, "shared")
 sys.path.append(sharedPath)
-from vlc_utils import *
-from vlc_settingsHandler import *
-from vlc_special import makeAddonWindowTitle, messageBox
-import vlc_strings
-import vlc_addonConfig
-from vlc_py3Compatibility import _unicode, rangeGen 
-del sys.path[-1]
-from .vlc_goToTime import GoToTimeDialog
+import vlc_addonConfig  # noqa:E402
+#from vlc_addonConfig import _addonConfigManager
+from vlc_utils import *  # noqa:F403,E402
+from vlc_settingsHandler import *  # noqa:F403,E402
+from vlc_special import makeAddonWindowTitle, messageBox  # noqa:E402
+import vlc_strings  # noqa:E402
 
-from . import vlc_application
-from .vlc_application import ID_NoPlaylist, ID_AnchoredPlaylist, ID_EmbeddedPlaylist
-from . import vlc_playlist
+from vlc_py3Compatibility import _unicode, rangeGen  # noqa:E402
+del sys.path[-1]
+
+addonHandler.initTranslation()
+
 _scriptCategory = _unicode(_curAddon.manifest['summary'])
 
 # timer for script
 GB_scriptTimer = None
 
+
 def sendGesture(gesture):
 	gesture.send()
 	if "numLock" in gesture.modifierNames:
 		keyboardHandler.KeyboardInputGesture.fromName("numLock").send()
-import globalVars
-import watchdog
-import treeInterceptorHandler
-import braille
+
+
 def mySetFocusObject(obj):
-	"""Stores an object as the current focus object. (Note: this does not physically change the window with focus in the operating system, but allows NVDA to keep track of the correct object).
-Before overriding the last object, this function calls event_loseFocus on the object to notify it that it is loosing focus. 
-@param obj: the object that will be stored as the focus object
-@type obj: NVDAObjects.NVDAObject
-"""
-	if not isinstance(obj,NVDAObjects.NVDAObject):
+	"""Stores an object as the current focus object.
+	(Note:
+	this does not physically change the window with focus in the operating system,
+	but allows NVDA to keep track of the correct object).
+	Before overriding the last object, this function calls event_loseFocus
+	on the object to notify it that it is loosing focus.
+	@param obj: the object that will be stored as the focus object
+	@type obj: NVDAObjects.NVDAObject
+	"""
+	if not isinstance(obj, NVDAObjects.NVDAObject):
 		return False
 	if globalVars.focusObject:
-		eventHandler.executeEvent("loseFocus",globalVars.focusObject)
-	oldFocusLine=globalVars.focusAncestors
-	#add the old focus to the old focus ancestors, but only if its not None (is none at NVDA initialization)
-	if globalVars.focusObject: 
+		eventHandler.executeEvent("loseFocus", globalVars.focusObject)
+	oldFocusLine = globalVars.focusAncestors
+	# add the old focus to the old focus ancestors,
+	# but only if its not None (is none at NVDA initialization)
+	if globalVars.focusObject:
 		oldFocusLine.append(globalVars.focusObject)
-	oldAppModules=[o.appModule for o in oldFocusLine if o and o.appModule]
+	oldAppModules = [o.appModule for o in oldFocusLine if o and o.appModule]
 	appModuleHandler.cleanup()
-	ancestors=[]
-	tempObj=obj
-	matchedOld=False
-	focusDifferenceLevel=0
-	oldFocusLineLength=len(oldFocusLine)
-	i = 0
+	ancestors = []
+	tempObj = obj
+	matchedOld = False
+	focusDifferenceLevel = 0
+	oldFocusLineLength = len(oldFocusLine)
 	# Starting from the focus, move up the ancestor chain.
-	safetyCount=0
+	safetyCount = 0
 	while tempObj:
-		# my modification to break endless loop 
+		# my modification to break endless loop
 		try:
 			if tempObj in ancestors:
-				tempObj=api.getDesktopObject()
-		except:
+				tempObj = api.getDesktopObject()
+		except:  # noqa:E722
 			pass
-		if safetyCount<100:
-			safetyCount+=1
+		if safetyCount < 100:
+			safetyCount += 1
 		else:
 			try:
-				log.error("mySetFocusObject: Never ending focus ancestry: last object: %s, %s, window class %s, application name %s"%(tempObj.name,controlTypes.roleLabels[tempObj.role],tempObj.windowClassName,tempObj.appModule.appName))
-			except:
+				log.error("mySetFocusObject: Never ending focus ancestry: last object: %s, %s, window class %s, application name %s" % (tempObj.name, controlTypes.roleLabels[tempObj.role], tempObj.windowClassName, tempObj.appModule.appName))  # noqa:E501
+			except:  # noqa:E722
 				pass
-			tempObj=api.getDesktopObject()
+			tempObj = api.getDesktopObject()
 		# Scan backwards through the old ancestors looking for a match.
-		for index in rangeGen (oldFocusLineLength-1,-1,-1):
+		for index in rangeGen(oldFocusLineLength - 1, -1, -1):
 			watchdog.alive()
-			if tempObj==oldFocusLine[index]:
+			if tempObj == oldFocusLine[index]:
 				# Match! The old and new focus ancestors converge at this point.
 				# Copy the old ancestors up to and including this object.
-				origAncestors=oldFocusLine[0:index+1]
-				#make sure to cache the last old ancestor as a parent on the first new ancestor so as not to leave a broken parent cache
+				origAncestors = oldFocusLine[0:index+1]
+				# make sure to cache the last old ancestor as a parent
+				# on the first new ancestor so as not to leave a broken parent cache
 				if ancestors and origAncestors:
-					ancestors[0].container=origAncestors[-1]
+					ancestors[0].container = origAncestors[-1]
 				origAncestors.extend(ancestors)
-				ancestors=origAncestors
-				focusDifferenceLevel=index+1
-				# We don't need to process any more in either this loop or the outer loop; we have all of the ancestors.
-				matchedOld=True
+				ancestors = origAncestors
+				focusDifferenceLevel = index+1
+				# We don't need to process any more in either this loop or the outer loop;
+				# we have all of the ancestors.
+				matchedOld = True
 				break
 		if matchedOld:
 			break
-		# We're moving backwards along the ancestor chain, so add this to the start of the list.
-		ancestors.insert(0,tempObj)
-		container=tempObj.container
-		tempObj.container=container # Cache the parent.
-		tempObj=container
-	#Remove the final new ancestor as this will be the new focus object
+		# We're moving backwards along the ancestor chain,
+			# so add this to the start of the list.
+		ancestors.insert(0, tempObj)
+		container = tempObj.container
+		tempObj.container = container  # Cache the parent.
+		tempObj = container
+	# Remove the final new ancestor as this will be the new focus object
 	del ancestors[-1]
-	# #5467: Ensure that the appModule of the real focus is included in the newAppModule list for profile switching
-	# Rather than an original focus ancestor which happened to match the new focus.
-	newAppModules=[o.appModule for o in ancestors if o and o.appModule]
+	# #5467: Ensure that the appModule of the real focus is included in
+	# the newAppModule list for profile switching
+	# Rather than an original focus ancestor
+	# which happened to match the new focus.
+	newAppModules = [o.appModule for o in ancestors if o and o.appModule]
 	if obj.appModule:
 		newAppModules.append(obj.appModule)
 	try:
 		treeInterceptorHandler.cleanup()
 	except watchdog.CallCancelled:
 		pass
-	treeInterceptorObject=None
-	o=None
+	treeInterceptorObject = None
+	o = None
 	watchdog.alive()
 	for o in ancestors[focusDifferenceLevel:]+[obj]:
 		try:
-			treeInterceptorObject=treeInterceptorHandler.update(o)
-		except:
+			treeInterceptorObject = treeInterceptorHandler.update(o)
+		except:  # noqa:E722
 			log.exception("Error updating tree interceptor")
-	#Always make sure that the focus object's treeInterceptor is forced to either the found treeInterceptor (if its in it) or to None
-	#This is to make sure that the treeInterceptor does not have to be looked up, which can cause problems for winInputHook
+	# Always make sure that the focus object's treeInterceptor is forced to either
+			# the found treeInterceptor (if its in it) or to None
+	# This is to make sure that the treeInterceptor does not have to be looked up,
+			# which can cause problems for winInputHook
 	if obj is o or obj in treeInterceptorObject:
-		obj.treeInterceptor=treeInterceptorObject
+		obj.treeInterceptor = treeInterceptorObject
 	else:
-		obj.treeInterceptor=None
+		obj.treeInterceptor = None
 	# #3804: handleAppSwitch should be called as late as possible,
 	# as triggers must not be out of sync with global focus variables.
 	# setFocusObject shouldn't fail earlier anyway, but it's best to be safe.
 	try:
-		appModuleHandler.handleAppSwitch(oldAppModules,newAppModules)
-	except:
+		appModuleHandler.handleAppSwitch(oldAppModules, newAppModules)
+	except:  # noqa:E722
 		log.warning("appModuleHandler.handleAppSwitch error")
 	# Set global focus variables.
-	globalVars.focusDifferenceLevel=focusDifferenceLevel
-	globalVars.focusObject=obj
-	globalVars.focusAncestors=ancestors
+	globalVars.focusDifferenceLevel = focusDifferenceLevel
+	globalVars.focusObject = obj
+	globalVars.focusAncestors = ancestors
 	braille.invalidateCachedFocusAncestors(focusDifferenceLevel)
 	if config.conf["reviewCursor"]["followFocus"]:
-		api.setNavigatorObject(obj,isFocus=True)
+		api.setNavigatorObject(obj, isFocus=True)
 	return True
-
 
 
 class InVLCViewWindow(IAccessible):
 	scriptCategory = _scriptCategory
 	_controlsPaneGestures = {
-	"kb:tab": "moveToNextControl",
-	"kb:shift+tab": "moveToPreviousControl",
-	"kb:enter": "doAction",
+		"kb:tab": "moveToNextControl",
+		"kb:shift+tab": "moveToPreviousControl",
+		"kb:enter": "doAction",
 	}
+
 	def initOverlayClass(self):
-		#printDebug("MainWindow initOverlayClass:  %s, hasFocus = %s, name = %s" %(controlTypes.roleLabels.get(self.role), self.hasFocus, self.name))
-		self.continuePlaybackScript = InVLCViewWindow.script_continuePlayback
+		from vlc_addonConfig import _addonConfigManager
 		self._initGestures()
 		self._initVlcGestures()
-		from  vlc_addonConfig import _addonConfigManager
-		from .vlc_playlist import  InAnchoredPlaylist
-		if not isinstance(self, InAnchoredPlaylist) and  _addonConfigManager.getPlaybackControlsAccessOption():
+		if not isinstance(self, vlc_playlist.InAnchoredPlaylist) and\
+			_addonConfigManager.getPlaybackControlsAccessOption():
 			self.bindGestures(self._controlsPaneGestures)
-		
-	
-	def event_typedCharacter(self,ch):
-		printDebug( "InVLCViewWindow event_typedCharacter: hasFocus = %s, name= %s, ch = %s (%s)"%(self.hasFocus, self.name,ch, ord(ch)))
+
+	def event_typedCharacter(self, ch):
+		printDebug("InVLCViewWindow event_typedCharacter: hasFocus = %s, name= %s, ch = %s (%s)" % (self.hasFocus, self.name, ch, ord(ch)))  # noqa:E501
 		mainWindow = self.appModule.mainWindow
 		if ch == self.appModule.vlcrcSettings.getKeyFromName("key-loop"):
 			wx.CallAfter(mainWindow.reportLoopStateChange)
 		elif ch == self.appModule.vlcrcSettings.getKeyFromName("key-random"):
 			wx.CallLater(30, mainWindow.reportRandomStateChange)
-		elif ch == self.appModule.vlcrcSettings.getKeyFromName("key-toggle-fullscreen"):
+		elif ch == self.appModule.vlcrcSettings.getKeyFromName(
+			"key-toggle-fullscreen"):
 			wx.CallAfter(mainWindow.reportViewState)
 		else:
-			super(InVLCViewWindow  , self).event_typedCharacter(ch)
-		controlPanel= mainWindow.mainPanel.controlPanel
+			super(InVLCViewWindow, self).event_typedCharacter(ch)
+		controlPanel = mainWindow.mainPanel.controlPanel
 		controlPanel.reportCurrentControl()
-	def event_statesChange(self):
-		printDebug ("event_stateChange")
-		super(InVLCViewWindow, self).event_statesChange()
 
-			
+	def event_statesChange(self):
+		printDebug("event_stateChange")
+		super(InVLCViewWindow, self).event_statesChange()
 	
+
 	def event_gainFocus(self):
-		printDebug( "InVLCViewWindow event_gainFocus: role = %s, name = %s"%(controlTypes.roleLabels.get(self.role), self.name))
+		printDebug("InVLCViewWindow event_gainFocus: role = %s, name = %s" % (controlTypes.roleLabels.get(self.role), self.name))  # noqa:E501
 		if self.role == controlTypes.ROLE_PANE and not self.isFocusable:
-			# this pane receves  focus  after playlist removing. Speak foreground window object
+			# this pane receves focus after playlist removing.
+			# Speak foreground window object
 			speech.speakObject(self.appModule.mainWindow.topNVDAObject)
 		else:
-			super(InVLCViewWindow  , self).event_gainFocus()
+			super(InVLCViewWindow, self).event_gainFocus()
 		self.appModule.setStatusBar()
-		if self.hasFocus == False:
-			printDebug ("InVLCViewWindow: event_gainFocus: setFocus on object with hasFocus = False")
+		if not self.hasFocus:
+			printDebug("InVLCViewWindow: event_gainFocus: setFocus on object with hasFocus = False")  # noqa:E501
 		mainWindow = self.appModule.mainWindow
 		# after anchored playlist hiding , refresh playback controls
 		mainWindow.mainPanel.controlPanel.refreshControls()
-		queueHandler.queueFunction(queueHandler.eventQueue, mainWindow.reportMediaStates)
-		queueHandler.queueFunction(queueHandler.eventQueue, mainWindow.reportLoopAndRandomStates)
-		queueHandler.queueFunction(queueHandler.eventQueue, mainWindow.reportMenubarState)
-		queueHandler.queueFunction(queueHandler.eventQueue, mainWindow.reportViewState)
-	
+		queueHandler.queueFunction(
+			queueHandler.eventQueue, mainWindow.reportMediaStates)
+		queueHandler.queueFunction(
+			queueHandler.eventQueue, mainWindow.reportLoopAndRandomStates)
+		queueHandler.queueFunction(
+			queueHandler.eventQueue, mainWindow.reportMenubarState)
+		queueHandler.queueFunction(
+			queueHandler.eventQueue, mainWindow.reportViewState)
+
 	def event_loseFocus(self):
-		printDebug ("InVLCViewWindow: event_loseFocus")
+		printDebug("InVLCViewWindow: event_loseFocus")
 		self.appModule.resetStatusBar()
-	
+
 	def _initGestures(self):
 		scriptGestures = self.appModule.vlcrcSettings .localeSettings .scriptGestures
-		for script in  scriptGestures:
+		for script in scriptGestures:
 			gesture = scriptGestures[script]
 			self.bindGesture(gesture, script)
-	
+
 	def _initVlcGestures(self):
 		gestures = self.appModule.vlcGestures
 		self.bindGestures(gestures)
-	
+
 	def hasNoMedia(self):
 		mainWindow = self.appModule.mainWindow
 		if not mainWindow.hasMedia():
@@ -257,159 +271,163 @@ class InVLCViewWindow(IAccessible):
 			ui.message(_("No media"))
 			return True
 		return False
-	
-	def script_reportElapsedTime(self,gesture):
+
+	def script_reportElapsedTime(self, gesture):
 		if self.hasNoMedia():
 			return
 		mainWindow = self.appModule.mainWindow
 		mainWindow.sayElapsedTime(True)
-	# Translators: Input help mode message for  report elapsed time command.
+	# Translators: Input help mode message for report elapsed time command.
 	script_reportElapsedTime.__doc__ = _("Report media's played duration")
-	
-	def script_reportTotalTime(self,gesture):
+
+	def script_reportTotalTime(self, gesture):
 		if self.hasNoMedia():
 			return
 		# Translators: message to the user to report media duration.
-		msg = _("Media duration %s") 
+		msg = _("Media duration %s")
 		mainWindow = self.appModule.mainWindow
 		totalTime = mainWindow.getTotalTime()
 		if totalTime is None:
 			# Translators: media duration is unknown.
-			ui.message(msg%_("unknown"))
+			ui.message(msg % _("unknown"))
 			return
 
-		ui.message(msg%formatTime(totalTime))
-	
+		ui.message(msg % formatTime(totalTime))
 	# Translators: Input help mode message for report total time command.
 	script_reportTotalTime.__doc__ = _("Report media's totalduration")
-	
-	def script_reportRemainingTime(self,gesture):
+
+	def script_reportRemainingTime(self, gesture):
 		if self.hasNoMedia():
 			return
 		mainWindow = self.appModule.mainWindow
 		mainWindow.sayRemainingTime()
-		
-	# Translators: Input help mode message for  report remaining time command.
-	script_reportRemainingTime.__doc__ = _("Report media's remaining durationto be played")
-	
-	def saySpeed(self, msg =""):
+	# Translators: Input help mode message for report remaining time command.
+	script_reportRemainingTime.__doc__ = _("Report media's remaining durationto be played")  # noqa:E501
+
+	def saySpeed(self, msg=""):
 		mainWindow = self.appModule.mainWindow
-		ui.message("%s %s" %(msg, mainWindow.getSpeedValue()))
-	
-	def script_reportCurrentSpeed(self,gesture):
+		ui.message("%s %s" % (msg, mainWindow.getSpeedValue()))
+
+	def script_reportCurrentSpeed(self, gesture):
 		if self.hasNoMedia():
 			return
-		# Translators:  part of message to report speed.
+		# Translators: part of message to report speed.
 		self.saySpeed(_("Current speed "))
-	# Translators: Input help mode message for  report current speed command.
+	# Translators: Input help mode message for report current speed command.
 	script_reportCurrentSpeed.__doc__ = _("Report current speed")
-	
-	def _setAndReportSpeed(self, gesture, msg = ""):
-		if self.hasNoMedia(): return
-		#sendGesture(gesture)
+
+	def _setAndReportSpeed(self, gesture, msg=""):
+		if self.hasNoMedia():
+			return
 		gesture.send()
 		wx.CallAfter(speech.cancelSpeech)
-		wx.CallAfter(self.saySpeed,msg)
-	
+		wx.CallAfter(self.saySpeed, msg)
+
 	def script_setAndReportSpeed(self, gesture):
 		self._setAndReportSpeed(gesture)
-	
+
 	def script_setAndReportNormalSpeed(self, gesture):
 		# Translators: part of message to report speed.
 		self._setAndReportSpeed(gesture, _("Back to normal speed"))
-	
-	def script_goToTime(self,gesture):
+
+	def script_goToTime(self, gesture):
 		if self.hasNoMedia():
 			return
 		mainWindow = self.appModule.mainWindow
 		currentTime = mainWindow.getCurrentTime()
 		totalTime = mainWindow.getTotalTime()
-		if currentTime is None or totalTime is None: return
+		if currentTime is None or totalTime is None:
+			return
 		curTime = getTimeList(currentTime)
 		totalTime = getTimeList(totalTime)
-		wx.CallAfter(GoToTimeDialog.run,curTime, totalTime, mainWindow)
-	# Translators: Input help mode message for  go to time command.
-	script_goToTime.__doc__ = _("Display the dialog to set a time and move the playback cursor to this time")
-	
+		wx.CallAfter(GoToTimeDialog.run, curTime, totalTime, mainWindow)
+	# Translators: Input help mode message for go to time command.
+	script_goToTime.__doc__ = _("Display the dialog to set a time and move the playback cursor to this time")  # noqa:E501
+
 	def isAJumpOutOfMedia(self, gesture):
 		mainWindow = self.appModule.mainWindow
 		(layout, identifier) = gesture._get_identifiers()
 		delay = self.appModule.jumpKeyToDelay[normalizeGestureIdentifier(identifier)]
 		totalTime = mainWindow.getTotalTime()
-		if totalTime is None: return False
+		if totalTime is None:
+			return False
 		totalTimeList = getTimeList(totalTime)
-		totalTimeInSec = int(totalTimeList[0])*3600  + int(totalTimeList[1])*60 +int(totalTimeList[2])
+		totalTimeInSec = int(totalTimeList[0])*3600 + int(totalTimeList[1])*60 + int(totalTimeList[2])  # noqa:E501
 		currentTime = mainWindow.getCurrentTime()
 		curTimeInSec = getTimeInSec(currentTime)
-		# Translators: message to the user to say  time jump is not possible.
+		# Translators: message to the user to say time jump is not possible.
 		msg = _("Not available, jump is too big ")
-		if delay >0:
+		if delay > 0:
 			diff = totalTimeInSec - curTimeInSec
-			pause = True if ((diff <= 10) or (diff >= delay and diff -delay <= 10)) else False
+			pause = True if ((diff <= 10) or (diff >= delay and diff - delay <= 10))\
+				else False
 			if pause:
 				# to prevent vlc to stop media, we pause the media
 				isPlaying = mainWindow.isPlaying()
 				if isPlaying:
 					mainWindow.togglePlayOrPause()
-					queueHandler.queueFunction(queueHandler.eventQueue, speech.speakMessage, _("Pause"))
+					queueHandler.queueFunction(
+						queueHandler.eventQueue, speech.speakMessage, _("Pause"))
 			if diff <= abs(delay):
 				queueHandler.queueFunction(queueHandler.eventQueue, ui.message, msg)
 				mainWindow.sayElapsedTime(True)
-				# Translators: message to the user to report media duration.
-				queueHandler.queueFunction(queueHandler.eventQueue, ui.message, _("Media duration %s") %formatTime(totalTime))
+				queueHandler.queueFunction(
+					queueHandler.eventQueue,
+					ui.message,
+					# Translators: message to the user to report media duration.
+					_("Media duration %s") % formatTime(totalTime))
 				return True
-		elif delay <0:
+		elif delay < 0:
 			if curTimeInSec < abs(delay):
 				queueHandler.queueFunction(queueHandler.eventQueue, ui.message, msg)
 				mainWindow.sayElapsedTime(True)
 				return True
 		return False
-	
-	def script_jumpAndReportTime(self,gesture):
+
+	def script_jumpAndReportTime(self, gesture):
 		def callback1(gesture):
 			global GB_scriptTimer
 			GB_scriptTimer = None
-			# for unknown reason gesture.send call in this function cause error and NVDA stops speaking.
+			# for unknown reason gesture.send call in this function cause error
+			# and NVDA stops speaking.
 			# but not if calback is put in queue.
 			queueHandler.queueFunction(queueHandler.eventQueue, callback, gesture)
 
-			
 		def callback(gesture):
 			global GB_scriptTimer
 			GB_scriptTimer = None
-			#if self.isAJumpOutOfMedia(gesture): return
 			gesture.send()
 			mainWindow = self.appModule.mainWindow
 			mainWindow.sayElapsedTime()
-
-
-		
 		global GB_scriptTimer
 		if GB_scriptTimer is not None:
 			GB_scriptTimer.Stop()
 			GB_scriptTimer = None
-		if self.hasNoMedia(): return
-		if self.isAJumpOutOfMedia(gesture): return
+		if self.hasNoMedia():
+			return
+		if self.isAJumpOutOfMedia(gesture):
+			return
 		GB_scriptTimer = wx.CallLater(80, callback1, gesture)
 
-			
 	def script_sayVolume(self, gesture):
-		printDebug ("InVLCViewWindow: sayVolume")
+		printDebug("InVLCViewWindow: sayVolume")
 		mainWindow = self.appModule.mainWindow
 		(oldMuteState, oldLevel) = mainWindow.getVolumeMuteStateAndLevel()
 		gesture.send()
 		time.sleep(0.05)
-		from  vlc_addonConfig import _addonConfigManager
-		if not _addonConfigManager.getAutoVolumeLevelReportOption(): return
+		from vlc_addonConfig import _addonConfigManager
+		if not _addonConfigManager.getAutoVolumeLevelReportOption():
+			return
 		(muteState, level) = mainWindow.getVolumeMuteStateAndLevel()
-		if (muteState, level)  == (oldMuteState, oldLevel) : return
-		if not mainWindow.isPlaying() or muteState :
-			# Translators: message to the user to report  volume level.
-			speech.speakMessage(_("Volume: %s")%str(level))
+		if (muteState, level) == (oldMuteState, oldLevel):
+			return
+		if not mainWindow.isPlaying() or muteState:
+			# Translators: message to the user to report volume level.
+			speech.speakMessage(_("Volume: %s") % str(level))
 			if muteState:
 				# Translators: message to the user to say volume is muted.
 				speech.speakMessage(_("Volume mute"))
-	
+
 	def script_toggleMuteAndReportState(self, gesture):
 		def callback():
 			speech.cancelSpeech()
@@ -417,17 +435,15 @@ class InVLCViewWindow(IAccessible):
 			(muteState, level) = mainWindow.getVolumeMuteStateAndLevel()
 			if muteState is None:
 				return
-			if muteState :
-				# Translators: message To  the user to report volume is muted.
-				speech.speakMessage (_("Volume mute"))
+			if muteState:
+				# Translators: message To the user to report volume is muted.
+				speech.speakMessage(_("Volume mute"))
 			elif not mainWindow.isPlaying():
 				# Translators: message to the user to report volume is not muted.
-				speech.speakMessage( _("volume unmuted"))
-		
+				speech.speakMessage(_("volume unmuted"))
 		gesture.send()
 		wx.CallAfter(callback)
 
-	
 	def script_stopMedia(self, gesture):
 		gesture.send()
 		wx.CallAfter(speech.cancelSpeech)
@@ -435,61 +451,60 @@ class InVLCViewWindow(IAccessible):
 		if not mainWindow.hasMedia():
 			mainWindow.resetMediaStates()
 			# Translators: message to the user to say the media is stopped.
-			wx.CallAfter(speech.speakMessage,_("Media stopped"))
-		
-	
+			wx.CallAfter(speech.speakMessage, _("Media stopped"))
+
 	def script_togglePlayAndReportState(self, gesture):
-		if gesture.mainKeyName  == self.appModule.vlcrcSettings.getKeyFromName("key-stop"):
+		if gesture.mainKeyName == self.appModule.vlcrcSettings.getKeyFromName(
+			"key-stop"):
 			self.script_stopMedia(gesture)
 			return
 		sendGesture(gesture)
 		mainWindow = self.appModule.mainWindow
 		wx.CallAfter(speech.cancelSpeech)
 		wx.CallAfter(mainWindow.reportMediaStates,)
-	
+
 	def script_mediaChange(self, gesture):
 		sendGesture(gesture)
 		mainWindow = self.appModule.mainWindow
 		wx.CallAfter(speech.cancelSpeech)
 		wx.CallLater(30, mainWindow.reportMediaChange)
 
-
-	
-	def script_hotKeyHelp(self,gesture):
-		o = api.getFocusObject()
+	def script_hotKeyHelp(self, gesture):
 		helpMsg = []
 		# Translators: title of script gesture help.
 		helpMsg.append(_("Add-on's Input gestures:"))
 		for identifier in self._gestureMap:
 			scriptDoc = self._gestureMap[identifier].__doc__
 			if scriptDoc:
-				(layout, keyName) = keyboardHandler.KeyboardInputGesture.getDisplayTextForIdentifier(identifier)
-				helpMsg.append("%s %s" %(scriptDoc, keyName))
+				(layout, keyName) = keyboardHandler.KeyboardInputGesture.getDisplayTextForIdentifier(identifier)  # noqa:E501
+				helpMsg.append("%s %s" % (scriptDoc, keyName))
 		helpMsg.append("")
 		vlcHelp = self.appModule.vlcrcSettings.vlcHotKeyHelpText()
-		helpMsg.append( vlcHelp)
+		helpMsg.append(vlcHelp)
 		text = "\n".join(helpMsg)
 		# Translators: title of main window shortcut help window.
 		title = makeAddonWindowTitle(_("main window help"))
 		wx.CallAfter(MessageBox.run, title, text)
-	
+
 	def script_recordResumeFile(self, gesture):
+
 		def callback():
 			mainWindow = self.appModule.mainWindow
-			mediaInfos= vlc_application.MediaInfos(mainWindow)
+			mediaInfos = vlc_application.MediaInfos(mainWindow)
 			mediaName = mediaInfos.getName()
-			if mediaName == None:
+			if mediaName is None:
 				return
 			curTime = getTimeList(mainWindow.getCurrentTime())
 			if getTimeInSec(curTime) == 0:
 				# Translators: message to user to say media cannot be played.
 				ui.message(_("Not available, the media don't be played"))
 				return
-			from  vlc_addonConfig import _addonConfigManager
+			from vlc_addonConfig import _addonConfigManager
 			if _addonConfigManager.recordFileToResume(curTime):
 				# Translators: message to user to say the resume playback time.
-				msg = _("Playback of {0} file  will be resume at {1}")
-				wx.CallLater(1500, ui.message, msg.format(mediaName, formatTime(":".join(curTime))))
+				msg = _("Playback of {0} file will be resume at {1}")
+				wx.CallLater(
+					1500, ui.message, msg.format(mediaName, formatTime(":".join(curTime))))
 		if self.hasNoMedia():
 			return
 		mainWindow = self.appModule.mainWindow
@@ -499,56 +514,58 @@ class InVLCViewWindow(IAccessible):
 			speech.speakMessage(_("No available for this media"))
 			return
 		wx.CallAfter(callback)
-	
-	# Translators: Input help mode message for  record resume file command.
-	script_recordResumeFile.__doc__ = _("Record current playing position for this media")
-	
-	def script_resumePlayback(self,gesture):
-		printDebug ("resumePlayback")
+	# Translators: Input help mode message for record resume file command.
+	script_recordResumeFile.__doc__ = _("Record current playing position for this media")  # noqa:E501
+
+	def script_resumePlayback(self, gesture):
+		printDebug("resumePlayback")
+
 		def callback(resumeTime):
 			res = messageBox(
-			# Translators:  message to ask the user if he want to resume playback.
-			_("Do you want to resume Playback at %s") %formatTime(resumeTime),
-			# Translators: title of message box.
-			makeAddonWindowTitle(_("Confirmation")),
-			wx.OK|wx.CANCEL)
+				# Translators: message to ask the user if he want to resume playback.
+				_("Do you want to resume Playback at %s") % formatTime(resumeTime),
+				# Translators: title of message box.
+				makeAddonWindowTitle(_("Confirmation")),
+				wx.OK | wx.CANCEL)
 			if res == wx.CANCEL:
 				return
 			mainWindow = self.appModule.mainWindow
 			totalTime = getTimeList(mainWindow.getTotalTime())
 			jumpTime = getTimeList(resumeTime)
-			wx.CallLater(200, mainWindow.jumpToTime, jumpTime, totalTime, startPlaying = True)
+			wx.CallLater(
+				200, mainWindow.jumpToTime, jumpTime, totalTime, startPlaying=True)
 
 		if self.hasNoMedia():
 			return
-		
-		from  vlc_addonConfig import _addonConfigManager
+		from vlc_addonConfig import _addonConfigManager
 		resumeTime = _addonConfigManager.getResumeFileTime()
-		if resumeTime == None or resumeTime == 0:
-			#Translators: message to user to say  no resume time for this media
+		if resumeTime is None or resumeTime == 0:
+			# Translators: message to user to say no resume time for this media
 			ui.message(_("No resume time for this media"))
 			return
-		wx.CallAfter(callback,resumeTime)
-	# Translators: Input help mode message for  resume playback command.
-	script_resumePlayback.__doc__ = _("Resume playback at position recoreded for this media")
+		wx.CallAfter(callback, resumeTime)
+	# Translators: Input help mode message for resume playback command.
+	script_resumePlayback.__doc__ = _("Resume playback at position recoreded for this media")  # noqa:E501
 
-	
 	def script_continuePlayback(self, gesture):
-		printDebug ("InMainWindow: script_continuePlayback alt+R VLC Command script") 
+		printDebug("InMainWindow: script_continuePlayback alt+R VLC Command script")
 		if self.hasNoMedia():
 			return
 		mainWindow = self.appModule.mainWindow
 		isPlaying = mainWindow.isPlaying()
-		if isPlaying :
+		if isPlaying:
 			mainWindow.togglePlayOrPause()
 		mainWindow.mainPanel.pushContinuePlaybackButton()
 		time.sleep(0.2)
 		mainWindow.resetMediaStates(False)
-		queueHandler.queueFunction(queueHandler.eventQueue,  mainWindow.sayElapsedTime)
-		queueHandler.queueFunction(queueHandler.eventQueue, mainWindow.togglePlayOrPause)
-		queueHandler.queueFunction(queueHandler.eventQueue, mainWindow.reportMediaStates)
-			
-	script_continuePlayback.__doc__ = _("Restart interrupted playback at position recorded by VLC")
+		mainWindow.sayElapsedTime()
+		queueHandler.queueFunction(
+			queueHandler.eventQueue, mainWindow.togglePlayOrPause)
+		queueHandler.queueFunction(
+			queueHandler.eventQueue, mainWindow.reportMediaStates)
+
+	script_continuePlayback.__doc__ = _("Restart interrupted playback at position recorded by VLC")  # noqa:E501
+
 	def script_hideShowMenusView(self, gesture):
 		gesture.send()
 		time.sleep(0.05)
@@ -558,62 +575,64 @@ class InVLCViewWindow(IAccessible):
 			speech.speakMessage(_("Menu bar is shown"))
 		else:
 			speech.speakMessage(_("Menu bar is hidden"))
-	def moveToControl(self, next = True):
+
+	def moveToControl(self, next=True):
 		mainWindow = self.appModule.mainWindow
 		mainPanel = self.appModule.mainWindow.mainPanel
 		anchoredPlaylist = mainPanel.anchoredPlaylist
 		if anchoredPlaylist.isAlive() and anchoredPlaylist.isVisible():
-			#anchoredPlaylist.NVDAObject.firstChild.setFocus()
 			obj = anchoredPlaylist.NVDAObject.lastChild
 			mouseClick(obj)
 			return
 		mainWindow.mainPanel.controlPanel.moveToControl(next)
 
-	
 	def script_moveToNextControl(self, gesture):
-		self.moveToControl(next = True)
-	
+		self.moveToControl(next=True)
+
 	def script_moveToPreviousControl(self, gesture):
-		self.moveToControl(next = False)
-	
+		self.moveToControl(next=False)
+
 	def script_adjustmentsAndEffects(self, gesture):
 		def callback():
-			obj= api.getDesktopObject().firstChild
-			while  obj is not None:
-				if obj.role == controlTypes.ROLE_WINDOW and obj.windowClassName == u'Qt5QWindowToolSaveBits':
+			obj = api.getDesktopObject().firstChild
+			while obj is not None:
+				if obj.role == controlTypes.ROLE_WINDOW and\
+					obj.windowClassName == u'Qt5QWindowToolSaveBits':
 					obj.setFocus()
 					api.setFocusObject(obj)
 					break
 				obj = obj.next
 		gesture.send()
 		wx.CallLater(800, callback)
+
 	def script_toggleAutoVolumeLevelReport(self, gesture):
-		from  vlc_addonConfig import _addonConfigManager
+		from vlc_addonConfig import _addonConfigManager
 		_addonConfigManager.toggleAutoVolumeLevelReportOption()
-	script_toggleAutoVolumeLevelReport.__doc__ = _("Toggle automatic volume level report option")
-	
+	script_toggleAutoVolumeLevelReport.__doc__ = _("Toggle automatic volume level report option")  # noqa:E501
+
 	def script_toggleAutoElapsedTimeReport(self, gesture):
-		from  vlc_addonConfig import _addonConfigManager
+		from vlc_addonConfig import _addonConfigManager
 		_addonConfigManager.toggleAutoElapsedTimeReportOption()
-	script_toggleAutoElapsedTimeReport.__doc__ = _("Toggle automatic elapsed time report option")
+	script_toggleAutoElapsedTimeReport.__doc__ = _("Toggle automatic elapsed time report option")  # noqa:E501
+
 	def script_hideShowPlaylist(self, gesture):
 		mainPanel = self.appModule.mainWindow.mainPanel
 		anchoredPlaylist = mainPanel.anchoredPlaylist
 		if anchoredPlaylist.isAlive():
 			anchoredPlaylist.reportViewState()
 		else:
-					embeddedPlaylist = vlc_application.EmbeddedPlaylist()
-					ret = embeddedPlaylist.isAlive()
-					if not ret:
-						speech.speakMessage(_("Playlist closed"))
-
+			embeddedPlaylist = vlc_application.EmbeddedPlaylist()
+			ret = embeddedPlaylist.isAlive()
+			if not ret:
+				speech.speakMessage(_("Playlist closed"))
 
 	def getDialog(self):
 		# code written by Javi Dominguez and adapted to this add-on
 		fg = api.getDesktopObject().firstChild
 		obj = fg.simpleNext
 		while obj:
-			if obj.role == controlTypes.ROLE_WINDOW and obj.windowClassName == u'Qt5QWindowToolSaveBits':
+			if obj.role == controlTypes.ROLE_WINDOW and\
+				obj.windowClassName == u'Qt5QWindowToolSaveBits':
 				if controlTypes.STATE_INVISIBLE not in obj.states:
 					return obj
 			obj = obj.simpleNext
@@ -622,32 +641,35 @@ class InVLCViewWindow(IAccessible):
 	def focusDialog(self):
 		# code written by Javi Dominguez and adapted to this add-on
 		dlg = self.getDialog()
-		if not dlg: return False
+		if not dlg:
+			return False
 		if not dlg.setFocus():
 			mouseClick(dlg)
 		return True
 
 	def script_doAction(self, gesture):
 		# code written by Javi Dominguez and adapted to this add-on
-		printDebug ("script_doAction")
+		printDebug("script_doAction")
 		obj = api.getNavigatorObject()
 		mainWindow = self.appModule.mainWindow
 		anchoredPlaylist = mainWindow.mainPanel.anchoredPlaylist
 		oldAnchoredPlaylistState = anchoredPlaylist.isVisible()
-		controlPanel= mainWindow.mainPanel.controlPanel
+		controlPanel = mainWindow.mainPanel.controlPanel
 		if obj not in controlPanel.controls[1:]:
 			gesture.send()
 			return
 		description = obj.description
-		if obj.role not in  [controlTypes.ROLE_BUTTON, controlTypes.ROLE_GRAPHIC]:
+		if obj.role not in [controlTypes.ROLE_BUTTON, controlTypes.ROLE_GRAPHIC]:
 			obj.doAction()
 			msg = []
 			for state in obj.states:
 				msg.append(controlTypes.stateLabels[state])
 			desc = api.getMouseObject().description
-			if obj.role == controlTypes.ROLE_CHECKBOX and controlTypes.STATE_CHECKED not in obj.states:
+			if obj.role == controlTypes.ROLE_CHECKBOX and\
+				controlTypes.STATE_CHECKED not in obj.states:
 				msg.append(_("unchecked"))
-				if desc: msg.append(api.getMouseObject().description)
+				if desc:
+					msg.append(api.getMouseObject().description)
 			elif desc and description == desc:
 				msg.append(desc)
 			if len(msg):
@@ -656,11 +678,11 @@ class InVLCViewWindow(IAccessible):
 		else:
 			api.moveMouseToNVDAObject(obj)
 			x, y = winUser.getCursorPos()
-			if api.getDesktopObject().objectFromPoint(x,y) == obj:
+			if api.getDesktopObject().objectFromPoint(x, y) == obj:
 				controlPanel.clickButton(obj)
 				api.processPendingEvents()
 				api.moveMouseToNVDAObject(obj)
-				o = api.getDesktopObject().objectFromPoint(x,y) 
+				o = api.getDesktopObject().objectFromPoint(x, y)
 				if description != o.description:
 					ui.message(api.getMouseObject().description)
 			else:
@@ -670,34 +692,36 @@ class InVLCViewWindow(IAccessible):
 			obj = anchoredPlaylist.NVDAObject
 			mouseClick(obj)
 			return
-		
-		#put focus on new  dialog if there is one (like adjustments and effects)
+		# put focus on new dialog if there is one (like adjustments and effects)
 		self.focusDialog()
+
 
 class VLCMainWindow(InVLCViewWindow):
 	def event_foreground(self):
 		printDebug("VLCMainWindow: event_foreground")
-		if not self.appModule._mainWindow :
-			mainWindow =vlc_application.MainWindow(self)
+		if not self.appModule._mainWindow:
+			mainWindow = vlc_application.MainWindow(self.appModule)
 			if mainWindow.topNVDAObject:
 				self.appModule._mainWindow = mainWindow
-				printDebug ("VLCMainWindow: MainWindow set")
+				printDebug("VLCMainWindow: MainWindow set")
 		super(VLCMainWindow, self).event_foreground()
+
 	def event_gainFocus(self):
-		printDebug( "VLCMainWindow: event_gainFocus: role = %s, name = %s"%(controlTypes.roleLabels.get(self.role), self.name))
+		printDebug("VLCMainWindow: event_gainFocus: role = %s, name = %s" % (
+			controlTypes.roleLabels.get(self.role), self.name))
 		super(VLCMainWindow, self).event_gainFocus()
-		if True or self.hasFocus == False:
-			printDebug ("VLCMainWindow: event_gainFocus: setFocus on object with hasFocus = False")
+		if True or not self.hasFocus:
+			printDebug("VLCMainWindow	: event_gainFocus: setFocus on object with hasFocus = False")  # noqa:E501
 			# if anchored playlist is alive, put focus on it
 			mainPanel = self.appModule.mainWindow.mainPanel
 			anchoredPlaylist = mainPanel.anchoredPlaylist
 			if anchoredPlaylist.isAlive() and anchoredPlaylist.isVisible():
-				#anchoredPlaylist.NVDAObject.firstChild.setFocus()
+				# anchoredPlaylist.NVDAObject.firstChild.setFocus()
 				obj = anchoredPlaylist.NVDAObject.lastChild
 				mouseClick(obj)
-				
-	
-class MainPanel(InVLCViewWindow):
+
+
+class VLCMainPanel(InVLCViewWindow):
 	def _get_name(self):
 		return _("Main Panel")
 
@@ -706,69 +730,74 @@ class VLCBehaviorsDialog(Dialog):
 	# code source from VLC add-on written by Javi Dominguez
 	def _get_description(self):
 		return ""
+
 	def event_gainFocus(self):
 		super(VLCBehaviorsDialog, self).event_gainFocus()
 		# this dialog is necessary the foreground object
 		api.setForegroundObject(self)
 
+
 class VLCQTApplication(qt.Application):
-	def _get_description (self):
+	def _get_description(self):
 		return ""
-	
-	def event_focusEntered (self ):
-		printDebug ("VLCQTApplication: event_focusEntered")
+
+	def event_focusEntered(self):
+		printDebug("VLCQTApplication: event_focusEntered")
+
 
 class VLCSlider(IAccessible):
 	# a slider is displayed with 3 ch object:
-	#- first: object with role SLIDER and value
-	#- nextobject : value in DB
-	#- next object: name of slider
+	# - first: object with role SLIDER and value
+	# - nextobject : value in DB
+	# - next object: name of slider
 	def _get_name(self):
 		try:
 			return self.next.next.name
-		except:
+		except:  # noqa:E722
 			return super(VLCSlider, self)._get_name()
+
 	def _get_value(self):
 		try:
 			return self.next.name
-		except:
+		except:  # noqa:E722
 			return super(VLCSlider, self)._get_value()
 
+
 class VLCComboBox (IAccessible):
-	
 	def script_nextItem(self, gesture):
 		gesture.send()
 		wx.CallAfter(speech.speakMessage, self.value)
+
 	def _get_value(self):
 		value = super(VLCComboBox, self)._get_value()
-		return  value if value is not None else _("None")
+		return value if value is not None else _("None")
 
 	def event_valueChange(self):
 		pass
+
 	def script_reportItem(self, gesture):
 		gesture.send()
 		wx.CallAfter(speech.speakMessage, self.value)
 
 	__gestures = {
-	"kb:downArrow": "reportItem",
-	"kb:upArrow": "reportItem",
-	"kb:home": "reportItem",
-	"kb:end": "reportItem",
+		"kb:downArrow": "reportItem",
+		"kb:upArrow": "reportItem",
+		"kb:home": "reportItem",
+		"kb:end": "reportItem",
 	}
+
+
 class VLCMenuBar(IAccessible):
 	def event_gainFocus(self):
-		printDebug ("VLCMenuBar: event_gainFocus")
+		printDebug("VLCMenuBar: event_gainFocus")
 		fg = api.getForegroundObject()
 		api.setFocusObject(fg)
 
 
-
-		
 class VLCSplitButton (IAccessible):
 	def event_focusEntered(self):
-		printDebug ("SplitButton: event_focusEntered")
+		printDebug("SplitButton: event_focusEntered")
 		pass
-	
 
 
 class VLCMediaInfos (IAccessible):
@@ -778,83 +807,88 @@ class VLCMediaInfos (IAccessible):
 		while o:
 			try:
 				name = o.accName(0)
-				if name and (vlc_strings.getString(vlc_strings.ID_MediaInformationDialogTitle) in name) :
+				MediaInformationDialogTitle = vlc_strings.getString(
+					vlc_strings.ID_MediaInformationDialogTitle)
+				if name and (MediaInformationDialogTitle in name):
 					return True
-			except:
+			except:  # noqa:E722
 				pass
 			try:
 				o = o.accParent
-			except:
+			except:  # noqa:E722
 				o = None
 		return False
-	
+
 	def _get_name(self):
 		name = super(VLCMediaInfos, self)._get_name()
-		if self.role != controlTypes.ROLE_EDITABLETEXT: return name
-		if name is not None: return name
+		if self.role != controlTypes.ROLE_EDITABLETEXT:
+			return name
+		if name is not None:
+			return name
 		try:
 			previous = self.previous
-			if previous and previous.role in [controlTypes.ROLE_STATICTEXT,]:
+			if previous and previous.role in [controlTypes.ROLE_STATICTEXT, ]:
 				return previous.name
-		except:
+		except:  # noqa:E722
 			pass
 		return None
 
-	
 	def script_nextControl(self, gesture):
 		if self.role == controlTypes.ROLE_EDITABLETEXT\
-		and not self.next:
+			and not self.next:
 			self.parent.getChild(1).doAction()
 		else:
 			gesture.send()
 
 	def script_previousControl(self, gesture):
 		if self.role == controlTypes.ROLE_EDITABLETEXT\
-		and not self.next:
+			and not self.next:
 			self.simplePrevious.simplePrevious.doAction()
 		else:
 			gesture.send()
 
 	__gestures = {
-	"kb:Tab": "nextControl",
-	"kb:Shift+Tab": "previousControl"
+		"kb:Tab": "nextControl",
+		"kb:Shift+Tab": "previousControl"
 	}
+
 
 class AppModule(AppModule):
 	_appModuleGestures = {
-		"kb:nvda+control+h" : "hotKeyHelp",
-		"kb:nvda+control+f9" : "test",
+		"kb:nvda+control+h": "hotKeyHelp",
+		"kb:nvda+control+f9": "test",
 		}
 	_trapNextGainFocus = False
 	_continuePlayback = (False, None)
 	_curTaskTimer = None
 	_keyListToScript = (
-		(jumpKeys , "jumpAndReportTime"),
+		(jumpKeys, "jumpAndReportTime"),
 		(normalSpeedKeys, "setAndReportNormalSpeed"),
-		(speedKeys , "setAndReportSpeed" ),
-		(volumeKeys , "sayVolume"),
+		(speedKeys, "setAndReportSpeed"),
+		(volumeKeys, "sayVolume"),
 		(muteKeys, "toggleMuteAndReportState"),
-		(playKeys , "togglePlayAndReportState"),
+		(playKeys, "togglePlayAndReportState"),
 		(movementKeys, "mediaChange"),
 		)
-		
+
 	def __init__(self, *args, **kwargs):
 		super(AppModule, self).__init__(*args, **kwargs)
-#		toggleDebugFlag()
+		#toggleDebugFlag()
+
 		self.chooseNVDAObjectOverlayClassesDisabled = False
 		self.hasFocus = False
 		self.lastFocusedObject = None
 		self.initialized = False
 		self.bindGestures(self._appModuleGestures)
 		self.initAppModule()
-	
+
 	def initAppModule(self):
 		if self.initialized:
-			printDebug ("AppmoduleVLC:  initAppModule: appModule already initialized")
+			printDebug("AppmoduleVLC: initAppModule: appModule already initialized")
 			return
-		printDebug ("AppModule VLC: initAppModule")
+		printDebug("AppModule VLC: initAppModule")
 		# to solve NVDA error when full screen
-		if not hasattr (self, "apiSetFocusObject "):
+		if not hasattr(self, "apiSetFocusObject "):
 			self.apiSetFocusObject = api.setFocusObject
 			api.setFocusObject = mySetFocusObject
 		if not hasattr(self, "vlcrcSettings "):
@@ -864,111 +898,79 @@ class AppModule(AppModule):
 			self.initVLCGestures()
 			vlc_addonConfig.initialize(self.vlcrcSettings)
 			self.initialized = True
-			printDebug ("AppModule VLC: appModule initialized")
-	
+			printDebug("AppModule VLC: appModule initialized")
+
 	def _inputCaptor(self, gesture):
 		def callback():
 			time.sleep(0.2)
 			o = api.getFocusObject()
-			printDebug ("appModule VLC inputCaptor callback: %s, hasFocus= %s"%(controlTypes.roleLabels.get(o.role), o.hasFocus))
-			if (o.role in [controlTypes.ROLE_MENU, controlTypes.ROLE_MENUITEM, ]  and not o.hasFocus) or o.role == controlTypes.ROLE_MENUBAR:
-				printDebug ("click foreground object when focus object is on not focused object")
+			printDebug("appModule VLC inputCaptor callback: %s, hasFocus= %s" % (controlTypes.roleLabels.get(o.role), o.hasFocus))  # noqa:E501
+			roles = [controlTypes.ROLE_MENU, controlTypes.ROLE_MENUITEM, ]
+			if (o.role in roles and not o.hasFocus)\
+				or o.role == controlTypes.ROLE_MENUBAR:
+				printDebug("click foreground object when focus object is on not focused object")  # noqa:E501
 				self.mainWindow.resetMediaStates()
 				mouseClick(api.getForegroundObject(), True, True)
-		printDebug ("appModule VLC: inputCaptor: key = %s"%(gesture.displayName))
+		printDebug("appModule VLC: inputCaptor: key = %s" % (gesture.displayName))
 		if not self.initialized:
 			wx.CallAfter(self.initAppModule)
 		if gesture.mainKeyName in ["escape", "leftAlt"]:
-			# when focus is on menu item but menu is not open, these keys change  only focused state without event
+			# when focus is on menu item but menu is not open,
+			# these keys change only focused state without event
 			# so we need to put focus on menu bar as the menu is opened
 			wx.CallAfter(callback)
 		return True
-	
-	def  stopTaskTimer(self):
+
+	def stopTaskTimer(self):
 		if self._curTaskTimer is not None:
 			self._curTaskTimer.Stop()
 			self._curTaskTimer = None
-		
+
 	def setStatusBar(self):
 		if not hasattr(self, "curAPIGetStatusBar "):
 			self.curAPIGetStatusBar = api.getStatusBar
 			api.getStatusBar = self.mainWindow.getStatusBar
-	
-	
+
 	def resetStatusBar(self):
 		if hasattr(self, "curAPIGetStatusBar"):
 			api.getStatusBar = self.curAPIGetStatusBar
 			delattr(self, "curAPIGetStatusBar")
-	
+
 	def _get_mainWindow(self):
-		if hasattr(self, "_mainWindow")and self._mainWindow is not None:
+		if hasattr(self, "_mainWindow") and self._mainWindow is not None:
 			return self._mainWindow
-		printDebug ("try to set mainWindow")
-		mainWindow =vlc_application.MainWindow(self)
+		printDebug("try to set mainWindow")
+		mainWindow = vlc_application.MainWindow(self.vlcrcSettings)
 		if mainWindow.topNVDAObject:
-			printDebug ("MainWindow set")
+			printDebug("MainWindow set")
 			self._mainWindow = mainWindow
-			printDebug ("appModule mainWindow set")
+			printDebug("appModule mainWindow set")
 		return mainWindow
-	
-	def event_appModule_gainFocus(self):
-		printDebug("appModule VLC: event_appModulegainFocus")
-		self.hasFocus = True
-		self.lastFocusedObject = None
-		self._oldInputCoreManagerCaptureFunc = inputCore.manager._captureFunc 
-		inputCore.manager._captureFunc = self._inputCaptor
-		wx.CallAfter(self.initAppModule)
-		if not hasattr(self, "apiSetFocusObject "):
-			self.apiSetFocusObject = api.setFocusObject
-			api.setFocusObject = mySetFocusObject
-		self._mainWindow = None
-		self._get_mainWindow()
-
-
-	def event_appModule_loseFocus(self):
-		printDebug ("appModule VLC: event_appModuleLoseFocus")
-		api.setFocusObject = self.apiSetFocusObject
-		self.resetStatusBar()
-		self.stopTaskTimer()
-		inputCore.manager._captureFunc = self._oldInputCoreManagerCaptureFunc
-		del self._oldInputCoreManagerCaptureFunc
-		if hasattr(self, "curAPIGetStatusBar"):
-			api.getStatusBar = self.curAPIGetStatusBar
-			delattr(self, "curAPIGetStatusBar")
-		self.hasFocus = False
-	
-	def terminate(self):
-		printDebug("AppModule VLC: terminate")
-		self.stopTaskTimer()
-		if hasattr (self, "_oldInputCoreManagerCaptureFunc"):
-			inputCore.manager._captureFunc = self._oldInputCoreManagerCaptureFunc
-			del self._oldInputCoreManagerCaptureFunc
-		self.resetStatusBar()
-		super(AppModule, self).terminate()
-		
 
 	def getNewCls(self, obj, clsList):
 		def isInVlcMainWindow(oIA, obj, clsList):
-			desktopName = api.getDesktopObject().name
 			try:
 				name = oIA.accName(0)
-				if name and name == api.getDesktopObject().name: return False
+				if name and name == api.getDesktopObject().name:
+					return False
 				if oIA.accRole(0) == oleacc.ROLE_SYSTEM_WINDOW:
-					if vlc_strings.getString(vlc_strings.ID_VLCAppTitle) in name or name == "vlc":
+					VLCAppTitle = vlc_strings.getString(vlc_strings.ID_VLCAppTitle)
+					if VLCAppTitle in name or name == "vlc":
 						clsList.insert(0, InVLCViewWindow)
 						return True
-			except:
+			except:  # noqa:E722
 				pass
 			return False
-		
-		
+
 		def isInsideMediaInfo(oIA, obj, clsList):
 			try:
 				name = oIA.accName(0)
-				if name and (vlc_strings.getString(vlc_strings.ID_MediaInformationDialogTitle) in name) :
+				MediaInformationDialogTitle = vlc_strings.getString(
+					vlc_strings.ID_MediaInformationDialogTitle)
+				if name and MediaInformationDialogTitle in name:
 					clsList.insert(0, VLCMediaInfos)
 					return True
-			except:
+			except:  # noqa:E722
 				pass
 			return False
 
@@ -977,11 +979,13 @@ class AppModule(AppModule):
 				return ID_NoPlaylist
 
 			ret = vlc_application.Playlist.getPlaylistID(oIA)
-			if not ret: return False
+			if not ret:
+				return False
 			obj.playlist = ret
-			if  ret == ID_AnchoredPlaylist:
+			if ret == ID_AnchoredPlaylist:
 				if obj.role == controlTypes.ROLE_TREEVIEWITEM:
-					columnHeaders = vlc_playlist.getColumnHeaderCount(obj.IAccessibleObject.accParent)
+					columnHeaders = vlc_playlist.getColumnHeaderCount(
+						obj.IAccessibleObject.accParent)
 					if columnHeaders == 1:
 						clsList.insert(0, vlc_playlist.VLCAnchoredGroupTreeViewItem)
 					else:
@@ -994,51 +998,58 @@ class AppModule(AppModule):
 					clsList.insert(0, vlc_playlist.InAnchoredPlaylist)
 					if obj.role != controlTypes.ROLE_EDITABLETEXT:
 						clsList.insert(0, InVLCViewWindow)
-			elif  ret == ID_EmbeddedPlaylist:
-				if obj.role ==controlTypes.ROLE_TREEVIEWITEM:
-					columnHeaders = vlc_playlist.getColumnHeaderCount(obj.IAccessibleObject.accParent)
+			elif ret == ID_EmbeddedPlaylist:
+				if obj.role == controlTypes.ROLE_TREEVIEWITEM:
+					columnHeaders = vlc_playlist.getColumnHeaderCount(
+						obj.IAccessibleObject.accParent)
 					if columnHeaders == 1:
 						clsList.insert(0, vlc_playlist.VLCEmbeddedGroupTreeViewItem)
 					else:
 						clsList.insert(0, vlc_playlist.VLCEmbeddedPlaylistTreeViewItem)
-				elif obj.role ==controlTypes.ROLE_TREEVIEW:
+				elif obj.role == controlTypes.ROLE_TREEVIEW:
 					clsList.insert(0, vlc_playlist.VLCEmbeddedPlaylistTreeView)
 				elif obj.role == controlTypes.ROLE_LISTITEM:
 					clsList.insert(0, vlc_playlist.VLCEmbeddedPlaylistListItem)
 				else:
 					clsList.insert(0, vlc_playlist.InEmbeddedPlaylist)
 			return True
-		
 		oIA = obj.IAccessibleObject
 		while oIA:
-			if isInPlaylist(oIA, obj, clsList): return True
-			if isInVlcMainWindow(oIA, obj, clsList): return True
-			if isInsideMediaInfo(oIA, obj, clsList): return True
+			if isInPlaylist(oIA, obj, clsList):
+				return True
+			if isInVlcMainWindow(oIA, obj, clsList):
+				return True
+			if isInsideMediaInfo(oIA, obj, clsList):
+				return True
 			try:
 				oIA = oIA.accParent
-			except:
+			except:  # noqa:E722
 				oIA = None
 		return False
 
-	
 	def chooseNVDAObjectOverlayClasses(self, obj, clsList):
-		from .vlc_application import ID_NoPlaylist, ID_AnchoredPlaylist, ID_EmbeddedPlaylist
-		printDebug("appModule vlc: chooseNVDAOverlayClass: %s, %s"%(controlTypes.roleLabels.get(obj.role), obj.name))
-		if not isinstance(obj, IAccessible): return
+		printDebug("appModule vlc: chooseNVDAOverlayClass: %s, %s" % (
+			controlTypes.roleLabels.get(obj.role), obj.name))
+		if not isinstance(obj, IAccessible):
+			return
 		if obj.role == controlTypes.ROLE_APPLICATION:
 			obj.parent = api.getDesktopObject()
 			clsList.insert(0, VLCQTApplication)
 			return
-		if obj.role in [ controlTypes.ROLE_MENU, controlTypes.ROLE_MENUITEM, controlTypes.ROLE_POPUPMENU, controlTypes.ROLE_CHECKMENUITEM, controlTypes.ROLE_TABLECOLUMNHEADER]:
-			#printDebug ("AppModule VLC: chooseOverlayClass role = %s, name= %s, clsList: %s"%(controlTypes.roleLabels.get(obj.role), obj.name, clsList))
+		roles = [
+			controlTypes.ROLE_MENU, controlTypes.ROLE_MENUITEM,
+			controlTypes.ROLE_POPUPMENU, controlTypes.ROLE_CHECKMENUITEM,
+			controlTypes.ROLE_TABLECOLUMNHEADER]
+		if obj.role in roles:
 			return
-		if obj.role == controlTypes.ROLE_DIALOG and (obj.windowClassName == u'Qt5QWindowToolSaveBits' or obj.windowClassName == u'Qt5QWindowIcon'):
+		if obj.role == controlTypes.ROLE_DIALOG and (
+			obj.windowClassName == u'Qt5QWindowToolSaveBits'
+			or obj.windowClassName == u'Qt5QWindowIcon'):
 			clsList.insert(0, VLCBehaviorsDialog)
 			return
 		if obj.role == controlTypes.ROLE_MENUBAR:
 			clsList.insert(0, VLCMenuBar)
 			return
-		
 		if obj.role == controlTypes.ROLE_SLIDER:
 			clsList.insert(0, VLCSlider)
 			return
@@ -1046,16 +1057,16 @@ class AppModule(AppModule):
 			clsList.insert(0, VLCComboBox)
 		elif obj.role == controlTypes.ROLE_SPLITBUTTON:
 			clsList.insert(0, VLCSplitButton)
-		if self.chooseNVDAObjectOverlayClassesDisabled :
-			printDebug ("ChooseOverlayClass disabled")
+		if self.chooseNVDAObjectOverlayClassesDisabled:
+			printDebug("ChooseOverlayClass disabled")
 			return
-		if not self.initialized: return
+		if not self.initialized:
+			return
 		oIA = obj.IAccessibleObject
 		if obj.windowClassName == u'Qt5QWindowIcon':
-			if obj.role == controlTypes.ROLE_EDITABLETEXT :
+			if obj.role == controlTypes.ROLE_EDITABLETEXT:
 				from .vlc_qtEditableText import VLCQTEditableText
 				clsList.insert(0, VLCQTEditableText)
-
 			elif obj.role in [oleacc.ROLE_SYSTEM_OUTLINE, oleacc.ROLE_SYSTEM_LIST]:
 				clsList.insert(0, VLCQTContenair)
 			elif obj.role == controlTypes.ROLE_WINDOW:
@@ -1063,21 +1074,22 @@ class AppModule(AppModule):
 					if oIA.accChild(1).accRole(0) == oleacc.ROLE_SYSTEM_MENUBAR:
 						clsList.insert(0, VLCMainWindow)
 						return
-				except:
+				except:  # noqa:E722  # noqa:E722
 					pass
 			elif obj.role == controlTypes.ROLE_PANE:
 				if obj.childCount == 4:
 					# perhaps is the main panel
 					try:
 						if oIA.accParent.accChild(1).accRole(0) == oleacc.ROLE_SYSTEM_MENUBAR:
-							clsList.insert(0, MainPanel)
+							clsList.insert(0, VLCMainPanel)
+
 							return
-					except:
+					except:  # noqa:E722
 						pass
-					#perhaps is the playlist
+					# perhaps is the playlist
 					ret = vlc_application.Playlist.getPlaylistID(oIA)
-					if ret== ID_EmbeddedPlaylist:
-						#embedded window playlist
+					if ret == ID_EmbeddedPlaylist:
+						# embedded window playlist
 						clsList.insert(0, vlc_playlist.VLCEmbeddedPlaylist)
 						obj.playlist = ret
 						return
@@ -1086,99 +1098,145 @@ class AppModule(AppModule):
 						clsList.insert(0, vlc_playlist.VLCAnchoredPlaylist)
 						obj.playlist = ret
 						return
-		
-		# check if obj is in the playlist
-		#if self.checkIfInPlaylist(obj, clsList): return
 		try:
 			self.getNewCls(obj, clsList)
-		except:
-			pass  
-	
-	def event_typedCharacter(self,obj, nextHandler, ch):
-		printDebug ("appModule VLC: event_typedCharacter: role = %s, name = %s, ch = %s (%s)" %(controlTypes.roleLabels.get(obj.role), obj.name, ch, ord(ch)))
-		if not self.hasFocus: return
+		except:  # noqa:E722
+			pass
+
+	def event_appModule_gainFocus(self):
+		printDebug("appModule VLC: event_appModulegainFocus")
+		self.hasFocus = True
+		self.lastFocusedObject = None
+		self._oldInputCoreManagerCaptureFunc = inputCore.manager._captureFunc
+		inputCore.manager._captureFunc = self._inputCaptor
+		wx.CallAfter(self.initAppModule)
+		if not hasattr(self, "apiSetFocusObject "):
+			self.apiSetFocusObject = api.setFocusObject
+			api.setFocusObject = mySetFocusObject
+		self._mainWindow = None
+		self._get_mainWindow()
+
+	def event_appModule_loseFocus(self):
+		printDebug("appModule VLC: event_appModuleLoseFocus")
+		api.setFocusObject = self.apiSetFocusObject
+		self.resetStatusBar()
+		self.stopTaskTimer()
+		inputCore.manager._captureFunc = self._oldInputCoreManagerCaptureFunc
+		del self._oldInputCoreManagerCaptureFunc
+		if hasattr(self, "curAPIGetStatusBar"):
+			api.getStatusBar = self.curAPIGetStatusBar
+			delattr(self, "curAPIGetStatusBar")
+		self.hasFocus = False
+
+	def terminate(self):
+		printDebug("AppModule VLC: terminate")
+		self.stopTaskTimer()
+		if hasattr(self, "_oldInputCoreManagerCaptureFunc"):
+			inputCore.manager._captureFunc = self._oldInputCoreManagerCaptureFunc
+			del self._oldInputCoreManagerCaptureFunc
+		self.resetStatusBar()
+		super(AppModule, self).terminate()
+
+	def event_typedCharacter(self, obj, nextHandler, ch):
+		printDebug("appModule VLC: event_typedCharacter: role = %s, name = %s, ch = %s (%s)" % (  # noqa:E501
+			controlTypes.roleLabels.get(obj.role), obj.name, ch, ord(ch)))
+		if not self.hasFocus:
+			return
 		if ord(ch) == 12:
-			#after control+l command
+			# after control+l command
 			focus = api.getFocusObject()
 			if hasattr(focus, "script_hideShowPlaylist"):
-				focus.script_hideShowPlaylist( None)
+				focus.script_hideShowPlaylist(None)
 				return
 		nextHandler()
-	
+
 	def event_becomeNavigator(self, obj, nextHandler):
-		printDebug ("appModule VLC: event_becomeNavigator: %s, %s" %(controlTypes.roleLabels.get(obj.role), obj.description))
+		printDebug("appModule VLC: event_becomeNavigator: %s, %s" % (controlTypes.roleLabels.get(obj.role), obj.description))  # noqa:E501
 		if obj.description and "<html>" in obj.description:
-			# Removes the HTML tags that appear in the description of some objects
-			while re.search("<[^(>.*<)]+>([^<]*</style>)?", obj.description): obj.description = obj.description.replace(re.search("<[^(>.*<)]+>([^<]*</style>)?", obj.description).group(), "")
+			# Removes the HTML tags that appear in the
+			# description of some objects
+			while re.search("<[^(>.*<)]+>([^<]*</style>)?", obj.description):
+				obj.description = obj.description.replace(
+					re.search("<[^(>.*<)]+>([^<]*</style>)?", obj.description).group(), "")
 		nextHandler()
 
 	def event_focusEntered(self, obj, nextHandler):
-		printDebug ("appModule VLC: event_focusEntered: %s, %s" %(controlTypes.roleLabels.get(obj.role), obj.name))
+		printDebug("appModule VLC: event_focusEntered: %s, %s" % (
+			controlTypes.roleLabels.get(obj.role), obj.name))
 		if obj.role == controlTypes.ROLE_APPLICATION and obj.name == "vlc":
 			try:
 				self.mainWindow.resetMediaStates()
-			except:
+			except:  # noqa:E722
 				pass
 			return
 
 		nextHandler()
-	
+
 	def event_foreground(self, obj, nextHandler):
-		printDebug ("appModule VLC: event_foreground: %s, %s" %(controlTypes.roleLabels.get(obj.role),obj.name))
-		if not self.hasFocus: return
+		printDebug("appModule VLC: event_foreground: %s, %s" % (
+			controlTypes.roleLabels.get(obj.role), obj.name))
+		if not self.hasFocus:
+			return
 		wx.CallAfter(self.initAppModule)
 		nextHandler()
-	
+	def getContinuePlaybackScriptGesture(self):
+		from inputCore import manager
+		all = manager.getAllGestureMappings()[_curAddon.manifest['summary']]
+		for item in all:
+			infos = all[item]
+			if infos.scriptName == "continuePlayback":
+				gestures = infos.gestures
+				if len(gestures):
+					return gestures[0].split(":")[1]
+		return None
+
+
+
 	def event_nameChange(self, obj, nextHandler):
-		#printDebug ("appModule VLC: event_nameChange: role = %s, name = %s" %(controlTypes.roleLabels.get(obj.role),obj.name))
+		# printDebug("appModule VLC: event_nameChange: role = %s, name = %s" % (controlTypes.roleLabels.get(obj.role),obj.name)) # noqa:E501
 		nextHandler()
 		if obj.name == "VLC (Direct3D11 output)":
 			wx.CallAfter(self.initAppModule)
 			return
 		if self.hasFocus:
-			self.mainWindow.reportContinuePlayback()
-	
-	def event_stateChange(self, obj, nextHandler):
-		printDebug ("appModule VLC: event_stateChange: role = %s, name = %s" %(controlTypes.roleLabels.get(obj.role),obj.name))
-		nextHandler()
-	def event_NVDAObject_init(self,obj):
-		pass
+			continuePlaybackScriptGesture = self.getContinuePlaybackScriptGesture()
+			self.mainWindow.reportContinuePlayback(continuePlaybackScriptGesture)
 
-	
 	def event_gainFocus(self, obj, nextHandler):
-		printDebug ("appModule VLC: event_gainFocus: role = %s, name = %s" %(controlTypes.roleLabels.get(obj.role),obj.name))
+		printDebug("appModule VLC: event_gainFocus: role = %s, name = %s" % (
+			controlTypes.roleLabels.get(obj.role), obj.name))
 		if obj.description and "<html>" in obj.description:
 			# Removes the HTML tags that appear in the description of some objects
-			while re.search("<[^(>.*<)]+>([^<]*</style>)?", obj.description): obj.description = obj.description.replace(re.search("<[^(>.*<)]+>([^<]*</style>)?", obj.description).group(), "")
+			while re.search("<[^(>.*<)]+>([^<]*</style>)?", obj.description):
+				obj.description = obj.description.replace(
+					re.search("<[^(>.*<)]+>([^<]*</style>)?", obj.description).group(), "")
 		nextHandler()
 		self.lastFocusedObject = obj
-	def event_selectionAdd(self, obj, nextHandler):
-		printDebug ("appModule VLC: event_selectionAdd: role = %s, name = %s" %(controlTypes.roleLabels.get(obj.role),obj.name))	
-		nextHandler()
+
 	def initVLCGestures(self):
-		printDebug ("appModule VLC: initVLCGestures")
+		printDebug("appModule VLC: initVLCGestures")
 		self.vlcGestures = {}
 		for (keyList, script) in self._keyListToScript:
 			for name in keyList:
 				key = self.vlcrcSettings.getKeyFromName(name)
 				if key != "":
-					self.vlcGestures["kb:%s" %key] = script
+					self.vlcGestures["kb:%s" % key] = script
 		self.jumpKeyToDelay = {}
 		for keyName in jumpDelays:
 			key = self.vlcrcSettings.getKeyFromName(keyName)
 			if key != "":
-				identifier = normalizeGestureIdentifier("kb:%s"%key)
+				identifier = normalizeGestureIdentifier("kb:%s" % key)
 				self.jumpKeyToDelay[identifier] = jumpDelays[keyName]
-		printDebug ("appModuleVLC: initVLCGestures: gestures = %s"%self.vlcGestures)
+		printDebug("appModuleVLC: initVLCGestures: gestures = %s" % self.vlcGestures)
 
-	
-	def script_hotKeyHelp(self,gesture):
+	def script_hotKeyHelp(self, gesture):
 		obj = api.getFocusObject()
 		if hasattr(obj, "script_hotKeyHelp"):
 			obj.script_hotKeyHelp(gesture)
 	# Translators: Input help mode message for hot key help command.
 	script_hotKeyHelp.__doc__ = _("Display add-on's help")
 	script_hotKeyHelp.category = _scriptCategory
-	def script_test (self, gesture):
+
+	def script_test(self, gesture):
 		ui.message("test VLC")
-		print ("test VLC")
+		print("test VLC")

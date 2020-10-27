@@ -1,0 +1,136 @@
+ADDON_SUMMARY - Historique
+Auteur: ADDON_AUTHOR_NAME avec la participation très active de Daniel Poiraud.
+
+%!includeconf: ../addon_global.t2tconf
+%!includeconf: addon_informations.t2tconf
+URL: ADDON_AUTHOR_URL
+
+Dépot GitHub: [ADDON_REPOSITORY ADDON_REPOSITORY]
+
++ Version 2.4 (27/10/2020) +
+- Compatibilité avec NVDA 2020.3
+- reprise du code pour éviter les erreurs "garbage collector".
+- ajout du bouton "Quoi de neuf" dans le dialogue qui propose une nouvelle version à télécharger.
+
+
++ Version 2.3 (28/07/2020) +
+Compatibilité avecNVDA 2020.2.
+
++ Version 2.2.1 (15/06/2020) +
+Correction du problème de l'arrêt de NVDA lors de l'avance rapide par petits sauts répétés.
+
+
++ Version 2.2 (18/05/2020) +
+- correction de la régression dans la reprise de la lecture d'un média.
+- mise en pause du média lors d'un saut en avant dans les 10 dernières secondes pour éviter l'arrêt du média par VLC.
+
+
++ Version 2.1.1 (03/04/2020) +
+Correction de l'historique des changements de l'extension.
+
++ Version 2.1 (03/04/2020) +
+- mise en compatibilité avec NVDA 2020.1,
+- mise en conformité avec NVDA pour le test de compatibilité des extensions avec NVDA.
+
+
++ Version 2.0.2 (14/02/2020) +
+Correction du lien de téléchargement de l'extension.
+
++ Version 2.0.1 (09/02/2020) +
+- correction de la non présentation du message demandant à l'utilisateur d'arrêter VLC.
+- suppression d'instructions de trace.
+
+
++ Version 2.0 (07/02/2020) +
+- Compatibilité avec NVDA 2019.3
+- ajout de la mise à jour automatique de l'extension
+- mise en option de l'annonce automatique des changements du niveau de volume et du temps écoulé.
+- annonce du masquage de la barre de menu.
+- gestion du raccourci activant le menu "Interface minimal".
+- gestion du raccourci activant le menu "Effets et filtres".
+- amélioration de l'annonce du nom et du niveau des potentiomètres.
+- accès par panneau virtuel, aux différents éléments de contrôle de lecture du média (code source de base de Javi Dominguez).
+- prise en compte de l'absence du temps total de certains médias lors de l'annonce du temps écoulé, total et restant.
+- suppression du texte html inclu dans la description de certains contrôles (code source de base de Javi Dominguez).
+- amélioration de l'accessibilité dans la liste de lecture .
+- amélioration de l'accessibilité des champs d'édition (code source de base de Javi Dominguez).
+- dans le dialogue "méta-données":
+ - annonce des titres des zones d'édition.
+ - correction du bloquage dans les déplacements par touche tabulation (code source de base de Javi Dominguez).
+- réarrangement du menu de paramètrage de l'extension.
+
+
+
++ Version 1.3.1 (11/06/2019) +
+- correction du fichier buildVars.py.
+- ajout traduction espagnol
+
+
++ Version 1.3 (01/06/2019) +
+Compatibilité avec NVDA 2019.2.0 (mise à jour du manifest.ini).
+
++ Version 1.2 (06/03/2019) +
+- remplacement des boutons "oui" et "non"par les boutons "ok" et "annuler" dans les boites de confirmation pour pouvoir utiliser la touche "Échapp".
+- remplacement du terme "module complémentaire " par "extension (imposé par les traducteurs de NVDA).
+- compatibilité avec NVDA 2019.1.0.
+- préparation à la compatibilité avec python3.
+
+
++ Version 1.1 (21/12/2018) +
+- correction de non reprise de la lecture lorsque la liste des médias récents n'a qu'un seul média,
+- corrections de la documentation,
+- mise en compatibilité avec les versions alpha 2019.1 de NVDA.
+
+
++ Version 1.0 (29/10/2018) +
+Pour éviter une confusion avec d'autres extensions pour VLC, le nom de l'extension est renommé en "VLCAccessEnhancement" et dans le gestionnaire d'extensions, il se nomme "Lecteur multimédia VLC: compléments d'accessibilité".
+
+Nouveautés:
+- mise en compatibilité avec NVDA 2018.3,
+- changement du nom de l'extension pour éviter toute confusion avec d'autres extensions pour VLC.
+- annonce de l'indication de la possibilité de reprise de la lecture interrompue à la position mémorisée par VLC et reprise de la lecture à l'aide du geste de commande "Alt + Control + r",
+- ajout du bouton pour supprimer le fichier de configuration de VLC,
+
+
+Changement interne:
+- remaniement complet du code,
+- fichier style.css renommé en style_md.css,
+- reconversion du fichier manuel utilisateur pour conformité de forme avec les extensions internationales,
+- renommage du menu de configuration de l'extension.
+
+
++ Historique précédent +
+++ Version 3.0 (19/06/2018) ++
+Cette version est compatible avec VLC 3.0, incompatible avec les anciennes versions.
+
+Nouveauté:
+- vocalisation de l'indicateur de répétition du média,
+- lecture correcte de la barre d'état,
+- annonce de l'état lecture ou pause avec le son coupé lors de la focalisation de la fenêtre principale.
+
+
+Changements:
+- le fichier de configuration de VLC n'est plus modifié automatiquement pour définir les raccourcis clavier. Leur mise en place est faite manuellement par l'utilisateur à l’aide d'un simple bouton,
+- la boite de dialogue "Aller au temps" de VLC n'est plus vocalisée.
+- le niveau du volume est maintenant annoncé à chaque modification.
+
+
+++ Version 2.3.1 ++
+correction de bugs (régression de "NVDA + Control + h")
+
+++ Version 2.3 ++
+- ajout des scripts pour la relance de la lecture
+- ajout de la gestion d'un fichier de configuration pour l'extension
+
+
+++ Version 2.2 ++
+- configuration du fichier vlcrc pour modifier les touches de variations de vitesse,
+- annonce de la durée lue lors des sauts de lecture,
+- annonce de la coupure /remise du son,
+- annonce du passage en pause,
+- vocalisation de la boite de dialogue de VLC "Aller au temps",
+- modification de la boite de dialogue de l'extension "Aller au temps".
+
+
+++ Changements pour la version 2.0 ++
+Première version multilingue.
