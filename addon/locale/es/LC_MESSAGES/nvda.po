@@ -2,15 +2,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlcAccessEnhancement\n"
 "Report-Msgid-Bugs-To: nvda-translations@freelists.org\n"
-"POT-Creation-Date: 2020-10-13 15:15+0200\n"
-"PO-Revision-Date: 2020-10-13 15:47+0200\n"
+"POT-Creation-Date: 2020-12-05 17:16+0100\n"
+"PO-Revision-Date: 2020-12-05 17:17+0100\n"
 "Last-Translator: Rémy Ruiz <remyruiz@gmail.com>\n"
 "Language-Team: Rémy Ruiz <remyruiz@gmail.com>\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.8.12\n"
+"X-Generator: Poedit 1.8.6\n"
 "X-Poedit-Basepath: ../../../appModules\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Poedit-SearchPath-0: .\n"
@@ -416,7 +416,7 @@ msgstr "¿Deseas reanudar la reproducción en %s?"
 #. Translators: title of message box.
 #. Translators: title of message box
 #: appModules\vlc\__init__.py:528
-#: globalPlugins\vlcAccessEnhancement\vlc_configGui.py:151
+#: globalPlugins\vlcAccessEnhancement\vlc_configGui.py:167
 #: shared\vlc_addonConfig.py:177
 msgid "Confirmation"
 msgstr "Confirmación"
@@ -491,7 +491,7 @@ msgstr "Acceso a los &controles de reproducción"
 
 #. Translators: This is the label for the Update panel.
 #: globalPlugins\vlcAccessEnhancement\vlc_configGui.py:69
-#: globalPlugins\vlcAccessEnhancement\updateHandler\update_check.py:105
+#: globalPlugins\vlcAccessEnhancement\updateHandler\update_check.py:107
 msgid "Update"
 msgstr "Actualización"
 
@@ -510,35 +510,40 @@ msgstr "Actualizar también versiones estable hacia versiones de &desarrollo"
 msgid "&Check for update"
 msgstr "&Buscar actualización"
 
+#. translators: this is a label for a button in update settings panel.
+#: globalPlugins\vlcAccessEnhancement\vlc_configGui.py:94
+msgid "View &history"
+msgstr "Ver &historial"
+
 #. Translators: The title of the VLC configuration dialog.
 #. Translators: name of the option in the menu.
-#: globalPlugins\vlcAccessEnhancement\vlc_configGui.py:115
+#: globalPlugins\vlcAccessEnhancement\vlc_configGui.py:131
 #: globalPlugins\vlcAccessEnhancement\vlc_globalPlugin.py:57
 msgid "VLC's configuration"
 msgstr "Configuración de VLC"
 
 #. Translators: The label of a button
 #. to modify vlc shortcuts in the vlc configuration dialog.
-#: globalPlugins\vlcAccessEnhancement\vlc_configGui.py:126
+#: globalPlugins\vlcAccessEnhancement\vlc_configGui.py:142
 msgid "&Modify vlc shortcuts"
 msgstr "&Modificar los atajos del Reproductor multimedia VLC"
 
 #. Translators: The label of a button
 #. to delete vlc configuration folder in VLC configuration dialog.
-#: globalPlugins\vlcAccessEnhancement\vlc_configGui.py:133
+#: globalPlugins\vlcAccessEnhancement\vlc_configGui.py:149
 msgid "&Delete VLC configuration folder"
 msgstr "&Eliminar la carpeta de configuración de VLC"
 
 #. Translators: message to user
 #. to confirm the deletion of VLC configuration folder.
-#: globalPlugins\vlcAccessEnhancement\vlc_configGui.py:149
+#: globalPlugins\vlcAccessEnhancement\vlc_configGui.py:165
 msgid "Do you want really to delete VLC configuration folder ?"
 msgstr ""
 "¿Estás seguro de que deseas eliminar la carpeta de configuración de VLC?"
 
 #. Translators: title of add-on parameters dialog.
 #. Translators: name of the option in the menu.
-#: globalPlugins\vlcAccessEnhancement\vlc_configGui.py:172
+#: globalPlugins\vlcAccessEnhancement\vlc_configGui.py:188
 #: globalPlugins\vlcAccessEnhancement\vlc_globalPlugin.py:50
 msgid "Settings"
 msgstr "Opciones"
@@ -558,7 +563,7 @@ msgstr "Opciones"
 msgid "Display the settings dialog "
 msgstr "Mostrar el diálogo de configuración del complemento"
 
-#: globalPlugins\vlcAccessEnhancement\updateHandler\update_check.py:58
+#: globalPlugins\vlcAccessEnhancement\updateHandler\update_check.py:60
 msgid ""
 "The update is not compatible with this version of NVDA. Minimum NVDA "
 "version: {minYear}{minMajor}, last tested: {testedYear}.{testedMajor}."
@@ -568,18 +573,18 @@ msgstr ""
 
 #. Translators: The progress message
 #. indicating the name of the add-on being downloaded.
-#: globalPlugins\vlcAccessEnhancement\updateHandler\update_check.py:108
+#: globalPlugins\vlcAccessEnhancement\updateHandler\update_check.py:110
 msgid "Downloading {name}"
 msgstr "Descargando {name}"
 
 #. Translators: A message indicating that an error occurred
 #. while downloading an update to NVDA.
-#: globalPlugins\vlcAccessEnhancement\updateHandler\update_check.py:123
+#: globalPlugins\vlcAccessEnhancement\updateHandler\update_check.py:125
 msgid "Error downloading update for {name}."
 msgstr "Error al descargar la actualización de {name}."
 
 #. Translators: message to user
-#: globalPlugins\vlcAccessEnhancement\updateHandler\update_check.py:182
+#: globalPlugins\vlcAccessEnhancement\updateHandler\update_check.py:184
 msgid "Cannot update {name} - missing file or invalid file format"
 msgstr ""
 "No se puede actualizar {name} - archivo ausente o formato de archivo no "
@@ -587,43 +592,43 @@ msgstr ""
 
 #. Translators: The title of the dialog
 #. presented while an Addon is being updated.
-#: globalPlugins\vlcAccessEnhancement\updateHandler\update_check.py:218
+#: globalPlugins\vlcAccessEnhancement\updateHandler\update_check.py:220
 msgid "Updating"
 msgstr "Actualizando"
 
 #. Translators: The message displayed while an addon is being updated.
-#: globalPlugins\vlcAccessEnhancement\updateHandler\update_check.py:220
+#: globalPlugins\vlcAccessEnhancement\updateHandler\update_check.py:222
 msgid "Please wait while the add-on is being updated."
 msgstr "Por favor, espera mientras se actualiza el complemento."
 
 #. Translators: The message displayed when an error occurs
 #. when installing an add-on package.
-#: globalPlugins\vlcAccessEnhancement\updateHandler\update_check.py:231
+#: globalPlugins\vlcAccessEnhancement\updateHandler\update_check.py:233
 msgid "Failed to update {name} add-on"
 msgstr "Fallo al actualizar el complemento {name}"
 
-#: globalPlugins\vlcAccessEnhancement\updateHandler\update_check.py:289
+#: globalPlugins\vlcAccessEnhancement\updateHandler\update_check.py:291
 msgid "{summary} - update"
 msgstr "{summary} - actualización"
 
-#: globalPlugins\vlcAccessEnhancement\updateHandler\update_check.py:299
+#: globalPlugins\vlcAccessEnhancement\updateHandler\update_check.py:301
 msgid "The service is temporarily under maintenance. Please, try again later."
 msgstr ""
 "El servicio está actualmente en mantenimiento. Por favor, inténtelo de nuevo "
 "más tarde."
 
 #. Translators: message to user to report a new version.
-#: globalPlugins\vlcAccessEnhancement\updateHandler\update_check.py:347
+#: globalPlugins\vlcAccessEnhancement\updateHandler\update_check.py:348
 #, python-format
 msgid "New version available, version %s. Do you want download it now?"
 msgstr "Nueva versión disponible: versión %s. ¿Quieres descargarla ahora?"
 
-#: globalPlugins\vlcAccessEnhancement\updateHandler\update_check.py:364
+#: globalPlugins\vlcAccessEnhancement\updateHandler\update_check.py:365
 #, python-format
 msgid "You are up-to-date. %s is the latest version."
 msgstr "Estás al día, %s es la versión más reciente."
 
-#: globalPlugins\vlcAccessEnhancement\updateHandler\update_check.py:371
+#: globalPlugins\vlcAccessEnhancement\updateHandler\update_check.py:372
 msgid "Oops! There was a problem checking for updates. Please retry later"
 msgstr ""
 "¡Huy! Hubo un problema al buscar las actualizaciones. Por favor, inténtelo "
@@ -631,23 +636,23 @@ msgstr ""
 
 #. Translators: This is a label of a button appearing
 #. on UpdateCheckResult dialog.
-#: globalPlugins\vlcAccessEnhancement\updateHandler\update_check.py:547
+#: globalPlugins\vlcAccessEnhancement\updateHandler\update_check.py:550
 msgid "&Yes"
 msgstr "&Sí"
 
 #. Translators: This is a label of a button appearing
 #. on UpdateCheckResult dialog.
-#: globalPlugins\vlcAccessEnhancement\updateHandler\update_check.py:552
+#: globalPlugins\vlcAccessEnhancement\updateHandler\update_check.py:555
 msgid "&No"
 msgstr "&No"
 
 #. Translators: The label of a button to remind the user later
 #. about performing some action.
-#: globalPlugins\vlcAccessEnhancement\updateHandler\update_check.py:557
+#: globalPlugins\vlcAccessEnhancement\updateHandler\update_check.py:560
 msgid "&Later"
 msgstr "&Más tarde"
 
-#: globalPlugins\vlcAccessEnhancement\updateHandler\update_check.py:561
+#: globalPlugins\vlcAccessEnhancement\updateHandler\update_check.py:564
 msgid "Wha&t's new"
 msgstr "Qué hay &de nuevo"
 

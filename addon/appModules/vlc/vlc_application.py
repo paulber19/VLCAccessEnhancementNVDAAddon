@@ -80,8 +80,6 @@ class MainWindow (object):
 				if first and first.role == controlTypes.ROLE_MENUBAR\
 					and first.childCount == 8:
 					self._topNVDAObject = o
-					#self.mainPanel = MainPanel(self)
-					#self.volumeInfos = VolumeInfos(self)
 					return o
 			if obj == obj.next:
 				break
@@ -100,6 +98,7 @@ class MainWindow (object):
 
 			return mainPanel
 		return None
+
 	def getStatusBar(self):
 		try:
 			statusBar = self.topNVDAObject.firstChild.next
@@ -618,7 +617,6 @@ class VolumeInfos(object):
 		printDebug("VolumeInfo: init")
 		super(VolumeInfos, self).__init__()
 		self.mainPanelNVDAObject = mainWindow.mainPanel.NVDAObject
-		#self.volumeIAObject = self.getVolumeIAObject()
 
 	@property
 	def NVDAObject(self):
@@ -634,6 +632,7 @@ class VolumeInfos(object):
 			pass
 		log.warning("VolumeInfos Object not found")
 		return None
+
 	@property
 	def volumeIAObject(self):
 		if hasattr(self, "_volumeIAObject"):

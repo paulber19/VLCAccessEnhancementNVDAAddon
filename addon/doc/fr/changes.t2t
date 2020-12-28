@@ -5,7 +5,21 @@ Auteur: ADDON_AUTHOR_NAME avec la participation très active de Daniel Poiraud.
 %!includeconf: addon_informations.t2tconf
 URL: ADDON_AUTHOR_URL
 
-Dépot GitHub: [ADDON_REPOSITORY ADDON_REPOSITORY]
+[Dépot GitHub: ADDON_REPOSITORY ADDON_REPOSITORY]
+
+Téléchargement:
+- Version actuelle: ADDON_CUR_VERSION
+ - [serveur de téléchargement 1 ADDON_DOWNLOAD_SERVER1]
+ - [serveur de téléchargement 2 ADDON_DOWNLOAD_SERVER2]
+- [Version précédente: ADDON_PREV_VERSION ADDON_DOWNLOAD_PREVIOUS]
+- [versions de développement ADDON_DEV_URL]
+
+
++ Version 2.5 (19/12/2020) +
+- Compatibilité avec NVDA 2020.4.
+- ajout des liens de téléchargements dans l'historique de l'extension.
+- ajout du bouton "Voir l'historique" dans la catégorie "Mise à jour " des paramètres de l'extension.
+
 
 + Version 2.4 (27/10/2020) +
 - Compatibilité avec NVDA 2020.3

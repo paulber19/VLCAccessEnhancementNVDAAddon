@@ -5,9 +5,26 @@ Auteur: ADDON_AUTHOR_NAME con la participación muy activa de  Daniel Poiraud.
 %!includeconf: addon_informations.t2tconf
 URL: ADDON_AUTHOR_URL
 
-Repositorio en  GitHub: [ADDON_REPOSITORY ADDON_REPOSITORY]
+[Repositorio en  GitHub: ADDON_REPOSITORY ADDON_REPOSITORY]
 
-+ Version 2.4 (27/10/2020) +
+Descargar:
+- Versión actual: ADDON_CUR_VERSION 
+ - [servidor de descarga 1 ADDON_DOWNLOAD_SERVER1]
+ - [servidor de descarga 2 ADDON_DOWNLOAD_SERVER2]
+- Versión anterior: [ADDON_PREV_VERSION ADDON_DOWNLOAD_PREVIOUS]
+- [Versión de desarrollo ADDON_DEV_URL]
+
+
+Traducido por Rémy Ruiz, cambios por Carlos Esteban martínez Macías.
+
+
++ Versión 2.5 (19/12/2020) +
+- compatibilidad con NVDA 2020.4.
+- añadido los enlaces de descarga en el historial del complemento.
+- añadido el botón "Ver historial" que se encuentra en la categoría "Actualización" en las "Opciones" del complemento.
+
+
++ Versión 2.4 (27/10/2020) +
 - compatibilidad con NVDA 2020.3
 - reanudación del código para evitar los errores "garbage collector".
 - añadido el botón "Qué hay de nuevo" en el  cuadro de diálogo proponiendo la instalación de una nueva actualización.
@@ -17,7 +34,7 @@ Repositorio en  GitHub: [ADDON_REPOSITORY ADDON_REPOSITORY]
 Compatibilidad con NVDA 2020.2.
 
 
-+ Version 2.2.1 (15/06/2020) +
++ Versión 2.2.1 (15/06/2020) +
 Corregido problema  de la parada  de NVDA durante el avance rápido mediante pequeños saltos repetidos.
 
 
@@ -35,11 +52,11 @@ Se corrigió el historial de cambios del complemento.
 - puesta en conformidad con NVDA para la prueba de compatibilidad  de los complementos con NVDA.
 
 
-+ Version 2.0.2 (14/02/2020) +
++ Versión 2.0.2 (14/02/2020) +
 Corregido enlace de descarga del complemento.
 
 
-+ Version 2.0.1 (09/02/2020) +
++ Versión 2.0.1 (09/02/2020) +
 - corrección de la no presentación del mensaje pidiendo al usuario que detenga VLC.
 - eliminación de instrucciones de rastreo.
 

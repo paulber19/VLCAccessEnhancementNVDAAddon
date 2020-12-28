@@ -53,7 +53,6 @@ del sys.path[-1]
 sharedPath = os.path.join(_curAddon.path, "shared")
 sys.path.append(sharedPath)
 import vlc_addonConfig  # noqa:E402
-#from vlc_addonConfig import _addonConfigManager
 from vlc_utils import *  # noqa:F403,E402
 from vlc_settingsHandler import *  # noqa:F403,E402
 from vlc_special import makeAddonWindowTitle, messageBox  # noqa:E402
@@ -225,7 +224,6 @@ class InVLCViewWindow(IAccessible):
 	def event_statesChange(self):
 		printDebug("event_stateChange")
 		super(InVLCViewWindow, self).event_statesChange()
-	
 
 	def event_gainFocus(self):
 		printDebug("InVLCViewWindow event_gainFocus: role = %s, name = %s" % (controlTypes.roleLabels.get(self.role), self.name))  # noqa:E501
@@ -678,7 +676,8 @@ class InVLCViewWindow(IAccessible):
 		else:
 			api.moveMouseToNVDAObject(obj)
 			x, y = winUser.getCursorPos()
-			if api.getDesktopObject().objectFromPoint(x, y) == obj:
+			o = api.getDesktopObject().objectFromPoint(x, y) 
+			if o.description == obj.description:
 				controlPanel.clickButton(obj)
 				api.processPendingEvents()
 				api.moveMouseToNVDAObject(obj)
@@ -873,7 +872,7 @@ class AppModule(AppModule):
 
 	def __init__(self, *args, **kwargs):
 		super(AppModule, self).__init__(*args, **kwargs)
-		#toggleDebugFlag()
+		# toggleDebugFlag()
 
 		self.chooseNVDAObjectOverlayClassesDisabled = False
 		self.hasFocus = False
@@ -1179,6 +1178,7 @@ class AppModule(AppModule):
 			return
 		wx.CallAfter(self.initAppModule)
 		nextHandler()
+
 	def getContinuePlaybackScriptGesture(self):
 		from inputCore import manager
 		all = manager.getAllGestureMappings()[_curAddon.manifest['summary']]
@@ -1189,8 +1189,6 @@ class AppModule(AppModule):
 				if len(gestures):
 					return gestures[0].split(":")[1]
 		return None
-
-
 
 	def event_nameChange(self, obj, nextHandler):
 		# printDebug("appModule VLC: event_nameChange: role = %s, name = %s" % (controlTypes.roleLabels.get(obj.role),obj.name)) # noqa:E501

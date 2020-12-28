@@ -5,11 +5,12 @@ Author: ADDON_AUTHOR_NAME with the very active participation of Daniel Poiraud.
 %!includeconf: addon_informations.t2tconf
 URL: ADDON_AUTHOR_URL
 
-GitHub repository: [ADDON_REPOSITORY ADDON_REPOSITORY]
+[GitHub repository: ADDON_REPOSITORY ADDON_REPOSITORY]
 
 Download:
-- [ stable version ADDON_VERSION download server 1 ADDON_DOWNLOAD_SERVER1]
-- [ stable version ADDON_VERSION download server 2 ADDON_DOWNLOAD_SERVER2]
+- [ stable version: ADDON_CUR_VERSION
+ - [download server 1 ADDON_DOWNLOAD_SERVER1]
+ - [download server 2 ADDON_DOWNLOAD_SERVER2]
 - [Development Version ADDON_DEV_URL]
 
 
@@ -240,12 +241,14 @@ A development version is updated:
 
 The button "Search for update" placed in the extension settings, sub-menu "update", allows you to search immediately for an update.
 
+The "View history" button, placed in this same category, allows you to display the history of the current version in the browser.
+
 In the case of an automatic update and if a new version is detected, the "Update" dialog box is displayed to suggest:
 - either the immediate installation of the new version,
 - or to postpone the update until later. In this case, the search will be restarted at least one hour later.
 
 
-The "What's new" button offers the possibility of opening, in the browser, the history of the extension and thus being able to know the new features of the proposed version.
+In the case of an update to a stable version, the "What's new" button offers the possibility of opening, in the browser, the history of the add-on and thus being able to know the new features of the proposed version.
 
 + History +
 The history of this add-on is in the file: ["changes.html" changes.html].

@@ -2,15 +2,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlcAccessEnhancement\n"
 "Report-Msgid-Bugs-To: nvda-translations@freelists.org\n"
-"POT-Creation-Date: 2020-10-13 11:37+0200\n"
-"PO-Revision-Date: 2020-10-13 11:38+0200\n"
+"POT-Creation-Date: 2020-11-17 09:46+0100\n"
+"PO-Revision-Date: 2020-11-17 09:46+0100\n"
 "Last-Translator: Rémy Ruiz <remyruiz@gmail.com>\n"
 "Language-Team: paulber19 <paulber19@laposte.net>\n"
 "Language: fr_FR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.8.12\n"
+"X-Generator: Poedit 1.8.6\n"
 "X-Poedit-Basepath: ../../..\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Poedit-SearchPath-0: .\n"
@@ -116,7 +116,7 @@ msgid "Do you want to resume Playback at %s"
 msgstr "Voulez vous reprendre la lecture à %s ?"
 
 #: appModules/vlc/__init__.py:528
-#: globalPlugins/vlcAccessEnhancement/vlc_configGui.py:151
+#: globalPlugins/vlcAccessEnhancement/vlc_configGui.py:167
 #: shared/vlc_addonConfig.py:177
 msgid "Confirmation"
 msgstr "Confirmation"
@@ -391,7 +391,7 @@ msgstr ""
 "Compatible avec VLC 3.0.\n"
 "\n"
 
-#: globalPlugins/vlcAccessEnhancement/updateHandler/update_check.py:58
+#: globalPlugins/vlcAccessEnhancement/updateHandler/update_check.py:60
 #, python-brace-format
 msgid ""
 "The update is not compatible with this version of NVDA. Minimum NVDA "
@@ -401,82 +401,82 @@ msgstr ""
 "minimum de NVDA : {minYear}.{minMajor}, dernière version testée : "
 "{testedYear}.{testedMajor}."
 
-#: globalPlugins/vlcAccessEnhancement/updateHandler/update_check.py:105
+#: globalPlugins/vlcAccessEnhancement/updateHandler/update_check.py:107
 #: globalPlugins/vlcAccessEnhancement/vlc_configGui.py:69
 msgid "Update"
 msgstr "Mise à jour"
 
-#: globalPlugins/vlcAccessEnhancement/updateHandler/update_check.py:108
+#: globalPlugins/vlcAccessEnhancement/updateHandler/update_check.py:110
 #, python-brace-format
 msgid "Downloading {name}"
 msgstr "Téléchargement de {name} en cours"
 
-#: globalPlugins/vlcAccessEnhancement/updateHandler/update_check.py:123
+#: globalPlugins/vlcAccessEnhancement/updateHandler/update_check.py:125
 #, python-brace-format
 msgid "Error downloading update for {name}."
 msgstr "Erreur lors du téléchargement de la mise à jour de {name}."
 
-#: globalPlugins/vlcAccessEnhancement/updateHandler/update_check.py:182
+#: globalPlugins/vlcAccessEnhancement/updateHandler/update_check.py:184
 #, python-brace-format
 msgid "Cannot update {name} - missing file or invalid file format"
 msgstr ""
 "Impossible de mettre à jour {name} - fichier manquant ou format de fichier "
 "incorrect"
 
-#: globalPlugins/vlcAccessEnhancement/updateHandler/update_check.py:218
+#: globalPlugins/vlcAccessEnhancement/updateHandler/update_check.py:220
 msgid "Updating"
 msgstr "Mise à jour en cours"
 
-#: globalPlugins/vlcAccessEnhancement/updateHandler/update_check.py:220
+#: globalPlugins/vlcAccessEnhancement/updateHandler/update_check.py:222
 msgid "Please wait while the add-on is being updated."
 msgstr "Veuillez patienter durant la mise à jour de l'extension"
 
-#: globalPlugins/vlcAccessEnhancement/updateHandler/update_check.py:231
+#: globalPlugins/vlcAccessEnhancement/updateHandler/update_check.py:233
 #, python-brace-format
 msgid "Failed to update {name} add-on"
 msgstr "Échec de la mise à jour de l'extension {name}"
 
-#: globalPlugins/vlcAccessEnhancement/updateHandler/update_check.py:289
+#: globalPlugins/vlcAccessEnhancement/updateHandler/update_check.py:291
 #, python-brace-format
 msgid "{summary} - update"
 msgstr "{summary} - mise à jour"
 
-#: globalPlugins/vlcAccessEnhancement/updateHandler/update_check.py:299
+#: globalPlugins/vlcAccessEnhancement/updateHandler/update_check.py:301
 msgid "The service is temporarily under maintenance. Please, try again later."
 msgstr ""
 "le service est momentanément en maintenance. Veuillez réessayer plus tard."
 
-#: globalPlugins/vlcAccessEnhancement/updateHandler/update_check.py:347
+#: globalPlugins/vlcAccessEnhancement/updateHandler/update_check.py:348
 #, python-format
 msgid "New version available, version %s. Do you want download it now?"
 msgstr ""
 "Une nouvelle version est disponible: version %s. Voulez-vous la télécharger "
 "maintenant ?"
 
-#: globalPlugins/vlcAccessEnhancement/updateHandler/update_check.py:364
+#: globalPlugins/vlcAccessEnhancement/updateHandler/update_check.py:365
 #, python-format
 msgid "You are up-to-date. %s is the latest version."
 msgstr "Vous êtes à jour, %s est la dernière version."
 
-#: globalPlugins/vlcAccessEnhancement/updateHandler/update_check.py:371
+#: globalPlugins/vlcAccessEnhancement/updateHandler/update_check.py:372
 msgid "Oops! There was a problem checking for updates. Please retry later"
 msgstr ""
 "Oups! Il y a un problème pour rechercher les mises à jour. Réessayer "
 "ultérieurement."
 
-#: globalPlugins/vlcAccessEnhancement/updateHandler/update_check.py:547
+#: globalPlugins/vlcAccessEnhancement/updateHandler/update_check.py:550
 msgid "&Yes"
 msgstr "&Oui"
 
-#: globalPlugins/vlcAccessEnhancement/updateHandler/update_check.py:552
+#: globalPlugins/vlcAccessEnhancement/updateHandler/update_check.py:555
 msgid "&No"
 msgstr "&Non"
 
-#: globalPlugins/vlcAccessEnhancement/updateHandler/update_check.py:557
+#: globalPlugins/vlcAccessEnhancement/updateHandler/update_check.py:560
 msgid "&Later"
 msgstr "&Plus tard"
 
-#: globalPlugins/vlcAccessEnhancement/updateHandler/update_check.py:561
+#: globalPlugins/vlcAccessEnhancement/updateHandler/update_check.py:564
 msgid "Wha&t's new"
 msgstr "Quoi &de neuf"
 
@@ -509,24 +509,28 @@ msgstr ""
 msgid "&Check for update"
 msgstr "&Rechercher une mise à jour"
 
-#: globalPlugins/vlcAccessEnhancement/vlc_configGui.py:115
+#: globalPlugins/vlcAccessEnhancement/vlc_configGui.py:94
+msgid "View &history"
+msgstr "&Voir l'historique"
+
+#: globalPlugins/vlcAccessEnhancement/vlc_configGui.py:131
 #: globalPlugins/vlcAccessEnhancement/vlc_globalPlugin.py:57
 msgid "VLC's configuration"
 msgstr "Configuration de VLC"
 
-#: globalPlugins/vlcAccessEnhancement/vlc_configGui.py:126
+#: globalPlugins/vlcAccessEnhancement/vlc_configGui.py:142
 msgid "&Modify vlc shortcuts"
 msgstr "&Modifier les raccourcis du lecteur média  VLC"
 
-#: globalPlugins/vlcAccessEnhancement/vlc_configGui.py:133
+#: globalPlugins/vlcAccessEnhancement/vlc_configGui.py:149
 msgid "&Delete VLC configuration folder"
 msgstr "&Supprimer le dossier de configuration de VLC"
 
-#: globalPlugins/vlcAccessEnhancement/vlc_configGui.py:149
+#: globalPlugins/vlcAccessEnhancement/vlc_configGui.py:165
 msgid "Do you want really to delete VLC configuration folder ?"
 msgstr "Voulez vous vraiment supprimer le dossier de configuration de VLC ?"
 
-#: globalPlugins/vlcAccessEnhancement/vlc_configGui.py:172
+#: globalPlugins/vlcAccessEnhancement/vlc_configGui.py:188
 #: globalPlugins/vlcAccessEnhancement/vlc_globalPlugin.py:50
 msgid "Settings"
 msgstr "Paramètres"
