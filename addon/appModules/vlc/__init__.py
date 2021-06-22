@@ -1,6 +1,6 @@
 # appModules\vlc\__init__.py.
 # a part of vlcAccessEnhancement add-on
-# Copyright 2019-2020paulber19
+# Copyright 2019-2021 paulber19
 # This file is covered by the GNU General Public License.
 # some code source comes from VLC add-on written by Javi Dominguez.
 
@@ -57,13 +57,11 @@ from vlc_utils import *  # noqa:F403,E402
 from vlc_settingsHandler import *  # noqa:F403,E402
 from vlc_special import makeAddonWindowTitle, messageBox  # noqa:E402
 import vlc_strings  # noqa:E402
-
-from vlc_py3Compatibility import _unicode, rangeGen  # noqa:E402
 del sys.path[-1]
 
 addonHandler.initTranslation()
 
-_scriptCategory = _unicode(_curAddon.manifest['summary'])
+_scriptCategory = str(_curAddon.manifest['summary'])
 
 # timer for script
 GB_scriptTimer = None
@@ -119,7 +117,7 @@ def mySetFocusObject(obj):
 				pass
 			tempObj = api.getDesktopObject()
 		# Scan backwards through the old ancestors looking for a match.
-		for index in rangeGen(oldFocusLineLength - 1, -1, -1):
+		for index in range(oldFocusLineLength - 1, -1, -1):
 			watchdog.alive()
 			if tempObj == oldFocusLine[index]:
 				# Match! The old and new focus ancestors converge at this point.

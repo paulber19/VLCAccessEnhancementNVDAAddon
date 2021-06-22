@@ -1,6 +1,6 @@
 # globalPlugins\vlcAccessEnhancement\vlc_configGui.py
 # a part of vlcAccessEnhancement add-on
-# Copyright 2019- 2020 paulber19
+# Copyright 2019- 2021 paulber19
 # This file is covered by the GNU General Public License.
 
 
@@ -98,6 +98,7 @@ class VLCUpdatePanel(SettingsPanel):
 
 	def onCheckForUpdate(self, evt):
 		from .updateHandler import addonUpdateCheck
+		self.saveSettingChanges()
 		releaseToDevVersion = self.updateReleaseVersionsToDevVersionsCheckBox.IsChecked()  # noqa:E501
 		wx.CallAfter(addonUpdateCheck, auto=False, releaseToDev=releaseToDevVersion)
 		self.Close()

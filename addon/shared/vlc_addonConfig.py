@@ -1,6 +1,6 @@
 # shared\vlc_addonConfig.py
 # a part of vlcAccessEnhancement add-on
-# Copyright 2019-2020 paulber19
+# Copyright 2019-2021 paulber19
 # This file is covered by the GNU General Public License.
 
 # Manages add-on configuration.
@@ -14,15 +14,10 @@ import shutil
 from vlc_settingsHandler import QTInterface
 from vlc_utils import getTimeString
 from vlc_special import makeAddonWindowTitle, messageBox
-from vlc_py3Compatibility import importStringIO
 from configobj import ConfigObj
-# ConfigObj 5.1.0 and later integrates validate module.
-try:
-	from configobj.validate import Validator, VdtTypeError
-except ImportError:
-	from validate import Validator, VdtTypeError
+from configobj.validate import Validator, VdtTypeError
+from io import StringIO
 
-StringIO = importStringIO()
 addonHandler.initTranslation()
 _curAddon = addonHandler.getCodeAddon()
 

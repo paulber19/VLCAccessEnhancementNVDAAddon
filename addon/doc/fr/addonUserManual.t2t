@@ -1,22 +1,22 @@
 ADDON_SUMMARY - manuel utilisateur
-Auteur: ADDON_AUTHOR_NAME avec la participation très active de Daniel Poiraud.
+Auteur : ADDON_AUTHOR_NAME avec la participation très active de Daniel Poiraud.
 
 %!includeconf: ../addon_userManual.t2tconf
 %!includeconf: addon_informations.t2tconf
-URL: ADDON_AUTHOR_URL
+URL : ADDON_AUTHOR_URL
 
-[Dépot GitHub: ADDON_REPOSITORY ADDON_REPOSITORY]
+[Dépot GitHub : ADDON_REPOSITORY ADDON_REPOSITORY]
 
-Téléchargement:
-- version stable: ADDON_CUR_VERSION
+Téléchargement :
+- version stable : ADDON_CUR_VERSION
  - [serveur de téléchargement 1 ADDON_DOWNLOAD_SERVER1]
  - [serveur de téléchargement 2 ADDON_DOWNLOAD_SERVER2]
 - [Version de développement ADDON_DEV_URL]
 
 
-Compatibilité:
-- version minimum de NVDA supportée: MINIMUM_NVDA_VERSION
-- dernière version de NVDA testée: LAST_TESTED_NVDA_VERSION
+Compatibilité :
+- version minimum de NVDA supportée : MINIMUM_NVDA_VERSION
+- dernière version de NVDA testée : LAST_TESTED_NVDA_VERSION
 
 
 = Sommaire =[toc]
@@ -25,7 +25,7 @@ Compatibilité:
 
 + Introduction +
 ++ Fonctionnalités ++
-Cette extension ajoute diverses commandes pour faciliter la lecture des médias avec NVDA:
+Cette extension ajoute diverses commandes pour faciliter la lecture des médias avec NVDA :
 - script pour annoncer la durée du média déjà lue,
 - script pour annoncer la durée du média restante à lire,
 - script pour annoncer la durée totale du média,
@@ -36,7 +36,7 @@ Cette extension ajoute diverses commandes pour faciliter la lecture des médias 
 - script pour reprendre la lecture interrompue au temps mémorisé par VLC,
 - lecture correcte de la barre d'état,
 - possibilité de modification de certains raccourcis clavier génants de VLC.
-- et autres améliorations:
+- et autres améliorations :
  - l'accès aux contrôles de lecture(idée de fonctionnalité de Javi Dominguez),
  - accès aux dialogue "Effets et filtres",
  - annonce correcte du nom et de la valeur des potentiomètres,
@@ -47,7 +47,7 @@ Cette extension ajoute diverses commandes pour faciliter la lecture des médias 
 Cette version est compatible avec la version 3.0 de VLC.
 
 
-+ Gestes de commande apportés par l'extension: +
++ Gestes de commande apportés par l'extension : +
 - NVDA + Control + h : Afficher l'aide sur les raccourcis possibles dans la fenêtre principale,
 - virgule : annoncer la durée lue du média,
 - point-virgule : annoncer la durée du média restante à lire,
@@ -61,15 +61,15 @@ Cette version est compatible avec la version 3.0 de VLC.
 
 Ces gestes de commandes peuvent être modifiés avec le dialogue "Gestes de commande" de NVDA.
 
-+ Raccourcis clavier propre à VLC vocalisés par cette extension: +
-Certains raccourcis prévus par défaut par VLC posent des problèmes et doivent être modifiés. Ce sont:
++ Raccourcis clavier propre à VLC vocalisés par cette extension : +
+Certains raccourcis prévus par défaut par VLC posent des problèmes et doivent être modifiés. Ce sont :
 
 - Les raccourcis-clavier "Crochet fermé" et "Crochet ouvert" pour la vitesse de lecture un peu plus rapide ou un peu plus lente, car ils ne sont pas utilisables en clavier français. Ils seront remplacés par "I" et "U". ,
 - les raccourcis-clavier "Control + Alt + flèche droite ou gauche" pour avancer ou reculer de 5 minutes le média, car ne fonctionnant pas dans certaines configuration. Ils seront remplacés par "Control + Majuscule + flèche droite ou gauche".
 - 	les raccourcis-clavier "+" et"-" du clavier alphanumérique pour modifier la vitesse de lecture, car mal placés. Ils seront remplacés par "o" et "y".
 
 
-Pour mettre en place ces nouveaux raccourcis, vous devez procéder à la modification du fichier de configuration "vlcrc" de VLC comme ceci:
+Pour mettre en place ces nouveaux raccourcis, vous devez procéder à la modification du fichier de configuration "vlcrc" de VLC comme ceci :
 
 - après avoir installé VLC ou supprimé le dossier de configuration de VLC, lancez-le une première fois en utilisant le raccourci du bureau ou en lisant un média, puis arrêtez-le.
 - tapez "NVDA + n" et dans le sous-menu "préférences", tapez "Entrée" sur l'élément de menu "Configuration de VLC" du sous-menu "Lecteur multimédia VLC: compléments d'accessibilité - paramètres ",
@@ -241,14 +241,14 @@ Une version de développement est mise à jour:
 
 Le bouton "Rechercher une mise à jour" placé dans les paramètres de l'extension, sous-menu "Mise à jour", permet de rechercher immédiatement une mise à jour.
 
-Le bouton "Voir l'historique", placé dans cette même catégorie,  vous permet d'afficher l'historique  de la version actuelle dans le navigateur.
+Le bouton "Voir l'historique", placé dans cette même catégorie, vous permet d'afficher l'historique de la version actuelle dans le navigateur.
 
 Dans le cas d'une mise à jour automatique et si une nouvelle version est détectée, la boite de dialogue "Mise à jour" s'affiche pour proposer:
 - soit l'installation immédiate de la nouvelle version,
 - soit de reporter la mise à jour à plus tard. Dans ce cas, la recherche se relancera au minimum une heure plus tard.
 
 
-Dans le cas d'une mise à jour vers une  version stable, Le bouton "Quoi de neuf" offre la possibilité d'ouvrir, dans le navigateur, l'historique de l'extension et ainsi pouvoir connaitre les nouveautés de la version proposée.
+Dans le cas d'une mise à jour vers une version stable, Le bouton "Quoi de neuf" offre la possibilité d'ouvrir, dans le navigateur, l'historique de l'extension et ainsi pouvoir connaitre les nouveautés de la version proposée.
 
 + Historique +
 

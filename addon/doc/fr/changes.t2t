@@ -1,18 +1,24 @@
 ADDON_SUMMARY - Historique
-Auteur: ADDON_AUTHOR_NAME avec la participation très active de Daniel Poiraud.
+Auteur : ADDON_AUTHOR_NAME avec la participation très active de Daniel Poiraud.
 
 %!includeconf: ../addon_global.t2tconf
 %!includeconf: addon_informations.t2tconf
-URL: ADDON_AUTHOR_URL
+URL : ADDON_AUTHOR_URL
 
-[Dépot GitHub: ADDON_REPOSITORY ADDON_REPOSITORY]
+[Dépot GitHub : ADDON_REPOSITORY ADDON_REPOSITORY]
 
-Téléchargement:
-- Version actuelle: ADDON_CUR_VERSION
+Téléchargement :
+- Version actuelle : ADDON_CUR_VERSION
  - [serveur de téléchargement 1 ADDON_DOWNLOAD_SERVER1]
  - [serveur de téléchargement 2 ADDON_DOWNLOAD_SERVER2]
-- [Version précédente: ADDON_PREV_VERSION ADDON_DOWNLOAD_PREVIOUS]
+- [Version précédente : ADDON_PREV_VERSION ADDON_DOWNLOAD_PREVIOUS]
 - [versions de développement ADDON_DEV_URL]
+
+
+
++ Version 2.6 (22/06/2021) +
+- Compatibilité avec NVDA 2021.1 Les versions de NVDA antérieures à la 2019.3 ne sont plus supportées.
+- suppression du code pour Python 2
 
 
 + Version 2.5.2 (09/01/2021) +

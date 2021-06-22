@@ -1,6 +1,6 @@
 # appModules\vlc\vlc_application.py.
 # a part of vlcAccessEnhancement add-on
-# Copyright 2019-2020 paulber19
+# Copyright 2019-2021 paulber19
 # This file is covered by the GNU General Public License.
 
 
@@ -25,7 +25,6 @@ from IAccessibleHandler import accNavigate, accParent
 import sys
 
 _curAddon = addonHandler.getCodeAddon()
-
 debugToolsPath = os.path.join(_curAddon.path, "debugTools")
 sys.path.append(debugToolsPath)
 try:
@@ -38,7 +37,6 @@ sys.path.append(sharedPath)
 import vlc_strings  # noqa:E402
 from vlc_strings import getString  # noqa:E402
 from vlc_utils import *  # noqa:F403,E402
-from vlc_py3Compatibility import py3  # noqa:E402
 del sys.path[-1]
 
 addonHandler.initTranslation()
@@ -405,12 +403,12 @@ class MainWindow (object):
 		printDebug("MainWindow: jumpToTime")
 		mainWindow = self
 		speech.cancelSpeech()
-		oldSpeechMode = speech.speechMode
-		speech.speechMode = speech.speechMode_off
+		oldSpeechMode = getSpeechMode()
+		setSpeechMode_off()
 		api.processPendingEvents()
 		speech.cancelSpeech()
 		if jumpTime is None or jumpTime == 0:
-			speech.speechMode = oldSpeechMode
+			setSpeechMode(oldSpeechMode)
 			# Translators: message to the user to report no time change.
 			queueHandler.queueFunction(
 				queueHandler.eventQueue, speech.speakMessage, _("No change"))
@@ -428,7 +426,7 @@ class MainWindow (object):
 
 		if abs(curTimeInSec - jumpTimeInSec) <= 2:
 			# we are at time
-			speech.speechMode = oldSpeechMode
+			setSpeechMode(oldSpeechMode)
 			queueHandler.queueFunction(
 				queueHandler.eventQueue, mainWindow.sayElapsedTime)
 			queueHandler.queueFunction(
@@ -448,7 +446,7 @@ class MainWindow (object):
 		winUser.setCursorPos(int(x), int(y-20))
 		mouseHandler.executeMouseMoveEvent(x, y)
 		speech.cancelSpeech()
-		speech.speechMode = oldSpeechMode
+		setSpeechMode(oldSpeechMode)
 		# wait for new time
 		api.processPendingEvents()
 		i = 20
@@ -714,11 +712,10 @@ class MainPanel(object):
 		self.controlPanel.clickPlayPauseButton()
 
 
-if py3:
-	__filter_class__ = filter
+__filter_class__ = filter
 
-	def filter(*args):
-		return [item for item in __filter_class__(*args)]
+def filter(*args):
+	return [item for item in __filter_class__(*args)]
 
 
 class ControlPanel(object):
@@ -783,12 +780,12 @@ class ControlPanel(object):
 		if oIA.accName(0) == name:
 			return
 		# no, so try other thing
-		oldSpeechMode = speech.speechMode
-		speech.speechMode = speech.speechMode_off
+		oldSpeechMode = getSpeechMode()
+		setSpeechMode_off()
 		keyboardHandler.KeyboardInputGesture.fromName("space").send()
 		time.sleep(0.1)
 		api.processPendingEvents()
-		speech.speechMode = oldSpeechMode
+		setSpeechMode(oldSpeechMode)
 
 	def clickButton(self, button):
 		printDebug("ControlPanel: clickButton")

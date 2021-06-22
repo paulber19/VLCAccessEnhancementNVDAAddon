@@ -1,6 +1,6 @@
 # appModules\vlc\vlc_playlist.py
 # a part of vlcAccessEnhancement add-on
-# Copyright 2019-2020 paulber19
+# Copyright 2019-2021 paulber19
 # This file is covered by the GNU General Public License.
 # some ideas and code source comes from VLC add-on written by Javi Dominguez.
 
@@ -35,7 +35,6 @@ sharedPath = os.path.join(_curAddon.path, "shared")
 sys.path.append(sharedPath)
 from vlc_utils import *  # noqa:F403,E402
 from vlc_settingsHandler import *  # noqa:F403,E402
-from vlc_py3Compatibility import rangeGen  # noqa:E402
 del sys.path[-1]
 addonHandler.initTranslation()
 
@@ -73,7 +72,7 @@ def _getActiveChild(obj):
 		step = getColumnHeaderCount(oIA)
 		if step > 1 and obj.childCount > 20000:
 			speech.speakMessage(_("Please wait"))
-	for i in rangeGen(0, obj.childCount, step):
+	for i in range(0, obj.childCount, step):
 		if i > 20000\
 			and obj.role in [controlTypes.ROLE_TREEVIEW, controlTypes.ROLE_LIST]:
 			break

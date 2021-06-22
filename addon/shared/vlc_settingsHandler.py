@@ -1,6 +1,6 @@
 # shared\vlc_settingsHandler.py.
 # a part of vlcAccessEnhancement add-on
-# Copyright 2019-2020 paulber19
+# Copyright 2019-2021 paulber19
 # This file is covered by the GNU General Public License.
 
 
@@ -17,7 +17,6 @@ from keyboardHandler import KeyboardInputGesture
 from configobj import ConfigObj
 from vlc_localeSettingsHandler import LocaleSettings
 from vlc_special import makeAddonWindowTitle, messageBox
-from vlc_py3Compatibility import py3, urllib_unquote
 
 addonHandler.initTranslation()
 _curAddon = addonHandler.getCodeAddon()
@@ -241,10 +240,7 @@ class VLCSettings(object):
 		from subprocess import check_output
 		c = ["tasklist", "/v"]
 		p = check_output(c).strip()
-		if py3:
-			tempList = str(p).split(r"\r\n")
-		else:
-			tempList = str(p).split("\r\n")
+		tempList = str(p).split(r"\r\n")
 		for process in tempList:
 			if name == process[: len(name)]:
 				return True
@@ -292,6 +288,7 @@ class QTInterface (VLCSettings):
 		self._loadRecentFiles()
 
 	def _loadRecentFiles(self):
+		from urllib.parse import unquote
 		self.recents = {}
 		if not self.vlcInitialized:
 			return
@@ -317,14 +314,9 @@ class QTInterface (VLCSettings):
 		tempList = recents["list"]\
 			if type(recents["list"]) is list else [recents["list"], ]
 		for item in tempList:
-			if sys.version.startswith("3"):
-				# for python 3
-				file = urllib_unquote(item)
-				filesList.append(file)
-			else:
-				# for python 2
-				file = urllib_unquote(item.encode("utf-8"))
-				filesList.append(file.decode("utf-8"))
+			file = unquote(item)
+			filesList.append(file)
+
 		if "times" in recents:
 			timesList = recents["times"]
 			if type(timesList) is not list:

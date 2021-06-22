@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlcAccessEnhancement\n"
 "Report-Msgid-Bugs-To: nvda-translations@freelists.org\n"
-"POT-Creation-Date: 2020-11-17 09:46+0100\n"
-"PO-Revision-Date: 2020-11-17 09:46+0100\n"
+"POT-Creation-Date: 2021-05-29 19:52+0200\n"
+"PO-Revision-Date: 2021-05-29 19:52+0200\n"
 "Last-Translator: Rémy Ruiz <remyruiz@gmail.com>\n"
 "Language-Team: paulber19 <paulber19@laposte.net>\n"
 "Language: fr_FR\n"
@@ -15,248 +15,248 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: appModules/vlc/__init__.py:271 appModules/vlc/vlc_application.py:177
+#: appModules/vlc/__init__.py:267 appModules/vlc/vlc_application.py:174
 msgid "No media"
 msgstr "Pas de media"
 
-#: appModules/vlc/__init__.py:281
+#: appModules/vlc/__init__.py:277
 msgid "Report media's played duration"
 msgstr "Annoncer la durée déjà lue du média"
 
-#: appModules/vlc/__init__.py:287 appModules/vlc/__init__.py:378
+#: appModules/vlc/__init__.py:283 appModules/vlc/__init__.py:374
 #, python-format
 msgid "Media duration %s"
 msgstr "Durée du média %s"
 
-#: appModules/vlc/__init__.py:292 appModules/vlc/vlc_application.py:249
+#: appModules/vlc/__init__.py:288 appModules/vlc/vlc_application.py:246
 msgid "unknown"
 msgstr "inconnu"
 
-#: appModules/vlc/__init__.py:297
+#: appModules/vlc/__init__.py:293
 msgid "Report media's totalduration"
 msgstr "Annoncer la durée totale du média"
 
-#: appModules/vlc/__init__.py:305
+#: appModules/vlc/__init__.py:301
 msgid "Report media's remaining durationto be played"
 msgstr "Annoncer la durée du média restante à lire"
 
-#: appModules/vlc/__init__.py:315
+#: appModules/vlc/__init__.py:311
 msgid "Current speed "
 msgstr "Vitesse courante "
 
-#: appModules/vlc/__init__.py:317
+#: appModules/vlc/__init__.py:313
 msgid "Report current speed"
 msgstr "Annoncer  la vitesse courante"
 
-#: appModules/vlc/__init__.py:331
+#: appModules/vlc/__init__.py:327
 msgid "Back to normal speed"
 msgstr "Retour à la vitesse normale"
 
-#: appModules/vlc/__init__.py:345
+#: appModules/vlc/__init__.py:341
 msgid ""
 "Display the dialog to set a time and move the playback cursor to this time"
 msgstr ""
 "Afficher le dialogue pour  définir un temps et déplacer le curseur de "
 "lecture à ce temps"
 
-#: appModules/vlc/__init__.py:359
+#: appModules/vlc/__init__.py:355
 msgid "Not available, jump is too big "
 msgstr "Impossible, le saut est trop important."
 
-#: appModules/vlc/__init__.py:370 appModules/vlc/vlc_application.py:156
+#: appModules/vlc/__init__.py:366 appModules/vlc/vlc_application.py:153
 msgid "Pause"
 msgstr "En pause"
 
-#: appModules/vlc/__init__.py:426 appModules/vlc/vlc_application.py:279
+#: appModules/vlc/__init__.py:422 appModules/vlc/vlc_application.py:276
 #, python-format
 msgid "Volume: %s"
 msgstr "Volume: %s"
 
-#: appModules/vlc/__init__.py:429 appModules/vlc/__init__.py:440
-#: appModules/vlc/vlc_application.py:282
+#: appModules/vlc/__init__.py:425 appModules/vlc/__init__.py:436
+#: appModules/vlc/vlc_application.py:279
 msgid "Volume mute"
 msgstr "Son coupé"
 
-#: appModules/vlc/__init__.py:443
+#: appModules/vlc/__init__.py:439
 msgid "volume unmuted"
 msgstr "son rétabli"
 
-#: appModules/vlc/__init__.py:454
+#: appModules/vlc/__init__.py:450
 msgid "Media stopped"
 msgstr "Média arrêté"
 
-#: appModules/vlc/__init__.py:475
+#: appModules/vlc/__init__.py:471
 msgid "Add-on's Input gestures:"
 msgstr "Gestes de commande de l'extension:"
 
-#: appModules/vlc/__init__.py:486
+#: appModules/vlc/__init__.py:482
 msgid "main window help"
 msgstr "fenêtre principale - Aide"
 
-#: appModules/vlc/__init__.py:500
+#: appModules/vlc/__init__.py:496
 msgid "Not available, the media don't be played"
 msgstr "Impossible, le média n'a pas été joué"
 
-#: appModules/vlc/__init__.py:505
+#: appModules/vlc/__init__.py:501
 #, python-brace-format
 msgid "Playback of {0} file will be resume at {1}"
 msgstr "La lecture du média {0}pourra reprendre à {1}"
 
-#: appModules/vlc/__init__.py:514
+#: appModules/vlc/__init__.py:510
 msgid "No available for this media"
 msgstr "Non disponible pour ce média"
 
-#: appModules/vlc/__init__.py:518
+#: appModules/vlc/__init__.py:514
 msgid "Record current playing position for this media"
 msgstr "Enregistrer la position courante de lecture pour ce média"
 
-#: appModules/vlc/__init__.py:526
+#: appModules/vlc/__init__.py:522
 #, python-format
 msgid "Do you want to resume Playback at %s"
 msgstr "Voulez vous reprendre la lecture à %s ?"
 
-#: appModules/vlc/__init__.py:528
-#: globalPlugins/vlcAccessEnhancement/vlc_configGui.py:167
-#: shared/vlc_addonConfig.py:177
+#: appModules/vlc/__init__.py:524
+#: globalPlugins/vlcAccessEnhancement/vlc_configGui.py:169
+#: shared/vlc_addonConfig.py:172
 msgid "Confirmation"
 msgstr "Confirmation"
 
-#: appModules/vlc/__init__.py:544
+#: appModules/vlc/__init__.py:540
 msgid "No resume time for this media"
 msgstr "Aucun temps enregistré pour ce média"
 
-#: appModules/vlc/__init__.py:548
+#: appModules/vlc/__init__.py:544
 msgid "Resume playback at position recoreded for this media"
 msgstr "Relancer la lecture à la position  enregistrée pour ce média"
 
-#: appModules/vlc/__init__.py:567
+#: appModules/vlc/__init__.py:563
 msgid "Restart interrupted playback at position recorded by VLC"
 msgstr "Reprendre la lecture interrompue à la position mémorisée par VLC"
 
-#: appModules/vlc/__init__.py:575
+#: appModules/vlc/__init__.py:571
 msgid "Menu bar is shown"
 msgstr "La barre de menus est affichée"
 
-#: appModules/vlc/__init__.py:577 appModules/vlc/vlc_application.py:165
+#: appModules/vlc/__init__.py:573 appModules/vlc/vlc_application.py:162
 msgid "Menu bar is hidden"
 msgstr "La barre de menus est cachée"
 
-#: appModules/vlc/__init__.py:611
+#: appModules/vlc/__init__.py:607
 msgid "Toggle automatic volume level report option"
 msgstr "Activer ou désactiver l'annonce automatique du niveau du volume"
 
-#: appModules/vlc/__init__.py:616
+#: appModules/vlc/__init__.py:612
 msgid "Toggle automatic elapsed time report option"
 msgstr "Activer ou désactiver l'annonce automatique du temps écoulé"
 
-#: appModules/vlc/__init__.py:627
+#: appModules/vlc/__init__.py:623
 msgid "Playlist closed"
 msgstr "Liste de lecture fermée"
 
-#: appModules/vlc/__init__.py:670
+#: appModules/vlc/__init__.py:666
 msgid "unchecked"
 msgstr "décoché"
 
-#: appModules/vlc/__init__.py:726
+#: appModules/vlc/__init__.py:723
 msgid "Main Panel"
 msgstr "Panneau principal"
 
-#: appModules/vlc/__init__.py:773
+#: appModules/vlc/__init__.py:770
 msgid "None"
 msgstr "Aucun"
 
-#: appModules/vlc/__init__.py:1237
+#: appModules/vlc/__init__.py:1233
 msgid "Display add-on's help"
 msgstr "Afficher l'aide de l'extension"
 
-#: appModules/vlc/vlc_application.py:124 appModules/vlc/vlc_application.py:127
+#: appModules/vlc/vlc_application.py:121 appModules/vlc/vlc_application.py:124
 #, python-format
 msgid "continue playback %s"
 msgstr "Reprendre la lecture %s"
 
-#: appModules/vlc/vlc_application.py:137 appModules/vlc/vlc_application.py:145
+#: appModules/vlc/vlc_application.py:134 appModules/vlc/vlc_application.py:142
 msgid "volume muted"
 msgstr "son coupé"
 
-#: appModules/vlc/vlc_application.py:148
+#: appModules/vlc/vlc_application.py:145
 #, python-format
 msgid "Playing,%s"
 msgstr "en lecture, %s"
 
-#: appModules/vlc/vlc_application.py:151
+#: appModules/vlc/vlc_application.py:148
 #, python-format
 msgid "Pause,%s"
 msgstr "en pause, %s"
 
-#: appModules/vlc/vlc_application.py:194
+#: appModules/vlc/vlc_application.py:191
 msgid "full screen"
 msgstr "Plein écran"
 
-#: appModules/vlc/vlc_application.py:233
+#: appModules/vlc/vlc_application.py:230
 #, python-format
 msgid "Played duration %s"
 msgstr "Durée lue %s"
 
-#: appModules/vlc/vlc_application.py:243
+#: appModules/vlc/vlc_application.py:240
 #, python-format
 msgid "remaining duration %s"
 msgstr "Durée restante à lire %s"
 
-#: appModules/vlc/vlc_application.py:293
+#: appModules/vlc/vlc_application.py:290
 msgid "repeat all"
 msgstr "Répéter tout"
 
-#: appModules/vlc/vlc_application.py:293
+#: appModules/vlc/vlc_application.py:290
 msgid "repeat only current media"
 msgstr "Répéter le média courant"
 
-#: appModules/vlc/vlc_application.py:296
+#: appModules/vlc/vlc_application.py:293
 msgid "no repeat"
 msgstr "Ne pas répéter"
 
-#: appModules/vlc/vlc_application.py:304
+#: appModules/vlc/vlc_application.py:301
 msgid "Random playback"
 msgstr "lecture aléatoire"
 
-#: appModules/vlc/vlc_application.py:304
+#: appModules/vlc/vlc_application.py:301
 msgid "Normal playback"
 msgstr "Lecture normale"
 
-#: appModules/vlc/vlc_application.py:313
+#: appModules/vlc/vlc_application.py:310
 msgid "With repeat and random playback"
 msgstr "En lecture répétée et aléatoire"
 
-#: appModules/vlc/vlc_application.py:316
+#: appModules/vlc/vlc_application.py:313
 msgid "With repeat"
 msgstr "En lecture répétée"
 
-#: appModules/vlc/vlc_application.py:319
+#: appModules/vlc/vlc_application.py:316
 msgid "With random playback"
 msgstr "avec lecture aléatoire"
 
-#: appModules/vlc/vlc_application.py:417
+#: appModules/vlc/vlc_application.py:414
 msgid "No change"
 msgstr "Position inchangée"
 
-#: appModules/vlc/vlc_application.py:464
+#: appModules/vlc/vlc_application.py:461
 msgid "Jump is not possible"
 msgstr "Déplacement impossible"
 
 #. TRANSLATORS: Message when there are no controls visible on screen,
 #. or the addon can't find them.
-#: appModules/vlc/vlc_application.py:832
+#: appModules/vlc/vlc_application.py:828
 msgid "There are no controls available"
 msgstr "Il n'y a pas de contrôle disponible"
 
-#: appModules/vlc/vlc_application.py:844 appModules/vlc/vlc_application.py:858
+#: appModules/vlc/vlc_application.py:840 appModules/vlc/vlc_application.py:854
 msgid "Control Panel"
 msgstr "Panneau de contrôle"
 
-#: appModules/vlc/vlc_application.py:974
+#: appModules/vlc/vlc_application.py:970
 msgid "Anchored playlist shown"
 msgstr "Liste de lecture intégrée visible"
 
-#: appModules/vlc/vlc_application.py:977
+#: appModules/vlc/vlc_application.py:973
 msgid "Anchored playlist hidden"
 msgstr "Liste de lecture intégrée cachée"
 
@@ -284,11 +284,11 @@ msgstr "A&ller au temps"
 msgid "&Cancel"
 msgstr "&Annuler"
 
-#: appModules/vlc/vlc_playlist.py:75 shared/vlc_settingsHandler.py:459
+#: appModules/vlc/vlc_playlist.py:74 shared/vlc_settingsHandler.py:451
 msgid "Please wait"
 msgstr "Veuillez patienter"
 
-#: appModules/vlc/vlc_playlist.py:236
+#: appModules/vlc/vlc_playlist.py:235
 msgid "Anchored playlist"
 msgstr "Liste de lecture intégrée"
 
@@ -332,11 +332,11 @@ msgstr "Sélection annulée"
 msgid "SpecialAlphanumericCharactersInYourLanguage"
 msgstr "áéíóúàèìòùäëïöüâêîôûçÁÉÍÓÚÀÈÌÒÙÄËÏÖÜÂÊÎÔÛÇ"
 
-#: buildVars.py:22
+#: buildVars.py:20
 msgid "VLC multimedia player: Accessibility enhancements"
 msgstr "Lecteur multimédia VLC: compléments d'accessibilité"
 
-#: buildVars.py:26
+#: buildVars.py:24
 msgid ""
 "This addon adds a variety of commands to enhance accessibility in playing "
 "media:\n"
@@ -395,7 +395,7 @@ msgstr ""
 #, python-brace-format
 msgid ""
 "The update is not compatible with this version of NVDA. Minimum NVDA "
-"version: {minYear}{minMajor}, last tested: {testedYear}.{testedMajor}."
+"version: {minYear}.{minMajor}, last tested: {testedYear}.{testedMajor}."
 msgstr ""
 "La mise à jour n'est pas compatible avec cette version de NVDA. Version "
 "minimum de NVDA : {minYear}.{minMajor}, dernière version testée : "
@@ -446,37 +446,37 @@ msgid "The service is temporarily under maintenance. Please, try again later."
 msgstr ""
 "le service est momentanément en maintenance. Veuillez réessayer plus tard."
 
-#: globalPlugins/vlcAccessEnhancement/updateHandler/update_check.py:348
+#: globalPlugins/vlcAccessEnhancement/updateHandler/update_check.py:354
 #, python-format
-msgid "New version available, version %s. Do you want download it now?"
+msgid "New version%s is available. Do you want to download it now?"
 msgstr ""
-"Une nouvelle version est disponible: version %s. Voulez-vous la télécharger "
-"maintenant ?"
+"La nouvelle version %s est disponible. Voulez-vous la télécharger "
+"maintenant ?"
 
-#: globalPlugins/vlcAccessEnhancement/updateHandler/update_check.py:365
+#: globalPlugins/vlcAccessEnhancement/updateHandler/update_check.py:371
 #, python-format
 msgid "You are up-to-date. %s is the latest version."
 msgstr "Vous êtes à jour, %s est la dernière version."
 
-#: globalPlugins/vlcAccessEnhancement/updateHandler/update_check.py:372
+#: globalPlugins/vlcAccessEnhancement/updateHandler/update_check.py:378
 msgid "Oops! There was a problem checking for updates. Please retry later"
 msgstr ""
 "Oups! Il y a un problème pour rechercher les mises à jour. Réessayer "
 "ultérieurement."
 
-#: globalPlugins/vlcAccessEnhancement/updateHandler/update_check.py:550
+#: globalPlugins/vlcAccessEnhancement/updateHandler/update_check.py:535
 msgid "&Yes"
 msgstr "&Oui"
 
-#: globalPlugins/vlcAccessEnhancement/updateHandler/update_check.py:555
+#: globalPlugins/vlcAccessEnhancement/updateHandler/update_check.py:540
 msgid "&No"
 msgstr "&Non"
 
-#: globalPlugins/vlcAccessEnhancement/updateHandler/update_check.py:560
+#: globalPlugins/vlcAccessEnhancement/updateHandler/update_check.py:545
 msgid "&Later"
 msgstr "&Plus tard"
 
-#: globalPlugins/vlcAccessEnhancement/updateHandler/update_check.py:564
+#: globalPlugins/vlcAccessEnhancement/updateHandler/update_check.py:549
 msgid "Wha&t's new"
 msgstr "Quoi &de neuf"
 
@@ -513,24 +513,24 @@ msgstr "&Rechercher une mise à jour"
 msgid "View &history"
 msgstr "&Voir l'historique"
 
-#: globalPlugins/vlcAccessEnhancement/vlc_configGui.py:131
+#: globalPlugins/vlcAccessEnhancement/vlc_configGui.py:133
 #: globalPlugins/vlcAccessEnhancement/vlc_globalPlugin.py:57
 msgid "VLC's configuration"
 msgstr "Configuration de VLC"
 
-#: globalPlugins/vlcAccessEnhancement/vlc_configGui.py:142
+#: globalPlugins/vlcAccessEnhancement/vlc_configGui.py:144
 msgid "&Modify vlc shortcuts"
 msgstr "&Modifier les raccourcis du lecteur média  VLC"
 
-#: globalPlugins/vlcAccessEnhancement/vlc_configGui.py:149
+#: globalPlugins/vlcAccessEnhancement/vlc_configGui.py:151
 msgid "&Delete VLC configuration folder"
 msgstr "&Supprimer le dossier de configuration de VLC"
 
-#: globalPlugins/vlcAccessEnhancement/vlc_configGui.py:165
+#: globalPlugins/vlcAccessEnhancement/vlc_configGui.py:167
 msgid "Do you want really to delete VLC configuration folder ?"
 msgstr "Voulez vous vraiment supprimer le dossier de configuration de VLC ?"
 
-#: globalPlugins/vlcAccessEnhancement/vlc_configGui.py:188
+#: globalPlugins/vlcAccessEnhancement/vlc_configGui.py:190
 #: globalPlugins/vlcAccessEnhancement/vlc_globalPlugin.py:50
 msgid "Settings"
 msgstr "Paramètres"
@@ -556,130 +556,130 @@ msgstr "Voulez vous conserver les paramètres  actuels de l'extension ?"
 msgid "%s - installation"
 msgstr "%s - installation"
 
-#: shared/vlc_addonConfig.py:175
+#: shared/vlc_addonConfig.py:170
 msgid "Do you want to modify resume time for this media ?"
 msgstr "Voulez vous  remplacer le temps déjà enregistré pour ce média ?"
 
-#: shared/vlc_settingsHandler.py:94
+#: shared/vlc_settingsHandler.py:93
 msgid "Jump commands:"
 msgstr "Commandes de saut"
 
-#: shared/vlc_settingsHandler.py:95
+#: shared/vlc_settingsHandler.py:94
 msgid "Jump 5 minutes after"
 msgstr "Aller 5 minutes en avant"
 
-#: shared/vlc_settingsHandler.py:96
+#: shared/vlc_settingsHandler.py:95
 msgid "Jump 5 minutes before "
 msgstr "Aller 5 minutes en arrière"
 
-#: shared/vlc_settingsHandler.py:97
+#: shared/vlc_settingsHandler.py:96
 msgid "Jump 1 minute after"
 msgstr "Aller une minute en avant"
 
-#: shared/vlc_settingsHandler.py:98
+#: shared/vlc_settingsHandler.py:97
 msgid "Jump 1 minute before"
 msgstr "Aller une minute en arrière"
 
-#: shared/vlc_settingsHandler.py:99 shared/vlc_settingsHandler.py:101
+#: shared/vlc_settingsHandler.py:98 shared/vlc_settingsHandler.py:100
 msgid "Jump 10 secondes after"
 msgstr "Aller dix secondes en avant"
 
-#: shared/vlc_settingsHandler.py:100 shared/vlc_settingsHandler.py:102
+#: shared/vlc_settingsHandler.py:99 shared/vlc_settingsHandler.py:101
 msgid "Jump 10 secondes before"
 msgstr "Aller dix secondes en arrière"
 
-#: shared/vlc_settingsHandler.py:103
+#: shared/vlc_settingsHandler.py:102
 msgid "Jump 3 secondes after"
 msgstr "Aller trois secondes en avant"
 
-#: shared/vlc_settingsHandler.py:104
+#: shared/vlc_settingsHandler.py:103
 msgid "Jump 3 secondes before"
 msgstr "Aller trois secondes en arrière"
 
-#: shared/vlc_settingsHandler.py:105
+#: shared/vlc_settingsHandler.py:104
 msgid "Speed commands"
 msgstr "Commandes de vitesse"
 
-#: shared/vlc_settingsHandler.py:106
+#: shared/vlc_settingsHandler.py:105
 msgid "Increase the playback speed"
 msgstr "Augmenter la vitesse de lecture"
 
-#: shared/vlc_settingsHandler.py:107
+#: shared/vlc_settingsHandler.py:106
 msgid "Decrease the playback speed"
 msgstr "Diminuer la vitesse de lecture "
 
-#: shared/vlc_settingsHandler.py:108
+#: shared/vlc_settingsHandler.py:107
 msgid "Slightly increase the playback speed"
 msgstr "Augmenter un peu  la vitesse de lecture"
 
-#: shared/vlc_settingsHandler.py:109
+#: shared/vlc_settingsHandler.py:108
 msgid "Slightly decrease the playback speed"
 msgstr "Diminuer un peu  la vitesse de lecture"
 
-#: shared/vlc_settingsHandler.py:110
+#: shared/vlc_settingsHandler.py:109
 msgid "Normal rate"
 msgstr "Revenir à la vitesse normale"
 
-#: shared/vlc_settingsHandler.py:111
+#: shared/vlc_settingsHandler.py:110
 msgid "Volume commands:"
 msgstr "Commandes de volume"
 
-#: shared/vlc_settingsHandler.py:112 shared/vlc_settingsHandler.py:114
+#: shared/vlc_settingsHandler.py:111 shared/vlc_settingsHandler.py:113
 msgid "Increase volume"
 msgstr "Augmenter le volume"
 
-#: shared/vlc_settingsHandler.py:113 shared/vlc_settingsHandler.py:115
+#: shared/vlc_settingsHandler.py:112 shared/vlc_settingsHandler.py:114
 msgid "Decrease volume"
 msgstr "Diminuer le volume"
 
-#: shared/vlc_settingsHandler.py:116
+#: shared/vlc_settingsHandler.py:115
 msgid "Playing commands:"
 msgstr "Commandes de lecture"
 
-#: shared/vlc_settingsHandler.py:117
+#: shared/vlc_settingsHandler.py:116
 msgid "Play / pause"
 msgstr "Mettre en pause / reprendre la lecture"
 
-#: shared/vlc_settingsHandler.py:118
+#: shared/vlc_settingsHandler.py:117
 msgid "Stop the media"
 msgstr "Arrêter le média"
 
-#: shared/vlc_settingsHandler.py:119
+#: shared/vlc_settingsHandler.py:118
 msgid "loop playback"
 msgstr "Lire en boucle"
 
-#: shared/vlc_settingsHandler.py:120
+#: shared/vlc_settingsHandler.py:119
 msgid "random playback"
 msgstr "Lire aléatoirement"
 
-#: shared/vlc_settingsHandler.py:121
+#: shared/vlc_settingsHandler.py:120
 msgid "Others commands:"
 msgstr "Autres commandes:"
 
-#: shared/vlc_settingsHandler.py:122
+#: shared/vlc_settingsHandler.py:121
 msgid "Full screen"
 msgstr "Plein écran"
 
-#: shared/vlc_settingsHandler.py:123
+#: shared/vlc_settingsHandler.py:122
 msgid "Leave full screen"
 msgstr "Quitter le plein écran"
 
-#: shared/vlc_settingsHandler.py:256
+#: shared/vlc_settingsHandler.py:252
 msgid "You must stop VLC application before delete configuration folder"
 msgstr "Vous devez arrêter VLC avant de supprimer son dossier de configuration"
 
-#: shared/vlc_settingsHandler.py:258 shared/vlc_settingsHandler.py:265
-#: shared/vlc_settingsHandler.py:437 shared/vlc_settingsHandler.py:444
-#: shared/vlc_settingsHandler.py:451
+#: shared/vlc_settingsHandler.py:254 shared/vlc_settingsHandler.py:261
+#: shared/vlc_settingsHandler.py:429 shared/vlc_settingsHandler.py:436
+#: shared/vlc_settingsHandler.py:443
 msgid "Warning"
 msgstr "Avertissement"
 
-#: shared/vlc_settingsHandler.py:263 shared/vlc_settingsHandler.py:442
+#: shared/vlc_settingsHandler.py:259 shared/vlc_settingsHandler.py:434
 msgid "Impossible, VLC application is not installed or initialized"
 msgstr ""
 "Impossible, le lecteur multi média VLC n'est pas installé ou initialisé"
 
-#: shared/vlc_settingsHandler.py:277
+#: shared/vlc_settingsHandler.py:273
 #, python-format
 msgid ""
 "VLC configuration folder (%s) has been deleted. Before modify VLC shortcuts, "
@@ -688,56 +688,56 @@ msgstr ""
 "Le dossier de configuration de VLC (%s) a été supprimé. Pour modifier les "
 "raccourcis de VLC, vous devez auparavant relancer VLC au moins une fois."
 
-#: shared/vlc_settingsHandler.py:279 shared/vlc_settingsHandler.py:466
-#: shared/vlc_settingsHandler.py:494
+#: shared/vlc_settingsHandler.py:275 shared/vlc_settingsHandler.py:458
+#: shared/vlc_settingsHandler.py:486
 msgid "Information"
 msgstr "Information"
 
-#: shared/vlc_settingsHandler.py:283
+#: shared/vlc_settingsHandler.py:279
 #, python-format
 msgid "VLC configuration folder \"%s\" cannot be deleted"
 msgstr ""
 "Le dossier de configuration de VLC (\\\"%s\\\") ne peut pas être supprimé"
 
-#: shared/vlc_settingsHandler.py:285
+#: shared/vlc_settingsHandler.py:281
 msgid "Error"
 msgstr "Erreur"
 
-#: shared/vlc_settingsHandler.py:435
+#: shared/vlc_settingsHandler.py:427
 msgid "You must stop VLC application before modify VLC configuration file"
 msgstr ""
 "Vous devez arrêter l'application VLC pour modifier son fichier de "
 "configuration"
 
-#: shared/vlc_settingsHandler.py:449
+#: shared/vlc_settingsHandler.py:441
 msgid "Error, VLC configuration is not found"
 msgstr "Erreur, le fichier de configuration est   introuvable"
 
-#: shared/vlc_settingsHandler.py:464
+#: shared/vlc_settingsHandler.py:456
 msgid "There is no key modification to do"
 msgstr "Il n'a aucune modification du fichier de configuration de VLC à faire"
 
-#: shared/vlc_settingsHandler.py:474
+#: shared/vlc_settingsHandler.py:466
 msgid "Are you OK?"
 msgstr "Êtes vous d'accord?"
 
-#: shared/vlc_settingsHandler.py:476
+#: shared/vlc_settingsHandler.py:468
 #, python-format
 msgid "%s add-on - Confirmation"
 msgstr "Extension %s - Confirmation"
 
-#: shared/vlc_settingsHandler.py:492
+#: shared/vlc_settingsHandler.py:484
 msgid "VLC configuration file has been updated"
 msgstr "Le fichier de configuration de VLC a été mis à jour"
 
-#: shared/vlc_settingsHandler.py:536
+#: shared/vlc_settingsHandler.py:528
 msgid ""
 "The VLC command keys which will be record in the VLC configuration file are:"
 msgstr ""
 "Les touches de  commandes  qui seront modifiées dans le fichier de "
 "configuration  de VLC sont:"
 
-#: shared/vlc_settingsHandler.py:549
+#: shared/vlc_settingsHandler.py:541
 msgid "VLC command's keys:"
 msgstr "Raccourcis clavier de VLC:"
 
@@ -776,7 +776,7 @@ msgstr "%s secondes"
 msgid "0 second"
 msgstr "0 seconde"
 
-#: shared/vlc_utils.py:216
+#: shared/vlc_utils.py:238
 msgid "Hit Escape key to close the window"
 msgstr "Taper Échap pour fermer cette fenêtre"
 

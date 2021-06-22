@@ -15,57 +15,63 @@ Download:
 - [Development Version ADDON_DEV_URL]
 
 
-+ Version 2.5.2 (09/01/2021) +
+
++ Version 2.6 (06/22/2021) +
+- Compatibility with NVDA 2021.1 Versions of NVDA prior to 2019.3 are no longer supported.
+- code removal for Python 2
+
+
++ Version 2.5.2 (01/09/2021) +
 - added Turkish translation
 
 
-+ Version 2.5.1 (09/01/2021) +
++ Version 2.5.1 (01/09/2021) +
 Added russian translation
 - added Turkish translation
 
 
-+ Version 2.5 (19/12/2020) +
++ Version 2.5 (12/19/2020) +
 - Compatibility with NVDA 2020.4.
 - added download links in the add-on's history.
 - addition of the "View history" button in the "Update" category of the add-on's parameters.
 
 
-+ Version 2.4 (27/10/2020) +
++ Version 2.4 (10/27/2020) +
 - Compatibility with NVDA 2020.3.
 - code recovery to avoid "garbage collector" errors.
 - addition of the "What's new" button in the dialog which offers a new version to download.
 
 
-+ Version 2.3 (28/07/2020) +
-Compatibilité avec NVDA 2020.2
++ Version 2.3 (07/28/2020) +
+Compatibility with NVDA 2020.2
 
-+ Version 2.2.1 (15/06/2020) +
++ Version 2.2.1 (06/15/2020) +
 Fixed issue with NVDA stopping during fast forward by repeated small jumps.
 
-+ Version 2.2 (18/05/2020) +
++ Version 2.2 (05/18/2020) +
 - correction of the regression to resume media playback.
 - pausing the media during a forward jump in the last 3 seconds to avoid stopping the media by VLC.
 
 
-+ Version 2.1.1 (03/04/2020) +
++ Version 2.1.1 (04/03/2020) +
 updating of history of add-on's changes.
 
 
-+ Version 2.1 (03/04/2020) +
++ Version 2.1 (04/03/2020) +
 - compatibility with NVDA 2020.1,
 - compliance for NVDA extension compatibility test
 
 
-+ Version 2.0.2 (14/02/2020) +
++ Version 2.0.2 (02/14/2020) +
 Fixed extension download link.
 
 
-+ Version 2.0.1 (09/02/2020) +
++ Version 2.0.1 (02/09/2020) +
 - correction of the non-presentation of the message asking the user to stop VLC.
 - deletion of trace instructions.
 
 
-+ Version 2.0 (07/02/2020) +
++ Version 2.0 (02/07/2020) +
 - Compatibility with NVDA 2019.3
 - added automatic update of the extension
 - setting option to automatically announce changes in the level of volume and the elapsed time.
@@ -85,28 +91,28 @@ Fixed extension download link.
 
 
 
-+ Version 1.3.1 (11/06/2019) +
++ Version 1.3.1 (06/11/2019) +
 - fixed the file buildVars.py
 - added Spanish translation
 
 
-+ Version 1.3 (01/06/2019) +
++ Version 1.3 (06/01/2019) +
 Compatibility with NVDA 2019.2.0 (updating the manifest.ini).
 
-+ Version 1.2 (06/03/2019) +
++ Version 1.2 (03/06/2019) +
 - replacement of buttons "yes" and "no" by the buttons "ok" and "cancel" in the boxes for confirmation to be able to use the key "Échapp".
 - replacement of the term "add-on" by extension "(imposed by the translators of NVDA).
 - compatibility with NVDA 2019.1.0.
 - preparation of the compatibility with python3.
 
 
-+ Version 1.1 (21/12/2018) +
++ Version 1.1 (12/21/2018) +
 - correction of non-recovery of the playback when the media list recent has only one media,
 - corrections to the documentation,
 - compatibility with alpha versions 2019.1 of NVDA.
 
 
-+ Version 1.0 (29/10/2018) +
++ Version 1.0 (10/29/2018) +
 To avoid confusion with other extensions, for VLC, the name of the extension is to be renamed "VLCAccessEnhancement" and in the extensions manager, it is called "VLC media Player: add-ins of accessibility".
 
 What's new:

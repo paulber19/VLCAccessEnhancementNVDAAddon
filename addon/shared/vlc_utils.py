@@ -1,6 +1,6 @@
 # shared\vlc_utils.py.
 # a part of VLCAccessEnhancement add-on
-# Copyright 2018-2020 paulber19
+# Copyright 2018-2021 paulber19
 # This file is covered by the GNU General Public License.
 
 
@@ -11,8 +11,8 @@ import keyboardHandler
 import time
 import wx
 import config
+import speech
 import characterProcessing
-from vlc_py3Compatibility import baseString
 
 addonHandler.initTranslation()
 
@@ -122,7 +122,7 @@ def formatTime(sTime):
 
 def getTimeInSec(theTime):
 
-	if isinstance(theTime, baseString):
+	if isinstance(theTime, str):
 		if "--:--" in theTime:
 			return 0
 		timeList = getTimeList(theTime)
@@ -205,6 +205,28 @@ def mouseClick(obj, rightButton=False, twice=False):
 			time.sleep(0.1)
 			winUser.mouse_event(winUser.MOUSEEVENTF_RIGHTDOWN, 0, 0, None, None)
 			winUser.mouse_event(winUser.MOUSEEVENTF_RIGHTUP, 0, 0, None, None)
+
+
+def getSpeechMode():
+	try:
+		# for nvda  version >= 2021.1
+		return speech.getState().speechMode
+	except AttributeError:
+		return speech.speechMode
+
+def setSpeechMode(mode):
+	try:
+		# for nvda version >= 2021.1
+		speech.setSpeechMode(mode)
+	except AttributeError:
+		speech.speechMode = mode
+
+def setSpeechMode_off():
+	try:
+		# for nvda version >= 2021.1
+		speech.setSpeechMode(speech.SpeechMode.off)
+	except AttributeError:
+		speech.speechMode = speech.speechMode_off
 
 
 class MessageBox(wx.Dialog):
