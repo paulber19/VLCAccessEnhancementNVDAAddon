@@ -1,4 +1,4 @@
-ADDON_SUMMARY - History
+ ADDON_SUMMARY - History
 Author: ADDON_AUTHOR_NAME with the very active participation of Daniel Poiraud.
 
 %!includeconf: ../addon_global.t2tconf
@@ -15,6 +15,9 @@ Download:
 - [Development Version ADDON_DEV_URL]
 
 
+
++ Version 2.7 (12/01/2021) +
+compatibility with NVDA 2021.3
 
 + Version 2.6 (06/22/2021) +
 - Compatibility with NVDA 2021.1 Versions of NVDA prior to 2019.3 are no longer supported.

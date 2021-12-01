@@ -8,7 +8,51 @@
 import addonHandler
 from logHandler import log
 import winUser
-import controlTypes
+try:
+	# for nvda version >= 2021.2
+	from controlTypes.role import Role
+	ROLE_PANE  = Role.PANE 
+	ROLE_WINDOW  = Role.WINDOW 
+	ROLE_BUTTON = Role.BUTTON
+	ROLE_GRAPHIC = Role.GRAPHIC
+	ROLE_EDITABLETEXT = Role.EDITABLETEXT
+	ROLE_STATICTEXT = Role.STATICTEXT
+	ROLE_CHECKBOX  = Role.CHECKBOX 
+	ROLE_MENU = Role.MENU
+	ROLE_MENUITEM = Role.MENUITEM
+	ROLE_MENUBAR = Role.MENUBAR
+	ROLE_TREEVIEWITEM = Role.TREEVIEWITEM
+	ROLE_LISTITEM = Role.LISTITEM
+	ROLE_TREEVIEW = Role.TREEVIEW
+	ROLE_APPLICATION = Role.APPLICATION
+	ROLE_POPUPMENU = Role.POPUPMENU
+	ROLE_CHECKMENUITEM = Role.CHECKMENUITEM
+	ROLE_TABLECOLUMNHEADER = Role.TABLECOLUMNHEADER
+	ROLE_DIALOG  = Role.DIALOG 
+	ROLE_SLIDER = Role.SLIDER
+	ROLE_COMBOBOX = Role.COMBOBOX
+	ROLE_SPLITBUTTON = Role.SPLITBUTTON
+	from controlTypes.state import State
+	STATE_INVISIBLE  = State.INVISIBLE 
+	STATE_CHECKED  = State.CHECKED 
+except ImportError:
+	# for nvda version < 2021.2
+	from controlTypes import (
+	ROLE_PANE , ROLE_WINDOW ,
+	ROLE_BUTTON, ROLE_GRAPHIC,
+	ROLE_EDITABLETEXT, ROLE_STATICTEXT,
+	ROLE_CHECKBOX , ROLE_MENU,
+	ROLE_MENUITEM, ROLE_MENUBAR,
+	ROLE_TREEVIEWITEM, ROLE_LISTITEM,
+	ROLE_TREEVIEW, ROLE_APPLICATION,
+	ROLE_POPUPMENU,ROLE_CHECKMENUITEM,
+	ROLE_TABLECOLUMNHEADER, ROLE_DIALOG ,
+	ROLE_SLIDER,ROLE_COMBOBOX,
+	ROLE_SPLITBUTTON
+	)
+	from controlTypes import (
+	STATE_INVISIBLE ,STATE_CHECKED 
+	)
 import api
 import re
 import appModuleHandler
@@ -111,10 +155,6 @@ def mySetFocusObject(obj):
 		if safetyCount < 100:
 			safetyCount += 1
 		else:
-			try:
-				log.error("mySetFocusObject: Never ending focus ancestry: last object: %s, %s, window class %s, application name %s" % (tempObj.name, controlTypes.roleLabels[tempObj.role], tempObj.windowClassName, tempObj.appModule.appName))  # noqa:E501
-			except:  # noqa:E722
-				pass
 			tempObj = api.getDesktopObject()
 		# Scan backwards through the old ancestors looking for a match.
 		for index in range(oldFocusLineLength - 1, -1, -1):
@@ -224,8 +264,8 @@ class InVLCViewWindow(IAccessible):
 		super(InVLCViewWindow, self).event_statesChange()
 
 	def event_gainFocus(self):
-		printDebug("InVLCViewWindow event_gainFocus: role = %s, name = %s" % (controlTypes.roleLabels.get(self.role), self.name))  # noqa:E501
-		if self.role == controlTypes.ROLE_PANE and not self.isFocusable:
+		printDebug("InVLCViewWindow event_gainFocus: role = %s, name = %s" % (self.role, self.name))  # noqa:E501
+		if self.role == ROLE_PANE and not self.isFocusable:
 			# this pane receves focus after playlist removing.
 			# Speak foreground window object
 			speech.speakObject(self.appModule.mainWindow.topNVDAObject)
@@ -592,7 +632,7 @@ class InVLCViewWindow(IAccessible):
 		def callback():
 			obj = api.getDesktopObject().firstChild
 			while obj is not None:
-				if obj.role == controlTypes.ROLE_WINDOW and\
+				if obj.role == ROLE_WINDOW and\
 					obj.windowClassName == u'Qt5QWindowToolSaveBits':
 					obj.setFocus()
 					api.setFocusObject(obj)
@@ -627,9 +667,9 @@ class InVLCViewWindow(IAccessible):
 		fg = api.getDesktopObject().firstChild
 		obj = fg.simpleNext
 		while obj:
-			if obj.role == controlTypes.ROLE_WINDOW and\
+			if obj.role == ROLE_WINDOW and\
 				obj.windowClassName == u'Qt5QWindowToolSaveBits':
-				if controlTypes.STATE_INVISIBLE not in obj.states:
+				if STATE_INVISIBLE not in obj.states:
 					return obj
 			obj = obj.simpleNext
 		return None
@@ -655,14 +695,20 @@ class InVLCViewWindow(IAccessible):
 			gesture.send()
 			return
 		description = obj.description
-		if obj.role not in [controlTypes.ROLE_BUTTON, controlTypes.ROLE_GRAPHIC]:
+		if obj.role not in [ROLE_BUTTON, ROLE_GRAPHIC]:
 			obj.doAction()
 			msg = []
 			for state in obj.states:
-				msg.append(controlTypes.stateLabels[state])
+				try:
+					from controlTypes.state import _stateLabels
+					stateLabel = _stateLabels[state]
+				except ImportError:
+					from controlTypes import stateLabels
+					stateLabel = stateLabels[state]
+				msg.append(stateLabel)
 			desc = api.getMouseObject().description
-			if obj.role == controlTypes.ROLE_CHECKBOX and\
-				controlTypes.STATE_CHECKED not in obj.states:
+			if obj.role == ROLE_CHECKBOX and\
+				STATE_CHECKED not in obj.states:
 				msg.append(_("unchecked"))
 				if desc:
 					msg.append(api.getMouseObject().description)
@@ -705,7 +751,7 @@ class VLCMainWindow(InVLCViewWindow):
 
 	def event_gainFocus(self):
 		printDebug("VLCMainWindow: event_gainFocus: role = %s, name = %s" % (
-			controlTypes.roleLabels.get(self.role), self.name))
+			self.role, self.name))
 		super(VLCMainWindow, self).event_gainFocus()
 		if True or not self.hasFocus:
 			printDebug("VLCMainWindow	: event_gainFocus: setFocus on object with hasFocus = False")  # noqa:E501
@@ -818,27 +864,27 @@ class VLCMediaInfos (IAccessible):
 
 	def _get_name(self):
 		name = super(VLCMediaInfos, self)._get_name()
-		if self.role != controlTypes.ROLE_EDITABLETEXT:
+		if self.role != ROLE_EDITABLETEXT:
 			return name
 		if name is not None:
 			return name
 		try:
 			previous = self.previous
-			if previous and previous.role in [controlTypes.ROLE_STATICTEXT, ]:
+			if previous and previous.role in [ROLE_STATICTEXT, ]:
 				return previous.name
 		except:  # noqa:E722
 			pass
 		return None
 
 	def script_nextControl(self, gesture):
-		if self.role == controlTypes.ROLE_EDITABLETEXT\
+		if self.role == ROLE_EDITABLETEXT\
 			and not self.next:
 			self.parent.getChild(1).doAction()
 		else:
 			gesture.send()
 
 	def script_previousControl(self, gesture):
-		if self.role == controlTypes.ROLE_EDITABLETEXT\
+		if self.role == ROLE_EDITABLETEXT\
 			and not self.next:
 			self.simplePrevious.simplePrevious.doAction()
 		else:
@@ -901,10 +947,10 @@ class AppModule(AppModule):
 		def callback():
 			time.sleep(0.2)
 			o = api.getFocusObject()
-			printDebug("appModule VLC inputCaptor callback: %s, hasFocus= %s" % (controlTypes.roleLabels.get(o.role), o.hasFocus))  # noqa:E501
-			roles = [controlTypes.ROLE_MENU, controlTypes.ROLE_MENUITEM, ]
+			printDebug("appModule VLC inputCaptor callback: %s, hasFocus= %s" % (o.role, o.hasFocus))  # noqa:E501
+			roles = [ROLE_MENU, ROLE_MENUITEM, ]
 			if (o.role in roles and not o.hasFocus)\
-				or o.role == controlTypes.ROLE_MENUBAR:
+				or o.role == ROLE_MENUBAR:
 				printDebug("click foreground object when focus object is on not focused object")  # noqa:E501
 				self.mainWindow.resetMediaStates()
 				mouseClick(api.getForegroundObject(), True, True)
@@ -972,7 +1018,7 @@ class AppModule(AppModule):
 			return False
 
 		def isInPlaylist(OIA, obj, clsList):
-			if controlTypes.STATE_INVISIBLE in obj.states:
+			if STATE_INVISIBLE in obj.states:
 				return ID_NoPlaylist
 
 			ret = vlc_application.Playlist.getPlaylistID(oIA)
@@ -980,32 +1026,32 @@ class AppModule(AppModule):
 				return False
 			obj.playlist = ret
 			if ret == ID_AnchoredPlaylist:
-				if obj.role == controlTypes.ROLE_TREEVIEWITEM:
+				if obj.role == ROLE_TREEVIEWITEM:
 					columnHeaders = vlc_playlist.getColumnHeaderCount(
 						obj.IAccessibleObject.accParent)
 					if columnHeaders == 1:
 						clsList.insert(0, vlc_playlist.VLCAnchoredGroupTreeViewItem)
 					else:
 						clsList.insert(0, vlc_playlist.VLCAnchoredPlaylistTreeViewItem)
-				elif obj.role == controlTypes.ROLE_TREEVIEW:
+				elif obj.role == ROLE_TREEVIEW:
 					clsList.insert(0, vlc_playlist.VLCAnchoredPlaylistTreeView)
-				elif obj.role == controlTypes.ROLE_LISTITEM:
+				elif obj.role == ROLE_LISTITEM:
 					clsList.insert(0, vlc_playlist.VLCAnchoredPlaylistListItem)
 				else:
 					clsList.insert(0, vlc_playlist.InAnchoredPlaylist)
-					if obj.role != controlTypes.ROLE_EDITABLETEXT:
+					if obj.role != ROLE_EDITABLETEXT:
 						clsList.insert(0, InVLCViewWindow)
 			elif ret == ID_EmbeddedPlaylist:
-				if obj.role == controlTypes.ROLE_TREEVIEWITEM:
+				if obj.role == ROLE_TREEVIEWITEM:
 					columnHeaders = vlc_playlist.getColumnHeaderCount(
 						obj.IAccessibleObject.accParent)
 					if columnHeaders == 1:
 						clsList.insert(0, vlc_playlist.VLCEmbeddedGroupTreeViewItem)
 					else:
 						clsList.insert(0, vlc_playlist.VLCEmbeddedPlaylistTreeViewItem)
-				elif obj.role == controlTypes.ROLE_TREEVIEW:
+				elif obj.role == ROLE_TREEVIEW:
 					clsList.insert(0, vlc_playlist.VLCEmbeddedPlaylistTreeView)
-				elif obj.role == controlTypes.ROLE_LISTITEM:
+				elif obj.role == ROLE_LISTITEM:
 					clsList.insert(0, vlc_playlist.VLCEmbeddedPlaylistListItem)
 				else:
 					clsList.insert(0, vlc_playlist.InEmbeddedPlaylist)
@@ -1026,33 +1072,33 @@ class AppModule(AppModule):
 
 	def chooseNVDAObjectOverlayClasses(self, obj, clsList):
 		printDebug("appModule vlc: chooseNVDAOverlayClass: %s, %s" % (
-			controlTypes.roleLabels.get(obj.role), obj.name))
+			obj.role, obj.name))
 		if not isinstance(obj, IAccessible):
 			return
-		if obj.role == controlTypes.ROLE_APPLICATION:
+		if obj.role == ROLE_APPLICATION:
 			obj.parent = api.getDesktopObject()
 			clsList.insert(0, VLCQTApplication)
 			return
 		roles = [
-			controlTypes.ROLE_MENU, controlTypes.ROLE_MENUITEM,
-			controlTypes.ROLE_POPUPMENU, controlTypes.ROLE_CHECKMENUITEM,
-			controlTypes.ROLE_TABLECOLUMNHEADER]
+			ROLE_MENU, ROLE_MENUITEM,
+			ROLE_POPUPMENU, ROLE_CHECKMENUITEM,
+			ROLE_TABLECOLUMNHEADER]
 		if obj.role in roles:
 			return
-		if obj.role == controlTypes.ROLE_DIALOG and (
+		if obj.role == ROLE_DIALOG and (
 			obj.windowClassName == u'Qt5QWindowToolSaveBits'
 			or obj.windowClassName == u'Qt5QWindowIcon'):
 			clsList.insert(0, VLCBehaviorsDialog)
 			return
-		if obj.role == controlTypes.ROLE_MENUBAR:
+		if obj.role == ROLE_MENUBAR:
 			clsList.insert(0, VLCMenuBar)
 			return
-		if obj.role == controlTypes.ROLE_SLIDER:
+		if obj.role == ROLE_SLIDER:
 			clsList.insert(0, VLCSlider)
 			return
-		if obj.role == controlTypes.ROLE_COMBOBOX:
+		if obj.role == ROLE_COMBOBOX:
 			clsList.insert(0, VLCComboBox)
-		elif obj.role == controlTypes.ROLE_SPLITBUTTON:
+		elif obj.role == ROLE_SPLITBUTTON:
 			clsList.insert(0, VLCSplitButton)
 		if self.chooseNVDAObjectOverlayClassesDisabled:
 			printDebug("ChooseOverlayClass disabled")
@@ -1061,19 +1107,19 @@ class AppModule(AppModule):
 			return
 		oIA = obj.IAccessibleObject
 		if obj.windowClassName == u'Qt5QWindowIcon':
-			if obj.role == controlTypes.ROLE_EDITABLETEXT:
+			if obj.role == ROLE_EDITABLETEXT:
 				from .vlc_qtEditableText import VLCQTEditableText
 				clsList.insert(0, VLCQTEditableText)
 			elif obj.role in [oleacc.ROLE_SYSTEM_OUTLINE, oleacc.ROLE_SYSTEM_LIST]:
 				clsList.insert(0, VLCQTContenair)
-			elif obj.role == controlTypes.ROLE_WINDOW:
+			elif obj.role == ROLE_WINDOW:
 				try:
 					if oIA.accChild(1).accRole(0) == oleacc.ROLE_SYSTEM_MENUBAR:
 						clsList.insert(0, VLCMainWindow)
 						return
 				except:  # noqa:E722  # noqa:E722
 					pass
-			elif obj.role == controlTypes.ROLE_PANE:
+			elif obj.role == ROLE_PANE:
 				if obj.childCount == 4:
 					# perhaps is the main panel
 					try:
@@ -1136,7 +1182,7 @@ class AppModule(AppModule):
 
 	def event_typedCharacter(self, obj, nextHandler, ch):
 		printDebug("appModule VLC: event_typedCharacter: role = %s, name = %s, ch = %s (%s)" % (  # noqa:E501
-			controlTypes.roleLabels.get(obj.role), obj.name, ch, ord(ch)))
+			obj.role, obj.name, ch, ord(ch)))
 		if not self.hasFocus:
 			return
 		if ord(ch) == 12:
@@ -1148,7 +1194,7 @@ class AppModule(AppModule):
 		nextHandler()
 
 	def event_becomeNavigator(self, obj, nextHandler):
-		printDebug("appModule VLC: event_becomeNavigator: %s, %s" % (controlTypes.roleLabels.get(obj.role), obj.description))  # noqa:E501
+		printDebug("appModule VLC: event_becomeNavigator: %s, %s" % (obj.role, obj.description))  # noqa:E501
 		if obj.description and "<html>" in obj.description:
 			# Removes the HTML tags that appear in the
 			# description of some objects
@@ -1159,8 +1205,8 @@ class AppModule(AppModule):
 
 	def event_focusEntered(self, obj, nextHandler):
 		printDebug("appModule VLC: event_focusEntered: %s, %s" % (
-			controlTypes.roleLabels.get(obj.role), obj.name))
-		if obj.role == controlTypes.ROLE_APPLICATION and obj.name == "vlc":
+			obj.role, obj.name))
+		if obj.role == ROLE_APPLICATION and obj.name == "vlc":
 			try:
 				self.mainWindow.resetMediaStates()
 			except:  # noqa:E722
@@ -1171,7 +1217,7 @@ class AppModule(AppModule):
 
 	def event_foreground(self, obj, nextHandler):
 		printDebug("appModule VLC: event_foreground: %s, %s" % (
-			controlTypes.roleLabels.get(obj.role), obj.name))
+			obj.role, obj.name))
 		if not self.hasFocus:
 			return
 		wx.CallAfter(self.initAppModule)
@@ -1189,7 +1235,6 @@ class AppModule(AppModule):
 		return None
 
 	def event_nameChange(self, obj, nextHandler):
-		# printDebug("appModule VLC: event_nameChange: role = %s, name = %s" % (controlTypes.roleLabels.get(obj.role),obj.name)) # noqa:E501
 		nextHandler()
 		if obj.name == "VLC (Direct3D11 output)":
 			wx.CallAfter(self.initAppModule)
@@ -1200,7 +1245,7 @@ class AppModule(AppModule):
 
 	def event_gainFocus(self, obj, nextHandler):
 		printDebug("appModule VLC: event_gainFocus: role = %s, name = %s" % (
-			controlTypes.roleLabels.get(obj.role), obj.name))
+			obj.role, obj.name))
 		if obj.description and "<html>" in obj.description:
 			# Removes the HTML tags that appear in the description of some objects
 			while re.search("<[^(>.*<)]+>([^<]*</style>)?", obj.description):

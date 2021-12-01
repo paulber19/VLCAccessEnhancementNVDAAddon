@@ -2,7 +2,7 @@
 # appModules\vlc\vlc_qtEditableText.py
 # a part of VLCAccessEnhancement add-on
 # Copyright (C) 2018 Javi Dominguez <fjavids@gmail.com>
-# modified by paulber19 (2020)
+# modified by paulber19 (2020-2021)
 # This file is covered by the GNU General Public License.
 # See the file COPYING.txt for more details.
 # NVDA object class for editable text in QT interfaces
@@ -13,7 +13,15 @@ from string import printable, punctuation
 from globalCommands import commands
 from locale import getdefaultlocale
 import scriptHandler
-import controlTypes
+try:
+	# for nvda version >= 2021.2
+	from controlTypes.role import Role
+	ROLE_STATICTEXT = Role.STATICTEXT
+except ImportError:
+	# for nvda version < 2021.2
+	from controlTypes import (
+	ROLE_STATICTEXT 
+	)
 import config
 import speech
 import braille
@@ -49,7 +57,7 @@ class QTEditableText(EditableTextWithAutoSelectDetection):
 			return name
 		try:
 			previous = self.previous
-			if previous and previous.role in [controlTypes.ROLE_STATICTEXT, ]:
+			if previous and previous.role in [ROLE_STATICTEXT, ]:
 				return previous.name
 		except:  # noqa:E722
 			pass

@@ -7,7 +7,30 @@
 import addonHandler
 
 from logHandler import log
-import controlTypes
+try:
+	# for nvda version >= 2021.2
+	from controlTypes.role import Role
+	ROLE_MENUBAR = Role.MENUBAR
+	ROLE_BORDER = Role.BORDER
+	ROLE_STATUSBAR = Role.STATUSBAR
+	ROLE_PANE = Role.PANE
+	ROLE_BUTTON = Role.BUTTON
+	ROLE_GRIP = Role.GRIP
+	ROLE_MENUBAR = Role.MENUBAR
+	from controlTypes.state import State
+	STATE_INVISIBLE  = State.INVISIBLE
+	STATE_UNAVAILABLE  = State.UNAVAILABLE 
+except ImportError:
+	# for nvda version < 2021.2
+	from controlTypes import (
+	ROLE_MENUBAR, ROLE_BORDER,
+	ROLE_STATUSBAR, ROLE_PANE,
+	ROLE_BUTTON, ROLE_GRIP,
+	ROLE_MENUBAR
+	)
+	from controlTypes import (
+	STATE_INVISIBLE , STATE_UNAVAILABLE
+	)
 import api
 import speech
 import queueHandler
@@ -75,7 +98,7 @@ class MainWindow (object):
 			if obj.windowClassName == u'Qt5QWindowIcon' and obj.childCount == 7:
 				o = obj.getChild(3)
 				first = o.firstChild
-				if first and first.role == controlTypes.ROLE_MENUBAR\
+				if first and first.role == ROLE_MENUBAR\
 					and first.childCount == 8:
 					self._topNVDAObject = o
 					return o
@@ -498,7 +521,7 @@ class MediaInfos(object):
 		# try:
 		if True:
 			for o in oMain.children:
-				if o.role == controlTypes.ROLE_BORDER:
+				if o.role == ROLE_BORDER:
 					self._timesNVDAObject = o
 					return o
 		# except:
@@ -603,7 +626,7 @@ class StatusBar (object):
 			return self._NVDAObject
 		top = self.topNVDAObject
 		for o in top.children:
-			if o.role == controlTypes.ROLE_STATUSBAR:
+			if o.role == ROLE_STATUSBAR:
 				self._NVDAObject = o
 				return o
 		log.warning("getStatusBar: status bar not found")
@@ -623,7 +646,7 @@ class VolumeInfos(object):
 		oMain = self.mainPanelNVDAObject
 		try:
 			for o in oMain.children:
-				if o.role == controlTypes.ROLE_BORDER:
+				if o.role == ROLE_BORDER:
 					self._NVDAObject = o
 					return o
 		except:  # noqa:E722
@@ -678,7 +701,7 @@ class MainPanel(object):
 		printDebug("mainPanel: NVDAObject init")
 		top = self.topNVDAObject
 		for o in top.children:
-			if o.role == controlTypes.ROLE_PANE:
+			if o.role == ROLE_PANE:
 				printDebug("mainPanel: NVDAObject found")
 				self._NVDAObject = o
 				return o
@@ -688,7 +711,7 @@ class MainPanel(object):
 	def getcontinuePlayback(self):
 		try:
 			obj = self.NVDAObject.firstChild
-			if controlTypes.STATE_INVISIBLE in obj.states:
+			if STATE_INVISIBLE in obj.states:
 				return (False, None)
 			return (True, obj.lastChild.name)
 		except:  # noqa:E722
@@ -697,7 +720,7 @@ class MainPanel(object):
 	def pushContinuePlaybackButton(self):
 		try:
 			obj = self.NVDAObject.firstChild.lastChild
-			if obj.role == controlTypes.ROLE_BUTTON:
+			if obj.role == ROLE_BUTTON:
 				obj.IAccessibleObject.accdoDefaultAction(0)
 		except:  # noqa:E722
 			pass
@@ -802,7 +825,7 @@ class ControlPanel(object):
 		o = self.NVDAObject
 		try:
 			controls = filter(lambda c: c.role not in [
-				controlTypes.ROLE_GRIP, controlTypes.ROLE_BORDER, controlTypes.ROLE_PANE],
+				ROLE_GRIP, ROLE_BORDER, ROLE_PANE],
 				o.children +
 				o.getChild(0).children +
 				o.getChild(1).children +
@@ -810,13 +833,13 @@ class ControlPanel(object):
 				o.getChild(3).firstChild.children
 				)
 			# Add mute button
-			if controlTypes.STATE_INVISIBLE not in o.getChild(3).firstChild.states:
+			if STATE_INVISIBLE not in o.getChild(3).firstChild.states:
 				controls.append(o.getChild(3).firstChild)
 		except:  # noqa:E722
 			return []
 		return filter(
-			lambda item: controlTypes.STATE_INVISIBLE not in item.states
-			and controlTypes.STATE_UNAVAILABLE not in item.states, controls)
+			lambda item: STATE_INVISIBLE not in item.states
+			and STATE_UNAVAILABLE not in item.states, controls)
 
 	def moveToControl(self, next=True):
 		controls = self.controls
@@ -867,14 +890,14 @@ class Menubar(object):
 			return self._NVDAObject
 		top = self.topNVDAObject
 		for o in top.children:
-			if o.role == controlTypes.ROLE_MENUBAR:
+			if o.role == ROLE_MENUBAR:
 				self._NVDAObject = o
 				return o
 		return None
 
 	def isVisible(self):
 		try:
-			return controlTypes.STATE_INVISIBLE not in self.NVDAObject.states
+			return STATE_INVISIBLE not in self.NVDAObject.states
 		except:  # noqa:E722
 			return False
 
@@ -960,7 +983,7 @@ class AnchoredPlaylist(Playlist):
 	def isVisible(self):
 		if self.NVDAObject is None:
 			return False
-		if controlTypes.STATE_INVISIBLE in self.NVDAObject.states:
+		if STATE_INVISIBLE in self.NVDAObject.states:
 			return False
 		return True
 

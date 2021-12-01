@@ -227,10 +227,17 @@ class VLCSettings(object):
 
 	def getVlcSettingsFolderPath(self):
 		try:
-			dir = os.path.join(shlobj.SHGetFolderPath(0, shlobj.CSIDL_APPDATA), "vlc")
+			if hasattr(shlobj, "SHGetKnownFolderPath"):
+				configParent = shlobj.SHGetKnownFolderPath(
+					shlobj.FolderId.ROAMING_APP_DATA 
+					)
+			else:
+				configParent = shlobj.SHGetFolderPath(0, shlobj.CSIDL_APPDATA)
 		except WindowsError:
 			log.warning("VLC settings directory not found")
 			return None
+		dir = os.path.join(configParent, "vlc")
+		
 		if os.path.exists(dir):
 			return dir
 		return None

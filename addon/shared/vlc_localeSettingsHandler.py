@@ -8,7 +8,7 @@ import addonHandler
 import os
 from logHandler import log
 from configobj import ConfigObj
-from languageHandler import curLang
+from languageHandler import getLanguage
 import sys
 
 _curAddon = addonHandler.getCodeAddon()
@@ -39,15 +39,15 @@ class LocaleSettings(object):
 
 	def getLocaleSettingsIniFilePath(self):
 		settingsIniFileName = "settings.ini"
-		lang = curLang
+		lang = getLanguage()
 		settingsIniFilePath = os.path.join(
-			self.addonDir, "locale", curLang, settingsIniFileName)
+			self.addonDir, "locale", getLanguage(), settingsIniFileName)
 		if not os.path.exists(settingsIniFilePath):
-			lang = curLang.split("_")[0]
+			lang = getLanguage().split("_")[0]
 			settingsIniFilePath = os.path.join(
 				self.addonDir, "locale", lang, settingsIniFileName)
 			if not os.path.exists(settingsIniFilePath):
-				log.warning("No settingsIniFile %s for %s" % (settingsIniFilePath, curLang))  # noqa:E501
+				log.warning("No settingsIniFile %s for %s" % (settingsIniFilePath, getLanguage()))  # noqa:E501
 				settingsIniFilePath = None
 
 		return settingsIniFilePath

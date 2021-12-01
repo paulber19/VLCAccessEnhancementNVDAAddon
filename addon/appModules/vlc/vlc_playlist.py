@@ -7,7 +7,21 @@
 
 import addonHandler
 
-import controlTypes
+try:
+	# for nvda version >= 2021.2
+	from controlTypes.role import Role
+	ROLE_TREEVIEW = Role.TREEVIEW
+	ROLE_LIST = Role.LIST
+	from controlTypes.state import State
+	STATE_EXPANDED = State.EXPANDED
+except ImportError:
+	# for nvda version < 2021.2
+	from controlTypes import (
+	ROLE_TREEVIEW, ROLE_LIST
+	)
+	from controlTypes import (
+	STATE_EXPANDED
+	)
 import api
 import speech
 import queueHandler
@@ -61,20 +75,19 @@ def getColumnHeaderCount(oIA):
 
 
 def _getActiveChild(obj):
-	printDebug("_getActiveChild: %s, childCount = %s" % (controlTypes.roleLabels.get(obj.role), obj.childCount))  # noqa:E501
 	# QT doesn't do accFocus properly, so find the active child ourselves.
 	if obj.childCount == 0:
 		return None
 	child = None
 	oIA = obj.IAccessibleObject
 	step = 1
-	if obj.role == controlTypes.ROLE_TREEVIEW:
+	if obj.role == ROLE_TREEVIEW:
 		step = getColumnHeaderCount(oIA)
 		if step > 1 and obj.childCount > 20000:
 			speech.speakMessage(_("Please wait"))
 	for i in range(0, obj.childCount, step):
 		if i > 20000\
-			and obj.role in [controlTypes.ROLE_TREEVIEW, controlTypes.ROLE_LIST]:
+			and obj.role in [ROLE_TREEVIEW, ROLE_LIST]:
 			break
 		oldChild = child
 		child = oIA.accChild(i+1)
@@ -111,7 +124,6 @@ class InAnchoredPlaylist(InPlaylist):
 		return _getActiveChild(self)
 
 	def event_gainFocus(self):
-		printDebug("InAnchoredPlaylist: event_gainFocus: %s, isFocusable: %s, " % (controlTypes.roleLabels[self.role], self.isFocusable))  # noqa:E501
 		# if it's first event_gainFocus in anchored playlist,
 		# speak anchored playlist name
 		previousFocus = self.appModule.lastFocusedObject
@@ -174,7 +186,7 @@ class VLCTreeViewItem(qt.TreeViewItem):
 	def _get_states(self):
 		states = super(VLCTreeViewItem, self)._get_states()
 		# expanded state is useless
-		states.discard(controlTypes.STATE_EXPANDED)
+		states.discard(STATE_EXPANDED)
 		return states
 
 
