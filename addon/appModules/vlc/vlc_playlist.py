@@ -1,6 +1,6 @@
 # appModules\vlc\vlc_playlist.py
 # a part of vlcAccessEnhancement add-on
-# Copyright 2019-2021 paulber19
+# Copyright 2019-2022 paulber19
 # This file is covered by the GNU General Public License.
 # some ideas and code source comes from VLC add-on written by Javi Dominguez.
 
@@ -17,13 +17,14 @@ try:
 except ImportError:
 	# for nvda version < 2021.2
 	from controlTypes import (
-	ROLE_TREEVIEW, ROLE_LIST
+		ROLE_TREEVIEW, ROLE_LIST
 	)
 	from controlTypes import (
-	STATE_EXPANDED
+		STATE_EXPANDED
 	)
 import api
 import speech
+import winUser
 import queueHandler
 import eventHandler
 import ui
@@ -42,14 +43,14 @@ sys.path.append(debugToolsPath)
 try:
 	from appModuleDebug import printDebug, toggleDebugFlag
 except ImportError:
-	def prindDebug(msg): return
-	def toggleDebugFlag(): return
+
+	def printDebug(msg):
+		return
+
+	def toggleDebugFlag():
+		return
 del sys.path[-1]
-sharedPath = os.path.join(_curAddon.path, "shared")
-sys.path.append(sharedPath)
-from vlc_utils import *  # noqa:F403,E402
-from vlc_settingsHandler import *  # noqa:F403,E402
-del sys.path[-1]
+
 addonHandler.initTranslation()
 
 # Selection
@@ -66,10 +67,10 @@ def getColumnHeaderCount(oIA):
 	(o, childID) = accNavigate(oIA, 0, oleacc.NAVDIR_FIRSTCHILD)
 	count = 0
 	while o.accRole(0) == oleacc.ROLE_SYSTEM_COLUMNHEADER:
-		count = count+1
+		count = count + 1
 		try:
 			(o, childID) = accNavigate(o, 0, oleacc.NAVDIR_NEXT)
-		except:  # noqa:E722
+		except Exception:
 			break
 	return count
 
@@ -90,13 +91,13 @@ def _getActiveChild(obj):
 			and obj.role in [ROLE_TREEVIEW, ROLE_LIST]:
 			break
 		oldChild = child
-		child = oIA.accChild(i+1)
+		child = oIA.accChild(i + 1)
 		# my modification to remove an NVDA error
 		if child is None:
 			break
 		try:
 			states = child.accState(0)
-		except:  # noqa:E722
+		except Exception:
 			continue
 		if states & oleacc.STATE_SYSTEM_FOCUSED\
 			or states & oleacc.STATE_SYSTEM_SELECTED:

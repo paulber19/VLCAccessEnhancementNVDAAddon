@@ -1,6 +1,6 @@
 # shared\vlc_addonConfig.py
 # a part of vlcAccessEnhancement add-on
-# Copyright 2019-2021 paulber19
+# Copyright 2019-2022 paulber19
 # This file is covered by the GNU General Public License.
 
 # Manages add-on configuration.
@@ -10,16 +10,16 @@ import os
 from logHandler import log
 import globalVars
 import wx
-import shutil
+import gui
+import config
 from vlc_settingsHandler import QTInterface
 from vlc_utils import getTimeString
 from vlc_special import makeAddonWindowTitle, messageBox
 from configobj import ConfigObj
-from configobj.validate import Validator, VdtTypeError
+from configobj.validate import Validator, ValidateError
 from io import StringIO
 
 addonHandler.initTranslation()
-_curAddon = addonHandler.getCodeAddon()
 
 # config section
 SCT_General = "General"
@@ -36,19 +36,69 @@ ID_AutoVolumeLevelReport = "AutoVolumeLevelReport"
 ID_AutoElapsedTimeReport = "AutoElapsedTimeReport"
 ID_PlaybackControlsAccess = "PlaybackControlsAccess"
 
+_curAddon = addonHandler.getCodeAddon()
+_addonName = _curAddon.manifest["name"]
 
-class AddonConfigManager(object):
-	_generalConfSpec = """[{section}]
-	{version} = string(default="1.0")
-	{autoUpdateCheck} = boolean(default=True)
-	{updateReleaseVersionsToDevVersions} = boolean(default=False)
-	{substractTime} = string(default="5")
+
+class BaseAddonConfiguration(ConfigObj):
+	_version = ""
+	""" Add-on configuration file. It contains metadata about add-on . """
+	_GeneralConfSpec = """[{section}]
+	{idConfigVersion} = string(default = " ")
 	""".format(
 		section=SCT_General,
-		version=ID_ConfigVersion,
+		idConfigVersion=ID_ConfigVersion)
+
+	configspec = ConfigObj(StringIO("""# addon Configuration File
+	{general}""".format(general=_GeneralConfSpec, )
+	), list_values=False, encoding="UTF-8")
+
+	def __init__(self, input):
+		""" Constructs an L{AddonConfiguration} instance from manifest string data
+		@param input: data to read the addon configuration information
+		@type input: a fie-like object.
+		"""
+		super(BaseAddonConfiguration, self).__init__(
+			input, configspec=self.configspec, encoding='utf-8', default_encoding='utf-8')
+		self.newlines = "\r\n"
+		self._errors = []
+		val = Validator()
+		result = self.validate(val, copy=True, preserve_errors=True)
+		if type(result) == dict:
+			self._errors = self.getValidateErrorsText(result)
+		else:
+			self._errors = None
+
+	def getValidateErrorsText(self, result):
+		textList = []
+		for name, section in result.items():
+			if section is True:
+				continue
+			textList.append("section [%s]" % name)
+			for key, value in section.items():
+				if isinstance(value, ValidateError):
+					textList.append(
+						'key "{}": {}'.format(
+							key, value))
+		return "\n".join(textList)
+
+	@property
+	def errors(self):
+		return self._errors
+
+
+class AddonConfiguration10(BaseAddonConfiguration):
+	_version = "1.0"
+	_GeneralConfSpec = """[{section}]
+	{configVersion} = string(default = {version})
+	{autoUpdateCheck} = boolean(default=True)
+	{updateReleaseVersionsToDevVersions} = boolean(default=False)
+	""".format(
+		section=SCT_General,
+		configVersion=ID_ConfigVersion,
+		version=_version,
 		autoUpdateCheck=ID_AutoUpdateCheck,
-		updateReleaseVersionsToDevVersions=ID_UpdateReleaseVersionsToDevVersions,
-		substractTime=ID_SubstractTime)
+		updateReleaseVersionsToDevVersions=ID_UpdateReleaseVersionsToDevVersions)
 
 	_optionsConfSpec = """[{section}]
 	{AutoVolumeLevelReport} = boolean(default=True)
@@ -61,64 +111,118 @@ class AddonConfigManager(object):
 		playbackControlsPanelAccess=ID_PlaybackControlsAccess)
 
 	_resumeFilesConfSpec = """[{section}]
-""".format(section=SCT_ResumeFiles)
+	""".format(section=SCT_ResumeFiles)
+
+	#: The configuration specification
+	configspec = ConfigObj(StringIO("""# addon Configuration File
+{general}\r\n{options}\r\n{resumeFiles}
+""".format(general=_GeneralConfSpec, options=_optionsConfSpec, resumeFiles=_resumeFilesConfSpec)
+	), list_values=False, encoding="UTF-8")
+
+
+class AddonConfigManager(object):
+	_currentConfigVersion = "1.0"
+	_versionToConfiguration = {
+		"1.0": AddonConfiguration10,
+	}
 
 	def __init__(self, vlcSettings):
-		self.addon = _curAddon
 		self.vlcSettings = vlcSettings
-		self._conf = None
-		self._configFileError = None
-		self._val = Validator()
-		self._importOldSettings()
-		self._load()
+		self.configFileName = "%sAddon.ini" % _addonName
+		self.loadSettings()
+		config.post_configSave.register(self.handlePostConfigSave)
 		self._updateResumeFiles()
 
-	def _importOldSettings(self):
-		oldConfigFile = os.path.join(self.addon.path, "addonConfig_old.ini")
-		if not os.path.isfile(oldConfigFile):
-			return
-		try:
-			shutil.copy(
-				oldConfigFile,
-				os.path.join(
-					globalVars.appArgs.configPath,
-					"%sAddon.ini" % self.addon.manifest["name"]))
-			os.remove(oldConfigFile)
-		except:  # noqa:E722
-			log.warning("Cannot import old settings")
+	def warnConfigurationReset(self):
+		wx.CallLater(
+			100,
+			gui.messageBox,
+			# Translators: A message warning configuration reset.
+			_(
+				"The configuration file of the add-on contains errors. "
+				"The configuration has been reset to factory defaults"),
+			# Translators: title of message box
+			"{addon} - {title}" .format(addon=_curAddon.manifest["summary"], title=_("Warning")),
+			wx.OK | wx.ICON_WARNING)
 
-	def _load(self):
-		confspec = ConfigObj(StringIO(
-			"""#{0} add-on Configuration File
-{1}
-{2}
-{3}
-			""".format(
-				_curAddon .manifest["name"],
-				self._generalConfSpec,
-				self._optionsConfSpec,
-				self._resumeFilesConfSpec)
-		), list_values=False, encoding="UTF-8")
-		confspec.newlines = "\r\n"
-		configFile = os.path.join(
-			globalVars.appArgs.configPath, "%sAddon.ini" % self.addon.manifest["name"])
-		try:
-			self._conf = ConfigObj(
-				configFile, configspec=confspec, indent_type="\t", encoding="UTF-8")
-		except:  # noqa:E722
-			self._conf = ConfigObj(
-				None, configspec=confspec, indent_type="\t", encoding="UTF-8")
-			self._configFileError = "Error parsing configuration file: %s" % e
-		self._conf.newlines = "\r\n"
-		result = self._conf.validate(self._val)
-		if not result or self._configFileError:
-			log.warn(configFileError)
+	def loadSettings(self):
+		addonConfigFile = os.path.join(
+			globalVars.appArgs.configPath, self.configFileName)
+		doMerge = True
+		if os.path.exists(addonConfigFile):
+			# there is allready a config file
+			try:
+				baseConfig = BaseAddonConfiguration(addonConfigFile)
+				if baseConfig.errors:
+					e = Exception("Error parsing configuration file:\n%s" % baseConfig.errors)
+					raise e
+				if baseConfig[SCT_General][ID_ConfigVersion] != self._currentConfigVersion:
+					# it's an old config, but old config file must not exist here.
+					# Must be deleted
+					os.remove(addonConfigFile)
+					log.warning(
+						"%s: Old configuration version found. Config file is removed: %s" % (_addonName, addonConfigFile))
+				else:
+					# it's the same version of config, so no merge
+					doMerge = False
+			except Exception as e:
+				log.warning(e)
+				# error on reading config file, so delete it
+				os.remove(addonConfigFile)
+				self.warnConfigurationReset()
+				log.warning(
+					"%s Addon configuration file error: configuration reset to factory defaults" % _addonName)
+
+		if os.path.exists(addonConfigFile):
+			self.addonConfig =\
+				self._versionToConfiguration[self._currentConfigVersion](addonConfigFile)
+			if self.addonConfig.errors:
+				log.warning(self.addonConfig.errors)
+				log.warning(
+					"%s Addon configuration file error: configuration reset to factory defaults" % _addonName)
+				os.remove(addonConfigFile)
+				self.warnConfigurationReset()
+				# reset configuration to factory defaults
+				self.addonConfig =\
+					self._versionToConfiguration[self._currentConfigVersion](None)
+				self.addonConfig.filename = addonConfigFile
+				doMerge = False
+		else:
+			# no add-on configuration file found
+			self.addonConfig =\
+				self._versionToConfiguration[self._currentConfigVersion](None)
+			self.addonConfig.filename = addonConfigFile
+		# merge step
+		oldConfigFile = os.path.join(_curAddon.path, self.configFileName)
+		if os.path.exists(oldConfigFile):
+			if doMerge:
+				self.mergeSettings(oldConfigFile)
+			os.remove(oldConfigFile)
+		if not os.path.exists(addonConfigFile):
+			self.saveSettings(True)
+
+	def mergeSettings(self, previousConfigFile):
+		baseConfig = BaseAddonConfiguration(previousConfigFile)
+		previousVersion = baseConfig[SCT_General][ID_ConfigVersion]
+		if previousVersion not in self._versionToConfiguration:
+			log.warning("%s: Configuration merge error: unknown previous configuration version number" % _addonName)
 			return
-		if not os.path.exists(configFile):
-			self.save()
+		previousConfig = self._versionToConfiguration[previousVersion](previousConfigFile)
+		if previousVersion == self.addonConfig[SCT_General][ID_ConfigVersion]:
+			# same config version, update data from previous config
+			self.addonConfig.update(previousConfig)
+			log.warning("%s: Configuration updated with previous configuration file" % _addonName)
+			return
+		# different config version, so do a  merge with previous config.
+		self.addonConfig.mergeWithPreviousConfigurationVersion(previousConfig)
+		try:
+			# self.addonConfig.mergeWithPreviousConfigurationVersion(previousConfig)
+			pass
+		except Exception:
+			pass
 
 	def _updateResumeFiles(self):
-		resumeFiles = self._conf[SCT_ResumeFiles]
+		resumeFiles = self.addonConfig[SCT_ResumeFiles]
 		QTI = QTInterface()
 
 		recents = QTI.recents
@@ -135,27 +239,30 @@ class AddonConfigManager(object):
 		QTI = QTInterface()
 		try:
 			return QTI.recents[mediaName]
-		except:  # noqa:E722
+		except Exception:
 			return None
 
-	def save(self):
-		# Saves the configuration to the config file.
+	def saveSettings(self, force=False):
 		# We never want to save config if runing securely
 		if globalVars.appArgs.secure:
 			return
-		if self._configFileError:
-			raise RuntimeError("config file errors still exist")
-		try:
-			# Copy default settings and formatting.
-			self._conf.validate(self._val, copy=True)
-		except VdtTypeError:
-			# error in configuration file
-			log.warning("saveSettings: validator error: %s" % self._conf.errors)
+		# We save the configuration, in case the user
+			# would not have checked the "Save configuration on exit
+			# " checkbox in General settings or force is is True
+		if not force and not config.conf['general']['saveConfigurationOnExit']:
+			return
+		if self.addonConfig is None:
 			return
 		try:
-			self._conf.write()
-		except:  # noqa:E722
-			log.warning("Could not save configuration - probably read only file system")
+			val = Validator()
+			self.addonConfig.validate(val, copy=True, preserve_errors=True)
+			self.addonConfig.write()
+			log.warning("%s: configuration saved" % _addonName)
+		except Exception:
+			log.warning("%s: Could not save configuration - probably read only file system" % _addonName)
+
+	def handlePostConfigSave(self):
+		self.saveSettings(True)
 
 	def getFullFilePath(self):
 		# current full file path is the first item in recent files
@@ -163,9 +270,13 @@ class AddonConfigManager(object):
 		firstRecentFile = QTI.firstRecentFile
 		return firstRecentFile
 
+	def terminate(self):
+		self.saveSettings()
+		config.post_configSave.unregister(self.handlePostConfigSave)
+
 	def recordFileToResume(self, resumeTime):
 		currentFileName = self.getFullFilePath()
-		if currentFileName in self._conf[SCT_ResumeFiles]:
+		if currentFileName in self.addonConfig[SCT_ResumeFiles]:
 			# Translators: Message shown to ask user to modify resume time.
 			msg = _("Do you want to modify resume time for this media ?")
 			# Translators: title of message box
@@ -173,21 +284,20 @@ class AddonConfigManager(object):
 			res = messageBox(msg, title, wx.OK | wx.CANCEL)
 			if res == wx.CANCEL:
 				return False
-		self._conf[SCT_ResumeFiles][currentFileName] = getTimeString(resumeTime)
-		self.save()
+		self.addonConfig[SCT_ResumeFiles][currentFileName] = getTimeString(resumeTime)
+		self.saveSettings(True)
 		return True
 
 	def getResumeFileTime(self):
 		currentFileName = self.getFullFilePath()
-		if currentFileName not in self._conf[SCT_ResumeFiles]:
+		if currentFileName not in self.addonConfig[SCT_ResumeFiles]:
 			return None
-		return self._conf[SCT_ResumeFiles][currentFileName]
+		return self.addonConfig[SCT_ResumeFiles][currentFileName]
 
 	def toggleOption(self, sct, id, toggle=True):
-		conf = self._conf
+		conf = self.addonConfig
 		if toggle:
 			conf[sct][id] = not conf[sct][id]
-			self.save()
 		return conf[sct][id]
 
 	def getAutoUpdateCheck(self):

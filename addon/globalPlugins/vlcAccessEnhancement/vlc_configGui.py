@@ -1,21 +1,21 @@
 # globalPlugins\vlcAccessEnhancement\vlc_configGui.py
 # a part of vlcAccessEnhancement add-on
-# Copyright 2019- 2021 paulber19
+# Copyright 2019- 2022 paulber19
 # This file is covered by the GNU General Public License.
 
 
 import addonHandler
 import wx
 import gui
-from gui.settingsDialogs import SettingsDialog, MultiCategorySettingsDialog, SettingsPanel  # noqa:E501
+from gui.settingsDialogs import SettingsDialog, MultiCategorySettingsDialog, SettingsPanel
 import os
 import sys
 _curAddon = addonHandler.getCodeAddon()
 path = os.path.join(_curAddon.path, "shared")
 sys.path.append(path)
-from vlc_addonConfig import _addonConfigManager  # noqa:E402
-import vlc_settingsHandler  # noqa:E402
-from vlc_special import makeAddonWindowTitle, messageBox  # noqa:E402
+from vlc_addonConfig import _addonConfigManager
+import vlc_settingsHandler
+from vlc_special import makeAddonWindowTitle, messageBox
 del sys.path[-1]
 
 addonHandler.initTranslation()
@@ -50,11 +50,14 @@ class VLCOptionsPanel(SettingsPanel):
 		self.autoVolumeLevelReportCheckBox.SetFocus()
 
 	def saveSettingChanges(self):
-		if self.autoVolumeLevelReportCheckBox.IsChecked() != _addonConfigManager .getAutoVolumeLevelReportOption():  # noqa:E501
+		option = _addonConfigManager .getAutoVolumeLevelReportOption()
+		if self.autoVolumeLevelReportCheckBox.IsChecked() != option:
 			_addonConfigManager .toggleAutoVolumeLevelReportOption()
-		if self.autoElapsedTimeReportCheckBox .IsChecked() != _addonConfigManager .getAutoElapsedTimeReportOption():  # noqa:E501
+		option = _addonConfigManager .getAutoElapsedTimeReportOption()
+		if self.autoElapsedTimeReportCheckBox .IsChecked() != option:
 			_addonConfigManager .toggleAutoElapsedTimeReportOption()
-		if self.playbackControlsAccessCheckBox.IsChecked() != _addonConfigManager .getPlaybackControlsAccessOption():  # noqa:E501
+		option = _addonConfigManager .getPlaybackControlsAccessOption()
+		if self.playbackControlsAccessCheckBox.IsChecked() != option:
 			_addonConfigManager .togglePlaybackControlsAccessOption()
 
 	def postSave(self):
@@ -99,7 +102,7 @@ class VLCUpdatePanel(SettingsPanel):
 	def onCheckForUpdate(self, evt):
 		from .updateHandler import addonUpdateCheck
 		self.saveSettingChanges()
-		releaseToDevVersion = self.updateReleaseVersionsToDevVersionsCheckBox.IsChecked()  # noqa:E501
+		releaseToDevVersion = self.updateReleaseVersionsToDevVersionsCheckBox.IsChecked()
 		wx.CallAfter(addonUpdateCheck, auto=False, releaseToDev=releaseToDevVersion)
 		self.Close()
 
@@ -116,9 +119,10 @@ class VLCUpdatePanel(SettingsPanel):
 		os.startfile(theFile)
 
 	def saveSettingChanges(self):
-		if self.autoCheckForUpdatesCheckBox.IsChecked() != _addonConfigManager .getAutoUpdateCheck():  # noqa:E501
+		if self.autoCheckForUpdatesCheckBox.IsChecked() != _addonConfigManager .getAutoUpdateCheck():
 			_addonConfigManager .toggleAutoUpdateCheck()
-		if self.updateReleaseVersionsToDevVersionsCheckBox.IsChecked() != _addonConfigManager .getUpdateReleaseVersionsToDevVersions():  # noqa:E501
+		option = _addonConfigManager .getUpdateReleaseVersionsToDevVersions()
+		if self.updateReleaseVersionsToDevVersionsCheckBox.IsChecked() != option:
 			_addonConfigManager .toggleUpdateReleaseVersionsToDevVersions()
 
 	def postSave(self):
@@ -133,9 +137,6 @@ class VLCConfigurationDialog (SettingsDialog):
 	title = makeAddonWindowTitle(_("VLC's configuration"))
 
 	def makeSettings(self, settingsSizer):
-		settingsSizerHelper = gui.guiHelper.BoxSizerHelper(
-			self,
-			sizer=settingsSizer)
 		bHelper = gui.guiHelper.ButtonHelper(wx.HORIZONTAL)
 		self.modifyVLCShortcutsButton = bHelper.addButton(
 			self,
@@ -182,7 +183,7 @@ class AddonSettingsDialog(MultiCategorySettingsDialog):
 	categoryClasses = [
 		VLCOptionsPanel,
 		VLCUpdatePanel
-		]
+	]
 
 	def __init__(self, parent, initialCategory=None):
 		curAddon = addonHandler.getCodeAddon()

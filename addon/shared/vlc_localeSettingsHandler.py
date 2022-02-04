@@ -1,6 +1,6 @@
 # shared\vlc_localeSettingsHandler.py.
 # a part of vlcAccessEnhancement add-on
-# Copyright 2018-2020 paulber19
+# Copyright 2018-2022 paulber19
 # This file is covered by the GNU General Public License.
 
 
@@ -17,7 +17,9 @@ sys.path.append(debugToolsPath)
 try:
 	from debug import printDebug
 except ImportError:
-	def printDebug(msg): return
+
+	def printDebug(msg):
+		return
 del sys.path[-1]
 
 
@@ -47,7 +49,7 @@ class LocaleSettings(object):
 			settingsIniFilePath = os.path.join(
 				self.addonDir, "locale", lang, settingsIniFileName)
 			if not os.path.exists(settingsIniFilePath):
-				log.warning("No settingsIniFile %s for %s" % (settingsIniFilePath, getLanguage()))  # noqa:E501
+				log.warning("No settingsIniFile %s for %s" % (settingsIniFilePath, getLanguage()))
 				settingsIniFilePath = None
 
 		return settingsIniFilePath
@@ -65,7 +67,7 @@ class LocaleSettings(object):
 			"continuePlayback": "kb:alt+control+r",
 			"hideShowMenusView": "kb:control+h",
 			"adjustmentsAndEffects": "kb:control+e",
-			}
+		}
 		self.scriptGestures = defaultScriptGestures.copy()
 		if (conf is None) or ("script-gestures" not in conf.sections):
 			printDebug("loadScriptGestures: Default script gestures assignment loaded")

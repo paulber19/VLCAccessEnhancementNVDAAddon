@@ -1,40 +1,29 @@
 # shared\vlc_strings.py.
 # a part of vlcAccessEnhancement add-on
-# Copyright 2018-2020 paulber19
+# Copyright 2018-2022 paulber19
 # This file is covered by the GNU General Public License.
 
 
 import addonHandler
 from logHandler import log
 import os
-import sys
-from configobj import ConfigObj, ConfigObjError  # noqa:F401
-# ConfigObj 5.1.0 and later integrates validate module.
-try:
-	from configobj.validate import Validator
-except ImportError:
-	from validate import Validator
+from configobj import ConfigObj, ConfigObjError
+from configobj.validate import Validator
+from io import StringIO
 from IAccessibleHandler import accessibleObjectFromEvent, accNavigate
-from oleacc import *  # noqa:F403
+from oleacc import (
+	ROLE_SYSTEM_CHECKBUTTON, ROLE_SYSTEM_WINDOW,
+	NAVDIR_FIRSTCHILD, NAVDIR_LASTCHILD, NAVDIR_NEXT,
+)
 import ctypes
-from vlc_settingsHandler import *  # noqa:F403
-from vlc_py3Compatibility import importStringIO
-StringIO = importStringIO()
+# from vlc_settingsHandler import *
 
 
-def printDebug(str): return
+def printDebug(str):
+	return
 
 
 _curAddon = addonHandler.getCodeAddon()
-debugToolsPath = os.path.join(_curAddon.path, "debugTools")
-sys.path.append(debugToolsPath)
-try:
-	# from debug import printDebug, toggleDebugFlag
-	pass
-except ImportError:
-	def prindDebug(msg): return
-del sys.path[-1]
-
 # this file manage necessary strings to recognize some objects depending
 # of vlc language.
 # this strings must be defined in strings-xx.ini file for each vlc language.
@@ -105,7 +94,7 @@ _confSpec = ConfigObj(StringIO("""
 	{main}
 	{vlc}
 	""".format(main=mainSection, vlc=_vlcSection)
-	), list_values=False, encoding="UTF-8")
+), list_values=False, encoding="UTF-8")
 _confSpec.newlines = "\r\n"
 
 _stringsFileBaseName = "strings-"
@@ -130,7 +119,7 @@ def loadFileConfig(file):
 	try:
 		conf = ConfigObj(
 			file, configspec=_confSpec, indent_type="\t", encoding="UTF-8")
-	except ConfigObjErrore:
+	except ConfigObjError:
 		return None
 	conf.newlines = "\r\n"
 	val = Validator()
@@ -185,7 +174,7 @@ def _getRandomCheckButtonLabel():
 
 		try:
 			(o, childID) = accNavigate(o, 0, NAVDIR_NEXT)
-		except:  # noqa:E722
+		except Exception:
 			o = None
 
 	try:
@@ -195,7 +184,7 @@ def _getRandomCheckButtonLabel():
 		(o, childID) = accNavigate(o, 0, NAVDIR_LASTCHILD)
 		if o.accRole(0) == ROLE_SYSTEM_CHECKBUTTON:
 			return o.accDescription(0)
-	except:  # noqa:E722
+	except Exception:
 		log.warning("vlc_strings: cannot find random check button")
 	return None
 
@@ -227,7 +216,7 @@ def _loadStringsDic():
 			continue
 		if conf[SCTN_VLC][ID_RandomCheckButtonDescription] == label:
 			# language found
-			log.warning("VLCAccessEnhancement: VLC language found= %s" % conf[SCTN_Main][ID_LanguageName])  # noqa:E501
+			log.warning("VLCAccessEnhancement: VLC language found= %s" % conf[SCTN_Main][ID_LanguageName])
 			languageFound = True
 			break
 	if not languageFound:
@@ -240,15 +229,14 @@ def _loadStringsDic():
 def getString(stringID):
 	noneString = "???None???"
 	section = "vlc"
-	printDebug("vlcStrings: _getString: section = %s, stringID = %s" % (section, stringID))  # noqa:E501
+	printDebug("vlcStrings: _getString: section = %s, stringID = %s" % (section, stringID))
 	if _stringsDics is None:
 		_loadStringsDic()
 		if _stringsDics is None:
 			printDebug("VLC_Strings: strings are not loaded")
 			return noneString
-
 	if section not in _stringsDics:
-		log.warning("getStrings error: not section %s in _stringsDic" % module)
+		log.warning("getStrings error: not section %s in _stringsDic" % section)
 		return noneString
 	dic = _stringsDics[section]
 	if stringID not in list(dic.keys()):

@@ -1,4 +1,4 @@
- ADDON_SUMMARY - History
+ADDON_SUMMARY - History
 Author: ADDON_AUTHOR_NAME with the very active participation of Daniel Poiraud.
 
 %!includeconf: ../addon_global.t2tconf
@@ -14,6 +14,15 @@ Download:
 - [Previous Version: ADDON_PREV_VERSION ADDON_DOWNLOAD_PREVIOUS]
 - [Development Version ADDON_DEV_URL]
 
+
++ Version 2.8 (02/04/2022) +
+- compatibility with NVDA 2022.1
+- reset the configuration in the event of errors in the configuration file.
+
+
+Changes:
+- during an automatic update of the add-on, it no longer asks the user if he wants to keep the current configuration parameters of the add-on.
+- during a manual installation of the add-on, a confirmation request is requested when the user has chosen not to keep the current settings of the add-on configuration.
 
 
 + Version 2.7 (12/01/2021) +

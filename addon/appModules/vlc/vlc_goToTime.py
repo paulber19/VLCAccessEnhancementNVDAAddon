@@ -1,6 +1,6 @@
 # appModules\vlc\vlc_goToTime.py.
 # a part of vlcAccessEnhancement add-on
-# Copyright 2019-2020 paulber19
+# Copyright 2019-2022 paulber19
 # This file is covered by the GNU General Public License.
 
 
@@ -11,8 +11,8 @@ import sys
 _curAddon = addonHandler.getCodeAddon()
 sharedPath = os.path.join(_curAddon.path, "shared")
 sys.path.append(sharedPath)
-from vlc_utils import PutWindowOnForeground  # noqa:E402
-from vlc_special import makeAddonWindowTitle  # noqa:E402
+from vlc_utils import PutWindowOnForeground
+from vlc_special import makeAddonWindowTitle
 del sys.path[-1]
 
 addonHandler.initTranslation()
@@ -92,7 +92,7 @@ class GoToTimeDialog(wx.Dialog):
 		self.goToButton.Bind(wx.EVT_BUTTON, self.onGoToButton)
 		self.goToButton.Bind(wx.EVT_KEY_DOWN, self.onKeyDown)
 		self.goToButton.SetDefault()
-		mainSizer.Add(self.goToButton, (1, 0), flag=wx.LEFT | wx.TOP,  border=15)
+		mainSizer.Add(self.goToButton, (1, 0), flag=wx.LEFT | wx.TOP, border=15)
 		# Translators: label of cancel button.
 		self.cancelButton = wx.Button(self, -1, label=_("&Cancel"))
 		self.cancelButton.Bind(wx.EVT_BUTTON, self.onCancelButton)
@@ -119,7 +119,7 @@ class GoToTimeDialog(wx.Dialog):
 			t = timeList[:]
 			r = 5
 			if int(t[2]) < r:
-				t[1] = str(int(t[1])-1)
+				t[1] = str(int(t[1]) - 1)
 				t[2] = str(60 - (r - int(t[2])))
 			else:
 				t[2] = str(int(t[2]) - r)
@@ -128,7 +128,7 @@ class GoToTimeDialog(wx.Dialog):
 		i = 59
 		while i >= 0:
 			nbList.append(str(i))
-			i = i-1
+			i = i - 1
 		maxTotalTime = maximize(self.totalTime)
 		# hours
 		max = nbList.index(maxTotalTime[0])
@@ -154,7 +154,7 @@ class GoToTimeDialog(wx.Dialog):
 		try:
 			# for wxPython 4
 			cb.SetTextSelection(0, cb.GetLastPosition())
-		except:  # noqa:E722
+		except Exception:
 			# for wxPython 3
 			cb.SetMark(0, cb.GetLastPosition())
 

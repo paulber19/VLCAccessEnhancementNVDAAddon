@@ -1,12 +1,13 @@
 # shared\vlc_utils.py.
 # a part of VLCAccessEnhancement add-on
-# Copyright 2018-2021 paulber19
+# Copyright 2018-2022 paulber19
 # This file is covered by the GNU General Public License.
 
 
 import addonHandler
 import winUser
 import api
+import gui
 import keyboardHandler
 import time
 import wx
@@ -21,9 +22,9 @@ def PutWindowOnForeground(hwnd, sleepNb=10, sleepTime=0.1):
 	winUser.setForegroundWindow(hwnd)
 	try:
 		winUser.setForegroundWindow(hwnd)
-	except:  # noqa:E722
+	except Exception:
 		pass
-	for i in [sleepTime]*(sleepNb-1):
+	for i in [sleepTime] * (sleepNb - 1):
 		time.sleep(i)
 		if winUser.getForegroundWindow() == hwnd:
 			return True
@@ -128,7 +129,7 @@ def getTimeInSec(theTime):
 		timeList = getTimeList(theTime)
 	else:
 		timeList = theTime
-	return int(timeList[0]) * 3600 + int(timeList[1])*60 + int(timeList[2])
+	return int(timeList[0]) * 3600 + int(timeList[1]) * 60 + int(timeList[2])
 
 
 def getTimeInMinutes(sTime):
@@ -136,7 +137,7 @@ def getTimeInMinutes(sTime):
 	iMinu = 0
 	if int(timeList[2]) > 30:
 		iMinu = 1
-	iMinu = iMinu+int(timeList[1])+int(timeList[0])*60
+	iMinu = iMinu + int(timeList[1]) + int(timeList[0]) * 60
 	return iMinu
 
 
@@ -150,7 +151,7 @@ def getTimeList(timeString):
 	i = 2
 	for s in timeList:
 		t[i] = str(int(s))
-		i = i-1
+		i = i - 1
 	return t
 
 
@@ -214,12 +215,14 @@ def getSpeechMode():
 	except AttributeError:
 		return speech.speechMode
 
+
 def setSpeechMode(mode):
 	try:
 		# for nvda version >= 2021.1
 		speech.setSpeechMode(mode)
 	except AttributeError:
 		speech.speechMode = mode
+
 
 def setSpeechMode_off():
 	try:
@@ -233,9 +236,14 @@ class MessageBox(wx.Dialog):
 	def __init__(self, parent, ID, title, helpMessage, closeIfInactive):
 		super(MessageBox, self).__init__(parent, ID, title)
 		self.oldSymbolLevel = config.conf["speech"]["symbolLevel"]
-		config.conf["speech"]["symbolLevel"] = characterProcessing.SYMLVL_ALL
+		try:
+			# for nvda version >=  2021.2
+			from characterProcessing import SymbolLevel
+			config.conf["speech"]["symbolLevel"] = SymbolLevel.ALL
+		except ImportError:
+			config.conf["speech"]["symbolLevel"] = characterProcessing.SYMLVL_ALL
 		# Translators: message shown in dialog to close window.
-		self.helpMessage = "%s\r\n%s" % (helpMessage, _("Hit Escape key to close the window"))  # noqa:E501
+		self.helpMessage = "%s\r\n%s" % (helpMessage, _("Hit Escape key to close the window"))
 		self.closeIfInactive = closeIfInactive
 		self.destroyed = False
 		self.doGui()

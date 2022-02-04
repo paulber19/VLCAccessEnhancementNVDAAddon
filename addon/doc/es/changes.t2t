@@ -18,6 +18,16 @@ Descargar:
 Traducido por Rémy Ruiz, cambios por Carlos Esteban martínez Macías.
 
 
++ v2.8 (04/02/2022) +
+- Compatibilidad con NVDA 2022.1
+- reinicialización de la configuración en caso de errores en el archivo de configuración.
+
+
+Cambios:
+- durante la actualización automática del complemento, ya no se le solicita al usuario si desea conservar las opciones de configuración actual del complemento.
+- durante una instalación manual del complemento, se solicita una solicitud de confirmación cuando el usuario ha elegido no conservar las opciones de configuración actual del complemento.
+
+
 + v2.7 (01/12/2021) +
 Compatibilidad con NVDA 2021.3.
 

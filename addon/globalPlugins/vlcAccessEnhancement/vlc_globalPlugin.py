@@ -1,6 +1,6 @@
 # globalPlugins\VLCAccessEnhancement\vlc_globalPlugin.py
 # a part of vlcAccessEnhancement add-on
-# Copyright 2019-2020 paulber19
+# Copyright 2019-2022 paulber19
 # This file is covered by the GNU General Public License.
 
 
@@ -15,9 +15,9 @@ import sys
 _curAddon = addonHandler.getCodeAddon()
 sharedPath = os.path.join(_curAddon.path, "shared")
 sys.path.append(sharedPath)
-import vlc_addonConfig  # noqa:E402
-import vlc_settingsHandler  # noqa:E402
-from vlc_special import makeAddonWindowTitle  # noqa:E402
+import vlc_addonConfig
+import vlc_settingsHandler
+from vlc_special import makeAddonWindowTitle
 del sys.path[-1]
 
 addonHandler.initTranslation()
@@ -33,7 +33,8 @@ class VLCGlobalPlugin (globalPluginHandler.GlobalPlugin):
 		from . import updateHandler
 		vlc_addonConfig.initialize()
 		if vlc_addonConfig._addonConfigManager.getAutoUpdateCheck():
-			updateHandler.autoUpdateCheck(releaseToDev=vlc_addonConfig._addonConfigManager.getUpdateReleaseVersionsToDevVersions())  # noqa:E501
+			updateHandler.autoUpdateCheck(
+				releaseToDev=vlc_addonConfig._addonConfigManager.getUpdateReleaseVersionsToDevVersions())
 
 	def createSubMenu(self):
 		self.prefsMenu = gui.mainFrame.sysTrayIcon.preferencesMenu
@@ -62,7 +63,7 @@ class VLCGlobalPlugin (globalPluginHandler.GlobalPlugin):
 	def terminate(self):
 		try:
 			self.preferencesMenu.Remove(self.vlc)
-		except:  # noqa:E722
+		except Exception:
 			pass
 		super(VLCGlobalPlugin, self).terminate()
 
@@ -90,4 +91,4 @@ class VLCGlobalPlugin (globalPluginHandler.GlobalPlugin):
 			CheckForAddonUpdate, None, updateInfosFile=fileName, silent=False)
 	__gestures = {
 		"kb:alt+control+f11": "VLCGlobalPluginTest",
-		}
+	}

@@ -1,6 +1,6 @@
 # shared\vlc_settingsHandler.py.
 # a part of vlcAccessEnhancement add-on
-# Copyright 2019-2021 paulber19
+# Copyright 2019-2022 paulber19
 # This file is covered by the GNU General Public License.
 
 
@@ -20,13 +20,14 @@ from vlc_special import makeAddonWindowTitle, messageBox
 
 addonHandler.initTranslation()
 _curAddon = addonHandler.getCodeAddon()
-
 debugToolsPath = os.path.join(_curAddon.path, "debugTools")
 sys.path.append(debugToolsPath)
 try:
 	from debug import printDebug
 except ImportError:
-	def printDebug(msg): return
+
+	def printDebug(msg):
+		return
 del sys.path[-1]
 
 
@@ -88,7 +89,7 @@ _defaultVlcKeysAssignment = {
 	"extra-key-vol-down": "downArrow",
 	"extra-key-jump+short": "rightArrow",
 	"extra-key-jump-short": "leftArrow",
-	}
+}
 _vlcHotKeyHelp = (
 	("", _("Jump commands:")),
 	("key-jump+long", _("Jump 5 minutes after")),
@@ -120,94 +121,94 @@ _vlcHotKeyHelp = (
 	("", _("Others commands:")),
 	("key-toggle-fullscreen", _("Full screen")),
 	("key-leave-fullscreen", _("Leave full screen")),
-	)
+)
 
 normalSpeedKeys = (
-		"global-key-rate-normal",
-		"key-rate-normal",
-		)
+	"global-key-rate-normal",
+	"key-rate-normal",
+)
 
 # others speed keys
 speedKeys = (
-		"global-key-faster",
-		"key-faster",
-		"global-key-slower",
-		"key-slower",
-		"global-key-rate-faster-fine",
-		"key-rate-faster-fine",
-		"global-key-rate-slower-fine",
-		"key-rate-slower-fine"
-		)
+	"global-key-faster",
+	"key-faster",
+	"global-key-slower",
+	"key-slower",
+	"global-key-rate-faster-fine",
+	"key-rate-faster-fine",
+	"global-key-rate-slower-fine",
+	"key-rate-slower-fine"
+)
 
 # jump
 jumpKeys = (
-		"global-key-jump-extrashort",
-		"key-jump-extrashort",
-		"global-key-jump+extrashort",
-		"key-jump+extrashort",
-		"global-key-jump-short",
-		"key-jump-short",
-		"extra-key-jump-short",
-		"global-key-jump+short",
-		"key-jump+short",
-		"extra-key-jump+short",
-		"global-key-jump-medium",
-		"key-jump-medium",
-		"global-key-jump+medium",
-		"key-jump+medium",
-		"global-key-jump-long",
-		"key-jump-long",
-		"global-key-jump+long",
-		"key-jump+long"
-		)
+	"global-key-jump-extrashort",
+	"key-jump-extrashort",
+	"global-key-jump+extrashort",
+	"key-jump+extrashort",
+	"global-key-jump-short",
+	"key-jump-short",
+	"extra-key-jump-short",
+	"global-key-jump+short",
+	"key-jump+short",
+	"extra-key-jump+short",
+	"global-key-jump-medium",
+	"key-jump-medium",
+	"global-key-jump+medium",
+	"key-jump+medium",
+	"global-key-jump-long",
+	"key-jump-long",
+	"global-key-jump+long",
+	"key-jump+long"
+)
 
 # volume
 volumeKeys = (
-		"global-key-vol-up",
-		"key-vol-up",
-		"global-key-vol-down",
-		"key-vol-down",
-		"extra-key-vol-up",
-		"extra-key-vol-down",
-		)
+	"global-key-vol-up",
+	"key-vol-up",
+	"global-key-vol-down",
+	"key-vol-down",
+	"extra-key-vol-up",
+	"extra-key-vol-down",
+)
 
 muteKeys = (
-		"global-key-vol-mute",
-		"key-vol-mute"
-		)
+	"global-key-vol-mute",
+	"key-vol-mute"
+)
 
 playKeys = (
-		"global-key-play",
-		"key-play-pause",
-		"key-stop",
-		)
+	"global-key-play",
+	"key-play-pause",
+	"key-stop",
+)
 
 movementKeys = (
-		"global-key-next",
-		"key-next",
-		"global-key-prev",
-		"key-prev",
-		)
+	"global-key-next",
+	"key-next",
+	"global-key-prev",
+	"key-prev",
+)
 jumpDelays = {
-		"global-key-jump-extrashort": -3,
-		"key-jump-extrashort": -3,
-		"global-key-jump+extrashort": 3,
-		"key-jump+extrashort": 3,
-		"global-key-jump-short": -10,
-		"key-jump-short": -10,
-		"extra-key-jump-short": -10,
-		"global-key-jump+short": 10,
-		"key-jump+short": 10,
-		"extra-key-jump+short": 10,
-		"global-key-jump-medium": -60,
-		"key-jump-medium": -60,
-		"global-key-jump+medium": 60,
-		"key-jump+medium": 60,
-		"global-key-jump-long": -300,
-		"key-jump-long": -300,
-		"global-key-jump+long": 300,
-		"key-jump+long": 300
-		}
+	"global-key-jump-extrashort": -3,
+	"key-jump-extrashort": -3,
+	"global-key-jump+extrashort": 3,
+	"key-jump+extrashort": 3,
+	"global-key-jump-short": -10,
+	"key-jump-short": -10,
+	"extra-key-jump-short": -10,
+	"global-key-jump+short": 10,
+	"key-jump+short": 10,
+	"extra-key-jump+short": 10,
+	"global-key-jump-medium": -60,
+	"key-jump-medium": -60,
+	"global-key-jump+medium": 60,
+	"key-jump+medium": 60,
+	"global-key-jump-long": -300,
+	"key-jump-long": -300,
+	"global-key-jump+long": 300,
+	"key-jump+long": 300
+}
 
 
 class VLCSettings(object):
@@ -229,15 +230,14 @@ class VLCSettings(object):
 		try:
 			if hasattr(shlobj, "SHGetKnownFolderPath"):
 				configParent = shlobj.SHGetKnownFolderPath(
-					shlobj.FolderId.ROAMING_APP_DATA 
-					)
+					shlobj.FolderId.ROAMING_APP_DATA
+				)
 			else:
 				configParent = shlobj.SHGetFolderPath(0, shlobj.CSIDL_APPDATA)
 		except WindowsError:
 			log.warning("VLC settings directory not found")
 			return None
 		dir = os.path.join(configParent, "vlc")
-		
 		if os.path.exists(dir):
 			return dir
 		return None
@@ -277,13 +277,15 @@ class VLCSettings(object):
 		try:
 			shutil.rmtree(self.vlcSettingsDir)
 			# Translators: message to user: VLC configuration folder has been deleted"),
-			msg = _("VLC configuration folder (%s) has been deleted. Before modify VLC shortcuts, you must start VLC once.") % self.vlcSettingsDir  # noqa:E501
+			msg = _(
+				"VLC configuration folder (%s) has been deleted. "
+				"Before modify VLC shortcuts, you must start VLC once.") % self.vlcSettingsDir
 			# Translators: title of message box.
 			dialogTitle = _("Information")
 			messageBox(msg, makeAddonWindowTitle(dialogTitle), wx.OK | wx.ICON_WARNING)
 		except OSError:
 			# Translators: message to user: VLC configuration folder cannot be deleted.
-			msg = _("VLC configuration folder \"%s\" cannot be deleted") % self.vlcSettingsDir  # noqa:E501
+			msg = _("VLC configuration folder \"%s\" cannot be deleted") % self.vlcSettingsDir
 			# Translators: title of message box.
 			dialogTitle = _("Error")
 			messageBox(msg, makeAddonWindowTitle(dialogTitle), wx.OK | wx.ICON_WARNING)
@@ -306,8 +308,8 @@ class QTInterface (VLCSettings):
 		try:
 			qtInterface = ConfigObj(
 				qtInterfaceFile, encoding="utf-8", default_encoding="ascii")
-		except:  # noqa:E722
-			log.warning("configObj can't read qtInterface ini file: %s " % qtInterfaceFile)  # noqa:E501
+		except Exception:
+			log.warning("configObj can't read qtInterface ini file: %s " % qtInterfaceFile)
 			return
 		section = "RecentsMRL"
 		if section not in qtInterface .sections:
@@ -402,7 +404,7 @@ class Vlcrc(VLCSettings):
 				key = line.split("=")[0]
 				try:
 					key = key.strip()
-				except:  # noqa:E722
+				except Exception:
 					pass
 				if key in keyNames:
 					# jump this line
@@ -420,7 +422,7 @@ class Vlcrc(VLCSettings):
 				key = line[1:].split("=")[0]
 				try:
 					key = key.strip()
-				except:  # noqa:E722
+				except Exception:
 					pass
 				if key in keyNames:
 					line = "%s=%s\r\n" % (key, newVLCKeys[key])
@@ -431,7 +433,7 @@ class Vlcrc(VLCSettings):
 	def canUpdateVlcrcFile(self):
 		if self.isVLCRunning():
 			# Translators: message to inform the user than VLC is running.
-			msg = _("You must stop VLC application before modify VLC configuration file")  # noqa:E501
+			msg = _("You must stop VLC application before modify VLC configuration file")
 			# Translators: title of message box.
 			dialogTitle = _("Warning")
 			messageBox(msg, makeAddonWindowTitle(dialogTitle), wx.OK | wx.ICON_WARNING)
@@ -483,7 +485,7 @@ class Vlcrc(VLCSettings):
 		shutil.copy(self.vlcrcFile, dest)
 		try:
 			shutil.copy(self.vlcrcFile, dest)
-		except:  # noqa:E722
+		except Exception:
 			log.warning("vlcrc file cannot be copied to old file")
 
 		self.save(lines)
@@ -500,7 +502,7 @@ class Vlcrc(VLCSettings):
 			"rightArrow": "right",
 			"upArro": "up",
 			"downArrow": "down"
-			}
+		}
 		newKey = key.split("+")
 		for item in NVDAKeyToVLCKey:
 			if item in newKey:
@@ -516,7 +518,7 @@ class Vlcrc(VLCSettings):
 			"up": "upArrow",
 			"down": "downArrow",
 			"-": "numlock+numpadminus",
-			}
+		}
 		if key == "+":
 			return "numlock+numpadplus"
 		k = key.replace("++", "+numlock+numpadplus")
@@ -532,7 +534,7 @@ class Vlcrc(VLCSettings):
 			return ""
 		vlcKeyNames = list(newVLCKeys.keys())
 		# Translators: message to the user.
-		text = _("The VLC command keys which will be record in the VLC configuration file are:") + "\r\n"  # noqa:E501
+		text = _("The VLC command keys which will be record in the VLC configuration file are:") + "\r\n"
 		for (keyName, msg) in _vlcHotKeyHelp:
 			if keyName not in vlcKeyNames:
 				continue
@@ -567,7 +569,7 @@ class Vlcrc(VLCSettings):
 				if ch == "=":
 					index = tempList.index(ch)
 					keyName = tempList[:index]
-					key = tempList[index+1:]
+					key = tempList[index + 1:]
 					if "key-" in keyName:
 						if key != "":
 							key = self.normalizeKeyToNVDA(key)
@@ -600,5 +602,5 @@ class Vlcrc(VLCSettings):
 		try:
 			key = self.vlcKeysAssignment[name]
 			return key.lower()
-		except:  # noqa:E722
+		except Exception:
 			return ""
