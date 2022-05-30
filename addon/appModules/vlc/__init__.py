@@ -58,6 +58,7 @@ import api
 import re
 import appModuleHandler
 import speech
+import ui
 import queueHandler
 import ui
 import keyboardHandler
@@ -416,7 +417,7 @@ class InVLCViewWindow(IAccessible):
 				if isPlaying:
 					mainWindow.togglePlayOrPause()
 					queueHandler.queueFunction(
-						queueHandler.eventQueue, speech.speakMessage, _("Pause"))
+						queueHandler.eventQueue, ui.message, _("Pause"))
 			if diff <= abs(delay):
 				queueHandler.queueFunction(queueHandler.eventQueue, ui.message, msg)
 				mainWindow.sayElapsedTime(True)
@@ -459,23 +460,31 @@ class InVLCViewWindow(IAccessible):
 		GB_scriptTimer = wx.CallLater(80, callback1, gesture)
 
 	def script_sayVolume(self, gesture):
+		def speakVolume(level, muteState):
+			# Translators: message to the user to report volume level.
+			ui.message(_("Volume: %s") % str(level))
+			if muteState:
+				# Translators: message to the user to say volume is muted.
+				ui.message(_("Volume mute"))
+
 		printDebug("InVLCViewWindow: sayVolume")
 		mainWindow = self.appModule.mainWindow
 		(oldMuteState, oldLevel) = mainWindow.getVolumeMuteStateAndLevel()
 		gesture.send()
 		time.sleep(0.05)
 		from vlc_addonConfig import _addonConfigManager
+		(muteState, level) = mainWindow.getVolumeMuteStateAndLevel()
+		if self.hasNoMedia():
+			speakVolume(level, muteState)
+			return
 		if not _addonConfigManager.getAutoVolumeLevelReportOption():
 			return
-		(muteState, level) = mainWindow.getVolumeMuteStateAndLevel()
 		if (muteState, level) == (oldMuteState, oldLevel):
 			return
+
 		if not mainWindow.isPlaying() or muteState:
-			# Translators: message to the user to report volume level.
-			speech.speakMessage(_("Volume: %s") % str(level))
-			if muteState:
-				# Translators: message to the user to say volume is muted.
-				speech.speakMessage(_("Volume mute"))
+			speakVolume(level, muteState)
+
 
 	def script_toggleMuteAndReportState(self, gesture):
 		def callback():
@@ -486,10 +495,10 @@ class InVLCViewWindow(IAccessible):
 				return
 			if muteState:
 				# Translators: message To the user to report volume is muted.
-				speech.speakMessage(_("Volume mute"))
+				ui.message(_("Volume mute"))
 			elif not mainWindow.isPlaying():
 				# Translators: message to the user to report volume is not muted.
-				speech.speakMessage(_("volume unmuted"))
+				ui.message(_("volume unmuted"))
 		gesture.send()
 		wx.CallAfter(callback)
 
@@ -500,7 +509,7 @@ class InVLCViewWindow(IAccessible):
 		if not mainWindow.hasMedia():
 			mainWindow.resetMediaStates()
 			# Translators: message to the user to say the media is stopped.
-			wx.CallAfter(speech.speakMessage, _("Media stopped"))
+			wx.CallAfter(ui.message, _("Media stopped"))
 
 	def script_togglePlayAndReportState(self, gesture):
 		if gesture.mainKeyName == self.appModule.vlcrcSettings.getKeyFromName(
@@ -560,7 +569,7 @@ class InVLCViewWindow(IAccessible):
 		totalTime = mainWindow.getTotalTime()
 		if totalTime is None:
 			# Translators: message to user : not available for this media
-			speech.speakMessage(_("No available for this media"))
+			ui.message(_("No available for this media"))
 			return
 		wx.CallAfter(callback)
 	# Translators: Input help mode message for record resume file command.
@@ -621,9 +630,9 @@ class InVLCViewWindow(IAccessible):
 		mainWindow = self.appModule.mainWindow
 		menubar = vlc_application.Menubar(mainWindow)
 		if menubar.isVisible():
-			speech.speakMessage(_("Menu bar is shown"))
+			ui.message(_("Menu bar is shown"))
 		else:
-			speech.speakMessage(_("Menu bar is hidden"))
+			ui.message(_("Menu bar is hidden"))
 
 	def moveToControl(self, next=True):
 		mainWindow = self.appModule.mainWindow
@@ -673,7 +682,7 @@ class InVLCViewWindow(IAccessible):
 			embeddedPlaylist = vlc_application.EmbeddedPlaylist()
 			ret = embeddedPlaylist.isAlive()
 			if not ret:
-				speech.speakMessage(_("Playlist closed"))
+				ui.message(_("Playlist closed"))
 
 	def getDialog(self):
 		# code written by Javi Dominguez and adapted to this add-on
@@ -822,7 +831,7 @@ class VLCSlider(IAccessible):
 class VLCComboBox (IAccessible):
 	def script_nextItem(self, gesture):
 		gesture.send()
-		wx.CallAfter(speech.speakMessage, self.value)
+		wx.CallAfter(ui.message, self.value)
 
 	def _get_value(self):
 		value = super(VLCComboBox, self)._get_value()
@@ -833,7 +842,7 @@ class VLCComboBox (IAccessible):
 
 	def script_reportItem(self, gesture):
 		gesture.send()
-		wx.CallAfter(speech.speakMessage, self.value)
+		wx.CallAfter(ui.message, self.value)
 
 	__gestures = {
 		"kb:downArrow": "reportItem",

@@ -18,6 +18,13 @@ Descargar:
 Traducido por Rémy Ruiz, cambios por Carlos Esteban martínez Macías.
 
 
++ Versión 2.9 (30/05/2022) +
+- la lista de archivos recientes con sus tiempos transcurridos ahora se encuentra correctamente.
+- anuncio del volumen Al solicitar un aumento o disminución, cuando no hay medios en marcha.
+- los mensajes de voz ahora también se envían a la pantalla braille.
+- corrección de la imposibilidad de mostrar el historial del complemento con el botón "Ver historial".
+
+
 + v2.8 (04/02/2022) +
 - Compatibilidad con NVDA 2022.1
 - reinicialización de la configuración en caso de errores en el archivo de configuración.
@@ -36,11 +43,11 @@ Compatibilidad con NVDA 2021.3.
 - eliminado código relativo a Python 2.7.
 
 
-+ Version 2.5.2 (09/01/2021) +
++ Versión 2.5.2 (09/01/2021) +
 -Se añadió traducción al turco.
 
 
-+ Version 2.5.1 (09/01/2021) +
++ Versión 2.5.1 (09/01/2021) +
 -Se añadió traducción al ruso
 
 

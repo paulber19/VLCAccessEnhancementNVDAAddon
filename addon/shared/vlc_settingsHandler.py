@@ -290,7 +290,8 @@ class VLCSettings(object):
 			dialogTitle = _("Error")
 			messageBox(msg, makeAddonWindowTitle(dialogTitle), wx.OK | wx.ICON_WARNING)
 
-
+class ConfigObjWithoutCommentMarkers(ConfigObj):
+	COMMENT_MARKERS = [chr(0xb5)]
 class QTInterface (VLCSettings):
 	def __init__(self):
 		super(QTInterface, self).__init__()
@@ -305,31 +306,19 @@ class QTInterface (VLCSettings):
 		if not os.path.exists(qtInterfaceFile):
 			log.warning("Can find qtInterface ini file: %s" % qtInterfaceFile)
 			return
-		try:
-			qtInterface = ConfigObj(
-				qtInterfaceFile, encoding="utf-8", default_encoding="ascii")
-		except Exception:
-			log.warning("configObj can't read qtInterface ini file: %s " % qtInterfaceFile)
-			return
-		section = "RecentsMRL"
-		if section not in qtInterface .sections:
-			# no recent file
-			return
-		recents = qtInterface[section]
 		filesList = []
 		timesList = []
-		if "list" not in recents:
-			return
-		tempList = recents["list"]\
-			if type(recents["list"]) is list else [recents["list"], ]
+		src = codecs.open(qtInterfaceFile, "r", "utf_8", errors="replace")
+		for line in src:
+			tempLine = line.strip()
+			if tempLine.startswith("list="):
+				tempList = tempLine[len("list="):].split(", ")
+			elif tempLine.startswith("times="):
+				timesList = tempLine[len("times="):].split(", ")
+		src.close()
 		for item in tempList:
 			file = unquote(item)
 			filesList.append(file)
-
-		if "times" in recents:
-			timesList = recents["times"]
-			if type(timesList) is not list:
-				timesList = [timesList, ]
 		if len(filesList) != len(timesList):
 			# error,
 			log.warning("Error: number of recent files and time count are different")

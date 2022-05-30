@@ -37,6 +37,6 @@ Compatible con VLC 3.0.
 
 
 
-[1]: http://angouleme.avh.asso.fr/fichesinfo/fiches_nvda/data/VLCAccessEnhancement-2.8.nvda-addon
-[2]: https://github.com/paulber007/AllMyNVDAAddons/raw/master/VLCAccessEnhancement/VLCAccessEnhancement-2.8.nvda-addon
+[1]: https://github.com/paulber007/AllMyNVDAAddons/raw/master/VLCAccessEnhancement/VLCAccessEnhancement-2.9.nvda-addon
+[2]: http://angouleme.avh.asso.fr/fichesinfo/fiches_nvda/data/VLCAccessEnhancement-2.9.nvda-addon
 [3]:https://github.com/paulber007/AllMyNVDAAddons/tree/master/VLCAccessEnhancement/dev

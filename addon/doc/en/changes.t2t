@@ -15,7 +15,14 @@ Download:
 - [Development Version ADDON_DEV_URL]
 
 
-+ Version 2.8 (02/04/2022) +
++ Version 2.9 (May/30/2022) +
+- the list of recent files with their elapsed times is now correctly found.
+- announcement of the volume during an increase or decrease request, when no media is in progress.
+- voice messages are now also sent to the braille display.
+- fixed inability to view extension history with "View History" button.
+
+
++ Version 2.8 (February/04/2022) +
 - compatibility with NVDA 2022.1
 - reset the configuration in the event of errors in the configuration file.
 
@@ -25,19 +32,19 @@ Changes:
 - during a manual installation of the add-on, a confirmation request is requested when the user has chosen not to keep the current settings of the add-on configuration.
 
 
-+ Version 2.7 (12/01/2021) +
++ Version 2.7 (December/01/2021) +
 compatibility with NVDA 2021.3
 
-+ Version 2.6 (06/22/2021) +
++ Version 2.6 (June/22/2021) +
 - Compatibility with NVDA 2021.1 Versions of NVDA prior to 2019.3 are no longer supported.
 - code removal for Python 2
 
 
-+ Version 2.5.2 (01/09/2021) +
++ Version 2.5.2 (January/09/2021) +
 - added Turkish translation
 
 
-+ Version 2.5.1 (01/09/2021) +
++ Version 2.5.1 (january/09/2021) +
 Added russian translation
 - added Turkish translation
 

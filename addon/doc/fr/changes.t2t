@@ -15,6 +15,13 @@ Téléchargement :
 - [versions de développement ADDON_DEV_URL]
 
 
++ Version 2.9 (30/05/2022) +
+- la liste des fichiers récents avec leurs temps écoulés est maintenant correctement retrouvée.
+- annonce du volume lors d'une demande d'augmentation ou diminution, lorsque aucun média est en cours.
+- les messages vocaux sont maintenant aussi envoyés à l'afficheur braille.
+- correction de l'impossibilité d'afficher l'historique de l'extension avec le bouton "Voir l'historique".
+
+
 + Version 2.8 (04/02/2022) +
 - compatibilité avec NVDA 2022.1.
 - réinitialisation de la configuration en cas d'erreurs dans le fichier de configuration.

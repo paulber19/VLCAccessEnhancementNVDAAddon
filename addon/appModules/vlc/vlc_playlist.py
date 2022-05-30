@@ -24,6 +24,7 @@ except ImportError:
 	)
 import api
 import speech
+import ui
 import winUser
 import queueHandler
 import eventHandler
@@ -85,7 +86,7 @@ def _getActiveChild(obj):
 	if obj.role == ROLE_TREEVIEW:
 		step = getColumnHeaderCount(oIA)
 		if step > 1 and obj.childCount > 20000:
-			speech.speakMessage(_("Please wait"))
+			ui.message(_("Please wait"))
 	for i in range(0, obj.childCount, step):
 		if i > 20000\
 			and obj.role in [ROLE_TREEVIEW, ROLE_LIST]:
@@ -135,7 +136,7 @@ class InAnchoredPlaylist(InPlaylist):
 			or not previousFocus.playlistSpoken:
 			queueHandler.queueFunction(
 				queueHandler.eventQueue,
-				speech.speakMessage, VLCAnchoredPlaylist._playlistName)
+				ui.message, VLCAnchoredPlaylist._playlistName)
 		self.playlistSpoken = True
 		queueHandler.queueFunction(queueHandler.eventQueue, self.reportFocus)
 

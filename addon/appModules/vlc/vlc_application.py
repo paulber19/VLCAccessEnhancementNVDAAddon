@@ -32,6 +32,7 @@ except ImportError:
 	)
 import api
 import speech
+import ui
 import queueHandler
 import ui
 import keyboardHandler
@@ -151,7 +152,7 @@ class MainWindow (object):
 				else:
 					# Translators: message to user when continue playing is available.
 					msg = _("continue playback %s") % "alt+r"
-				wx.CallAfter(speech.speakMessage, msg)
+				wx.CallAfter(ui.message, msg)
 				printDebug("MainWindow: reportContinuePlayback, start = %s" % msg)
 			self._continuePlayback = continuePlayback
 
@@ -160,7 +161,7 @@ class MainWindow (object):
 		if not self.hasMedia():
 			if muteState:
 				# Translators: message to the user to say volume is muted.
-				speech.speakMessage(_("volume muted"))
+				ui.message(_("volume muted"))
 			return
 		isPlaying = self.isPlaying()
 		printDebug("MainWindow: reportMediaStates playing= %s, oldPlaying= %s, mute = %s" % (
@@ -177,10 +178,10 @@ class MainWindow (object):
 				# translators: message to the user to say pause with muted volume.
 				msg = _("Pause,%s") % msg
 			queueHandler.queueFunction(
-				queueHandler.eventQueue, speech.speakMessage, msg)
+				queueHandler.eventQueue, ui.message, msg)
 		elif not isPlaying:
 			# Translators: message to the user to say media is paused.
-			speech.speakMessage(_("Pause"))
+			ui.message(_("Pause"))
 		self._curMediaState = isPlaying
 
 	def reportMenubarState(self):
@@ -189,7 +190,7 @@ class MainWindow (object):
 			return
 		if not menubar.isVisible():
 			# Translators: message to user to report menubar is not visible
-			speech.speakMessage(_("Menu bar is hidden"))
+			ui.message(_("Menu bar is hidden"))
 
 	def resetMediaStates(self, alsoContinuePlayback=True):
 		self._curMediaState = None
@@ -201,9 +202,9 @@ class MainWindow (object):
 		mediaName = mediaInfos.getName()
 		if mediaName is None:
 			# Translators: message to the user to say there is no media.
-			speech.speakMessage(_("No media"))
+			ui.message(_("No media"))
 		else:
-			speech.speakMessage(mediaName)
+			ui.message(mediaName)
 
 	def reportMediaChange(self):
 		speech.cancelSpeech()
@@ -218,7 +219,7 @@ class MainWindow (object):
 			(x, y, h, w) = self.mainPanel.NVDAObject.location
 			if (x, y) == (0, 0) and (h, w) == screenSize:
 				# Translators: message to user to report full screen state.
-				speech.speakMessage(_("full screen"))
+				ui.message(_("full screen"))
 		except Exception:
 			pass
 
@@ -321,7 +322,7 @@ class MainWindow (object):
 		else:
 			# Translators: message to user to report no repeat state.
 			msg = _("no repeat")
-		speech.speakMessage(msg)
+		ui.message(msg)
 		self._loopState = loopState
 
 	def reportRandomStateChange(self):
@@ -329,7 +330,7 @@ class MainWindow (object):
 		randomState = self.mainPanel.getRandomState()
 		# Translators: message to user to report random or normal playback state.
 		msg = _("Random playback") if randomState else _("Normal playback")
-		speech.speakMessage(msg)
+		ui.message(msg)
 
 	def reportLoopAndRandomStates(self):
 		self._loopState = self.mainPanel.getLoopState()
@@ -345,7 +346,7 @@ class MainWindow (object):
 			# Translators: message to user to report only random playback state.
 			msg = _("With random playback")
 		if msg is not None:
-			wx.CallAfter(speech.speakMessage, msg)
+			wx.CallAfter(ui.message, msg)
 
 	def calculatePosition(self, jumpTimeInSec, totalTimeInSec, isPlaying):
 		mainWindow = self
@@ -441,7 +442,7 @@ class MainWindow (object):
 			setSpeechMode(oldSpeechMode)
 			# Translators: message to the user to report no time change.
 			queueHandler.queueFunction(
-				queueHandler.eventQueue, speech.speakMessage, _("No change"))
+				queueHandler.eventQueue, ui.message, _("No change"))
 			queueHandler.queueFunction(
 				queueHandler.eventQueue, mainWindow.sayElapsedTime, True)
 			queueHandler.queueFunction(
@@ -488,7 +489,7 @@ class MainWindow (object):
 				# time out
 				# Translators: message to the user to say that jump is not possible.
 				queueHandler.queueFunction(
-					queueHandler.eventQueue, speech.speakMessage, _("Jump is not possible"))
+					queueHandler.eventQueue, ui.message, _("Jump is not possible"))
 				queueHandler.queueFunction(
 					queueHandler.eventQueue, mainWindow.sayElapsedTime)
 				queueHandler.queueFunction(
@@ -868,7 +869,7 @@ class ControlPanel(object):
 			control.name = control.description
 		if self.curControlIndex == 0:
 			# Translators: message to user to report navigator object in control panel.
-			speech.speakMessage(_("Control Panel"))
+			ui.message(_("Control Panel"))
 		api.setNavigatorObject(control)
 		api.setMouseObject(control)
 		speech.speakObject(control)
@@ -882,7 +883,7 @@ class ControlPanel(object):
 			return
 		control = controls[self.curControlIndex]
 		# Translators: message to user to report navigator object in control panel.
-		wx.CallLater(100, speech.speakMessage, _("Control Panel"))
+		wx.CallLater(100, ui.message, _("Control Panel"))
 		wx.CallLater(110, speech.speakObject, control)
 
 
@@ -998,10 +999,10 @@ class AnchoredPlaylist(Playlist):
 	def reportViewState(self):
 		if self.isVisible():
 			# Translators: message to user to report state of anchored playlist.
-			speech.speakMessage(_("Anchored playlist shown"))
+			ui.message(_("Anchored playlist shown"))
 		else:
 			# Translators: message to user to report state of anchored playlist.
-			speech.speakMessage(_("Anchored playlist hidden"))
+			ui.message(_("Anchored playlist hidden"))
 
 
 class EmbeddedPlaylist(Playlist):
