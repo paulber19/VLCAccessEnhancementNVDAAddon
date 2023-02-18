@@ -249,7 +249,8 @@ def init():
 	printDebug("vlcStrings init")
 	global _stringsDics
 	_stringsDics = None
-
+	_loadStringsDic()
+	return _stringsDics is not None
 
 def terminate():
 	printDebug("vlcStrings terminate")

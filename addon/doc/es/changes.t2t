@@ -18,6 +18,14 @@ Descargar:
 Traducido por Rémy Ruiz, cambios por Carlos Esteban martínez Macías.
 
 
++ Version 2.10 (18/02/2023) +
+Compatibilidad con NVDA 2023.1
+
+Corrección de fallos:
+- corrección del no retorno al perfil de configuración de la aplicación anterior al detener VLC o al cambiar con "alt+tab".
+- corrección de la imposibilidad de usar VLC con un idioma no proporcionado en el complemento.
+
+
 + Versión 2.9 (30/05/2022) +
 - la lista de archivos recientes con sus tiempos transcurridos ahora se encuentra correctamente.
 - anuncio del volumen Al solicitar un aumento o disminución, cuando no hay medios en marcha.
@@ -187,4 +195,3 @@ Correcciones de errores (regresión de "nvda+control+h")
 
 ++ Cambios para la versión 2.0 ++
 Primera versión multilingüe.
-

@@ -24,7 +24,6 @@ except ImportError:
 	)
 import api
 import speech
-import ui
 import winUser
 import queueHandler
 import eventHandler

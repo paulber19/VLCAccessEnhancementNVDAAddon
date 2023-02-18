@@ -15,6 +15,14 @@ Téléchargement :
 - [versions de développement ADDON_DEV_URL]
 
 
++ Version 2.10 (18/02/2023) +
+Compatibilité avec NVDA 2023.1
+
+Correction de bogues:
+- correction du non retour au profil de configuration de l'application précédente lors de l'arrêt de VLC ou par commutation par "alt+tab".
+- correction de l'impossibilité d'utiliser VLC avec un langage  non prévu dans l'extension.
+
+
 + Version 2.9 (30/05/2022) +
 - la liste des fichiers récents avec leurs temps écoulés est maintenant correctement retrouvée.
 - annonce du volume lors d'une demande d'augmentation ou diminution, lorsque aucun média est en cours.

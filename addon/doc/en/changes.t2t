@@ -15,6 +15,15 @@ Download:
 - [Development Version ADDON_DEV_URL]
 
 
++ Version 2.10 (February/18/2023) +
+Compatibility with NVDA 2023.1
+
+
+Bug fixes:
+- correction of not returning to the configuration profile of the previous application when stopping VLC or switching with "alt+tab".
+- correction of the impossibility of using VLC with a language not provided for in the extension.
+
+
 + Version 2.9 (May/30/2022) +
 - the list of recent files with their elapsed times is now correctly found.
 - announcement of the volume during an increase or decrease request, when no media is in progress.

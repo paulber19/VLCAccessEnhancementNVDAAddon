@@ -32,7 +32,6 @@ except ImportError:
 	)
 import api
 import speech
-import ui
 import queueHandler
 import ui
 import keyboardHandler
@@ -541,9 +540,9 @@ class MediaInfos(object):
 	def isPlaying(self):
 		try:
 			oDeb = self.timesNVDAObject.next.IAccessibleObject
+			count = oDeb.accChildCount
 		except Exception:
 			return False
-		count = oDeb.accChildCount
 		i = 0
 		while i < count:
 			o = oDeb.accChild(i)
@@ -708,11 +707,12 @@ class MainPanel(object):
 			return self._NVDAObject
 		printDebug("mainPanel: NVDAObject init")
 		top = self.topNVDAObject
-		for o in top.children:
-			if o.role == ROLE_PANE:
-				printDebug("mainPanel: NVDAObject found")
-				self._NVDAObject = o
-				return o
+		if top:
+			for o in top.children:
+				if o.role == ROLE_PANE:
+					printDebug("mainPanel: NVDAObject found")
+					self._NVDAObject = o
+					return o
 		printDebug("mainPanel NVDAObject not found")
 		return None
 
@@ -763,7 +763,10 @@ class ControlPanel(object):
 
 	def getLoopCheckButtonState(self):
 		oDeb = self.IAObject
-		count = oDeb.accChildCount
+		try:
+			count = oDeb.accChildCount
+		except Exception:
+			return False
 		i = 0
 		while i <= count:
 			o = oDeb.accChild(i)
@@ -775,7 +778,10 @@ class ControlPanel(object):
 
 	def getRandomCheckButtonState(self):
 		oDeb = self.IAObject
-		count = oDeb.accChildCount
+		try:
+			count = oDeb.accChildCount
+		except Exception:
+			return False
 		i = 0
 		while i <= count:
 			o = oDeb.accChild(i)

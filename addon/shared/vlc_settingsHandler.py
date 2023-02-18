@@ -308,12 +308,13 @@ class QTInterface (VLCSettings):
 			return
 		filesList = []
 		timesList = []
+		tempList = ""
 		src = codecs.open(qtInterfaceFile, "r", "utf_8", errors="replace")
 		for line in src:
 			tempLine = line.strip()
-			if tempLine.startswith("list="):
+			if tempLine != "list=@Invalid()" and tempLine.startswith("list="):
 				tempList = tempLine[len("list="):].split(", ")
-			elif tempLine.startswith("times="):
+			elif tempLine != "times=@Invalid()"  and tempLine.startswith("times="):
 				timesList = tempLine[len("times="):].split(", ")
 		src.close()
 		for item in tempList:

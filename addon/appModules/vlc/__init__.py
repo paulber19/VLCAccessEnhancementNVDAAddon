@@ -6,9 +6,7 @@
 
 
 import addonHandler
-from logHandler import log
 import winUser
-import config
 try:
 	# for nvda version >= 2021.2
 	from controlTypes.role import Role
@@ -56,23 +54,15 @@ except ImportError:
 	)
 import api
 import re
-import appModuleHandler
 import speech
-import ui
 import queueHandler
 import ui
 import keyboardHandler
-import globalVars
-import watchdog
-import treeInterceptorHandler
-import braille
 from NVDAObjects.IAccessible import IAccessible, qt
 from NVDAObjects.behaviors import Dialog
-import NVDAObjects
 import time
 import wx
 import os
-import eventHandler
 import oleacc
 from inputCore import normalizeGestureIdentifier
 import inputCore
@@ -127,117 +117,6 @@ def sendGesture(gesture):
 	gesture.send()
 	if "numLock" in gesture.modifierNames:
 		keyboardHandler.KeyboardInputGesture.fromName("numLock").send()
-
-
-def mySetFocusObject(obj):
-	"""Stores an object as the current focus object.
-	(Note:
-	this does not physically change the window with focus in the operating system,
-	but allows NVDA to keep track of the correct object).
-	Before overriding the last object, this function calls event_loseFocus
-	on the object to notify it that it is loosing focus.
-	@param obj: the object that will be stored as the focus object
-	@type obj: NVDAObjects.NVDAObject
-	"""
-	if not isinstance(obj, NVDAObjects.NVDAObject):
-		return False
-	if globalVars.focusObject:
-		eventHandler.executeEvent("loseFocus", globalVars.focusObject)
-	oldFocusLine = globalVars.focusAncestors
-	# add the old focus to the old focus ancestors,
-	# but only if its not None (is none at NVDA initialization)
-	if globalVars.focusObject:
-		oldFocusLine.append(globalVars.focusObject)
-	oldAppModules = [o.appModule for o in oldFocusLine if o and o.appModule]
-	appModuleHandler.cleanup()
-	ancestors = []
-	tempObj = obj
-	matchedOld = False
-	focusDifferenceLevel = 0
-	oldFocusLineLength = len(oldFocusLine)
-	# Starting from the focus, move up the ancestor chain.
-	safetyCount = 0
-	while tempObj:
-		# my modification to break endless loop
-		try:
-			if tempObj in ancestors:
-				tempObj = api.getDesktopObject()
-		except Exception:
-			pass
-		if safetyCount < 100:
-			safetyCount += 1
-		else:
-			tempObj = api.getDesktopObject()
-		# Scan backwards through the old ancestors looking for a match.
-		for index in range(oldFocusLineLength - 1, -1, -1):
-			watchdog.alive()
-			if tempObj == oldFocusLine[index]:
-				# Match! The old and new focus ancestors converge at this point.
-				# Copy the old ancestors up to and including this object.
-				origAncestors = oldFocusLine[0:index + 1]
-				# make sure to cache the last old ancestor as a parent
-				# on the first new ancestor so as not to leave a broken parent cache
-				if ancestors and origAncestors:
-					ancestors[0].container = origAncestors[-1]
-				origAncestors.extend(ancestors)
-				ancestors = origAncestors
-				focusDifferenceLevel = index + 1
-				# We don't need to process any more in either this loop or the outer loop;
-				# we have all of the ancestors.
-				matchedOld = True
-				break
-		if matchedOld:
-			break
-		# We're moving backwards along the ancestor chain,
-			# so add this to the start of the list.
-		ancestors.insert(0, tempObj)
-		container = tempObj.container
-		tempObj.container = container  # Cache the parent.
-		tempObj = container
-	# Remove the final new ancestor as this will be the new focus object
-	del ancestors[-1]
-	# #5467: Ensure that the appModule of the real focus is included in
-	# the newAppModule list for profile switching
-	# Rather than an original focus ancestor
-	# which happened to match the new focus.
-	newAppModules = [o.appModule for o in ancestors if o and o.appModule]
-	if obj.appModule:
-		newAppModules.append(obj.appModule)
-	try:
-		treeInterceptorHandler.cleanup()
-	except watchdog.CallCancelled:
-		pass
-	treeInterceptorObject = None
-	o = None
-	watchdog.alive()
-	for o in ancestors[focusDifferenceLevel:] + [obj]:
-		try:
-			treeInterceptorObject = treeInterceptorHandler.update(o)
-		except Exception:
-			log.exception("Error updating tree interceptor")
-	# Always make sure that the focus object's treeInterceptor is forced to either
-			# the found treeInterceptor (if its in it) or to None
-	# This is to make sure that the treeInterceptor does not have to be looked up,
-			# which can cause problems for winInputHook
-	if obj is o or obj in treeInterceptorObject:
-		obj.treeInterceptor = treeInterceptorObject
-	else:
-		obj.treeInterceptor = None
-	# #3804: handleAppSwitch should be called as late as possible,
-	# as triggers must not be out of sync with global focus variables.
-	# setFocusObject shouldn't fail earlier anyway, but it's best to be safe.
-	try:
-		appModuleHandler.handleAppSwitch(oldAppModules, newAppModules)
-	except Exception:
-		log.warning("appModuleHandler.handleAppSwitch error")
-	# Set global focus variables.
-	globalVars.focusDifferenceLevel = focusDifferenceLevel
-	globalVars.focusObject = obj
-	globalVars.focusAncestors = ancestors
-	braille.invalidateCachedFocusAncestors(focusDifferenceLevel)
-	if config.conf["reviewCursor"]["followFocus"]:
-		api.setNavigatorObject(obj, isFocus=True)
-	return True
 
 
 class InVLCViewWindow(IAccessible):
@@ -484,7 +363,6 @@ class InVLCViewWindow(IAccessible):
 
 		if not mainWindow.isPlaying() or muteState:
 			speakVolume(level, muteState)
-
 
 	def script_toggleMuteAndReportState(self, gesture):
 		def callback():
@@ -952,14 +830,11 @@ class AppModule(AppModule):
 			printDebug("AppmoduleVLC: initAppModule: appModule already initialized")
 			return
 		printDebug("AppModule VLC: initAppModule")
-		# to solve NVDA error when full screen
-		if not hasattr(self, "apiSetFocusObject "):
-			self.apiSetFocusObject = api.setFocusObject
-			api.setFocusObject = mySetFocusObject
 		if not hasattr(self, "vlcrcSettings "):
 			self.vlcrcSettings = Vlcrc()
 		if self.vlcrcSettings .initialized:
-			vlc_strings.init()
+			if not vlc_strings.init():
+				return
 			self.initVLCGestures()
 			vlc_addonConfig.initialize(self.vlcrcSettings)
 			self.initialized = True
@@ -1173,19 +1048,16 @@ class AppModule(AppModule):
 		self._oldInputCoreManagerCaptureFunc = inputCore.manager._captureFunc
 		inputCore.manager._captureFunc = self._inputCaptor
 		wx.CallAfter(self.initAppModule)
-		if not hasattr(self, "apiSetFocusObject "):
-			self.apiSetFocusObject = api.setFocusObject
-			api.setFocusObject = mySetFocusObject
 		self._mainWindow = None
 		self._get_mainWindow()
 
 	def event_appModule_loseFocus(self):
 		printDebug("appModule VLC: event_appModuleLoseFocus")
-		api.setFocusObject = self.apiSetFocusObject
 		self.resetStatusBar()
 		self.stopTaskTimer()
-		inputCore.manager._captureFunc = self._oldInputCoreManagerCaptureFunc
-		del self._oldInputCoreManagerCaptureFunc
+		if hasattr(self, "_oldInputCoreManagerCaptureFunc"):
+			inputCore.manager._captureFunc = self._oldInputCoreManagerCaptureFunc
+			del self._oldInputCoreManagerCaptureFunc
 		if hasattr(self, "curAPIGetStatusBar"):
 			api.getStatusBar = self.curAPIGetStatusBar
 			delattr(self, "curAPIGetStatusBar")
