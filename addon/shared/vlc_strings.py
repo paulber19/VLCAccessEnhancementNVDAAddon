@@ -1,6 +1,6 @@
 # shared\vlc_strings.py.
 # a part of vlcAccessEnhancement add-on
-# Copyright 2018-2022 paulber19
+# Copyright 2018-2023 paulber19
 # This file is covered by the GNU General Public License.
 
 
@@ -17,11 +17,20 @@ from oleacc import (
 )
 import ctypes
 # from vlc_settingsHandler import *
+import sys
+_curAddon = addonHandler.getCodeAddon()
+debugToolsPath = os.path.join(_curAddon.path, "debugTools")
+sys.path.append(debugToolsPath)
+try:
+	from appModuleDebug import printDebug, toggleDebugFlag
+except ImportError:
 
+	def printDebug(msg):
+		return
 
-def printDebug(str):
-	return
-
+	def toggleDebugFlag():
+		return
+del sys.path[-1]
 
 _curAddon = addonHandler.getCodeAddon()
 # this file manage necessary strings to recognize some objects depending
@@ -166,6 +175,9 @@ def _getStringsIniFilesList(stringsFilesDir):
 def _getRandomCheckButtonLabel():
 	printDebug("vlcStrings: _getRandomCheckButtonLabel")
 	hdMain = ctypes.windll.user32.GetForegroundWindow()
+	if hdMain is None:
+		log.warning("vlc_strings: cannot find random check button label: no foreground object found")
+		return None
 	(oIA, childID) = accessibleObjectFromEvent(hdMain, 0, 0)
 	(o, childID) = accNavigate(oIA, 0, NAVDIR_FIRSTCHILD)
 	while o:
@@ -185,7 +197,7 @@ def _getRandomCheckButtonLabel():
 		if o.accRole(0) == ROLE_SYSTEM_CHECKBUTTON:
 			return o.accDescription(0)
 	except Exception:
-		log.warning("vlc_strings: cannot find random check button")
+		log.warning("vlc_strings: cannot find random check button label: no button found")
 	return None
 
 
@@ -251,6 +263,7 @@ def init():
 	_stringsDics = None
 	_loadStringsDic()
 	return _stringsDics is not None
+
 
 def terminate():
 	printDebug("vlcStrings terminate")

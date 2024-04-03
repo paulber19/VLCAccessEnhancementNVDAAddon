@@ -74,7 +74,7 @@ class VLCUpdatePanel(SettingsPanel):
 	def makeSettings(self, settingsSizer):
 		sHelper = gui.guiHelper.BoxSizerHelper(self, sizer=settingsSizer)
 		# Translators: This is the label for a checkbox in the VLCUpdate Dialog.
-		labelText = _("Automatically check for &updates ")
+		labelText = _("Automatically check for &updates")
 		self.autoCheckForUpdatesCheckBox = sHelper.addItem(
 			wx.CheckBox(self, wx.ID_ANY, label=labelText))
 		self.autoCheckForUpdatesCheckBox.SetValue(

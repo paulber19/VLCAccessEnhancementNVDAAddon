@@ -93,7 +93,7 @@ _defaultVlcKeysAssignment = {
 _vlcHotKeyHelp = (
 	("", _("Jump commands:")),
 	("key-jump+long", _("Jump 5 minutes after")),
-	("key-jump-long", _("Jump 5 minutes before ")),
+	("key-jump-long", _("Jump 5 minutes before")),
 	("key-jump+medium", _("Jump 1 minute after")),
 	("key-jump-medium", _("Jump 1 minute before")),
 	("key-jump+short", _("Jump 10 secondes after")),
@@ -116,8 +116,8 @@ _vlcHotKeyHelp = (
 	("", _("Playing commands:")),
 	("key-play-pause", _("Play / pause")),
 	("key-stop", _("Stop the media")),
-	("key-loop", _("loop playback")),
-	("key-random", _("random playback")),
+	("key-loop", _("Loop playback")),
+	("key-random", _("Random playback")),
 	("", _("Others commands:")),
 	("key-toggle-fullscreen", _("Full screen")),
 	("key-leave-fullscreen", _("Leave full screen")),
@@ -290,8 +290,11 @@ class VLCSettings(object):
 			dialogTitle = _("Error")
 			messageBox(msg, makeAddonWindowTitle(dialogTitle), wx.OK | wx.ICON_WARNING)
 
+
 class ConfigObjWithoutCommentMarkers(ConfigObj):
 	COMMENT_MARKERS = [chr(0xb5)]
+
+
 class QTInterface (VLCSettings):
 	def __init__(self):
 		super(QTInterface, self).__init__()
@@ -314,7 +317,7 @@ class QTInterface (VLCSettings):
 			tempLine = line.strip()
 			if tempLine != "list=@Invalid()" and tempLine.startswith("list="):
 				tempList = tempLine[len("list="):].split(", ")
-			elif tempLine != "times=@Invalid()"  and tempLine.startswith("times="):
+			elif tempLine != "times=@Invalid()" and tempLine.startswith("times="):
 				timesList = tempLine[len("times="):].split(", ")
 		src.close()
 		for item in tempList:

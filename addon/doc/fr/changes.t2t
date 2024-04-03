@@ -3,9 +3,9 @@ Auteur : ADDON_AUTHOR_NAME avec la participation très active de Daniel Poiraud.
 
 %!includeconf: ../addon_global.t2tconf
 %!includeconf: addon_informations.t2tconf
-URL : ADDON_AUTHOR_URL
 
-[Dépot GitHub : ADDON_REPOSITORY ADDON_REPOSITORY]
+URL: [ADDON_REPOSITORY ADDON_REPOSITORY]
+
 
 Téléchargement :
 - Version actuelle : ADDON_CUR_VERSION
@@ -15,12 +15,28 @@ Téléchargement :
 - [versions de développement ADDON_DEV_URL]
 
 
++ Version 2.11 (27/03/2024) +
+Compatibilité :
+- compatibilité avec NVDA 2024.
+- les versions de NVDA antérieures à la 2023.1 ne sont plus soutenues.
+
+
+Nouveautés :
+- conformément à l'addon store depuis NVDA 2023.2, il est maintenant possible de mettre à jour l'extension avec une version incompatible.
+- prise en compte du mode "Parole à la demande" introduit dans nvda 2024.1: tous les scripts annonçant une information vocaliseront cette information. Dans ce mode, tous Les autres scripts resteront muets.
+- prise en compte du nouveau mode "Parler à la demande" amené par nvda 2024.1.
+
+
+Correction de bogues :
+- amélioration de l'initialisation de l'extension quand la lecture d'un fichier vidéo est lancée depuis l'explorateur Windows et que le curseur reste sur l'explorateur. Mais ne marche pas dans tous les cas.
+
+
 + Version 2.10 (18/02/2023) +
 Compatibilité avec NVDA 2023.1
 
 Correction de bogues:
 - correction du non retour au profil de configuration de l'application précédente lors de l'arrêt de VLC ou par commutation par "alt+tab".
-- correction de l'impossibilité d'utiliser VLC avec un langage  non prévu dans l'extension.
+- correction de l'impossibilité d'utiliser VLC avec un langage non prévu dans l'extension.
 
 
 + Version 2.9 (30/05/2022) +

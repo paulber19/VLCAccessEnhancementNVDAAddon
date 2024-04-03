@@ -3,9 +3,9 @@ Auteur: ADDON_AUTHOR_NAME con la participación muy activa de  Daniel Poiraud.
 
 %!includeconf: ../addon_userManual.t2tconf
 %!includeconf: addon_informations.t2tconf
-URL: ADDON_AUTHOR_URL
 
-[Repositorio en GitHub: ADDON_REPOSITORY ADDON_REPOSITORY]
+URL: [ADDON_REPOSITORY ADDON_REPOSITORY]
+
 
 Descargar:
 - versión estable: ADDON_CUR_VERSION

@@ -3,9 +3,9 @@ Author: ADDON_AUTHOR_NAME with the very active participation of Daniel Poiraud.
 
 %!includeconf: ../addon_global.t2tconf
 %!includeconf: addon_informations.t2tconf
-URL: ADDON_AUTHOR_URL
 
-[GitHub repository: ADDON_REPOSITORY ADDON_REPOSITORY]
+URL: [ADDON_REPOSITORY ADDON_REPOSITORY]
+
 
 Download:
 - stable version: ADDON_CUR_VERSION
@@ -13,6 +13,21 @@ Download:
  - [download server 2 ADDON_DOWNLOAD_SERVER2]
 - [Previous Version: ADDON_PREV_VERSION ADDON_DOWNLOAD_PREVIOUS]
 - [Development Version ADDON_DEV_URL]
+
+
++ Version 2.11 (March/27/2024) +
+Compatibility:
+- Compatibility with NVDA 2024.1
+- NVDA versions prior to 2022.1 are no longer supported.
+
+
+What's new:
+- according to the addon store since NVDA 2023.2, it is now possible to update the extension with an incompatible version.
+- taking into account the "Speech on demand" mode introduced in nvda 2024.1: all scripts announcing information will vocalize this information. In this mode, all other scripts will remain silent.
+
+
+Bug fixes:
+- improved initialization of the extension when playback of a video file is started from Windows Explorer and the cursor remains on the Explorer. But doesn't work in all cases.
 
 
 + Version 2.10 (February/18/2023) +

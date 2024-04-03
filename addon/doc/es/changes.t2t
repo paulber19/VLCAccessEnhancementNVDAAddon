@@ -3,9 +3,9 @@ Auteur: ADDON_AUTHOR_NAME con la participación muy activa de  Daniel Poiraud.
 
 %!includeconf: ../addon_global.t2tconf
 %!includeconf: addon_informations.t2tconf
-URL: ADDON_AUTHOR_URL
 
-[Repositorio en  GitHub: ADDON_REPOSITORY ADDON_REPOSITORY]
+URL: [ADDON_REPOSITORY ADDON_REPOSITORY]
+
 
 Descargar:
 - Versión actual: ADDON_CUR_VERSION 
@@ -18,7 +18,23 @@ Descargar:
 Traducido por Rémy Ruiz, cambios por Carlos Esteban martínez Macías.
 
 
-+ Version 2.10 (18/02/2023) +
++ Versión 2.11 (27/03/2024) +
+Compatibilidad:
+- compatibilidad con NVDA 2024.
+- las versiones de NVDA anteriores a la 2023.1 ya no son soportadas.
+
+
+Nuevas características:
+- de acuerdo con la Tienda de complementos (Add-on Store) desde NVDA 2023.2, ahora es posible actualizar el complemento con una versión incompatible.
+- se toma en cuenta un nuevo modo de "voz a petición" introducido en nvda 2024.1:   todos los scripts que anuncien información verbalizarán esta información. En este modo, todos los demás scripts permanecerán en silencio.
+- se toma en cuenta un nuevo modo de "voz a petición" traído por nvda 2024.1.
+
+
+Corrección de fallos:
+- mejora de la inicialización del complemento cuando se inicia la reproducción de un archivo de vídeo desde el Explorador de Windows y el cursor permanece en el Explorador. Pero no funciona en todos los casos.
+
+
++ Versión 2.10 (18/02/2023) +
 Compatibilidad con NVDA 2023.1
 
 Corrección de fallos:

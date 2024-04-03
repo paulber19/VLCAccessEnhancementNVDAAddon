@@ -1,6 +1,6 @@
 # shared\vlc_addonConfig.py
 # a part of vlcAccessEnhancement add-on
-# Copyright 2019-2022 paulber19
+# Copyright 2019-2024 paulber19
 # This file is covered by the GNU General Public License.
 
 # Manages add-on configuration.
@@ -64,7 +64,7 @@ class BaseAddonConfiguration(ConfigObj):
 		self._errors = []
 		val = Validator()
 		result = self.validate(val, copy=True, preserve_errors=True)
-		if type(result) == dict:
+		if type(result) is dict:
 			self._errors = self.getValidateErrorsText(result)
 		else:
 			self._errors = None
@@ -233,7 +233,7 @@ class AddonConfigManager(object):
 			del resumeFiles[f]
 			change = True
 		if change:
-			self.save()
+			self.saveSettings(True)
 
 	def getAltRTime(self, mediaName):
 		QTI = QTInterface()

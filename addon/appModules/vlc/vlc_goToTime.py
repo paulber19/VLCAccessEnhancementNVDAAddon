@@ -1,6 +1,6 @@
 # appModules\vlc\vlc_goToTime.py.
 # a part of vlcAccessEnhancement add-on
-# Copyright 2019-2022 paulber19
+# Copyright 2019-2023 paulber19
 # This file is covered by the GNU General Public License.
 
 
@@ -151,12 +151,7 @@ class GoToTimeDialog(wx.Dialog):
 	def setSelection(self, cb, value):
 		cb.SetStringSelection(value)
 		cb.SetInsertionPointEnd()
-		try:
-			# for wxPython 4
-			cb.SetTextSelection(0, cb.GetLastPosition())
-		except Exception:
-			# for wxPython 3
-			cb.SetMark(0, cb.GetLastPosition())
+		cb.SetTextSelection(0, cb.GetLastPosition())
 
 	def textHasChanged(self, cb, curTime):
 		waitTime = 800

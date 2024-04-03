@@ -1,27 +1,14 @@
 # appModules\vlc\vlc_playlist.py
 # a part of vlcAccessEnhancement add-on
-# Copyright 2019-2022 paulber19
+# Copyright 2019-2023 paulber19
 # This file is covered by the GNU General Public License.
 # some ideas and code source comes from VLC add-on written by Javi Dominguez.
 
 
 import addonHandler
 
-try:
-	# for nvda version >= 2021.2
-	from controlTypes.role import Role
-	ROLE_TREEVIEW = Role.TREEVIEW
-	ROLE_LIST = Role.LIST
-	from controlTypes.state import State
-	STATE_EXPANDED = State.EXPANDED
-except ImportError:
-	# for nvda version < 2021.2
-	from controlTypes import (
-		ROLE_TREEVIEW, ROLE_LIST
-	)
-	from controlTypes import (
-		STATE_EXPANDED
-	)
+from controlTypes.role import Role
+from controlTypes.state import State
 import api
 import speech
 import winUser
@@ -82,13 +69,13 @@ def _getActiveChild(obj):
 	child = None
 	oIA = obj.IAccessibleObject
 	step = 1
-	if obj.role == ROLE_TREEVIEW:
+	if obj.role == Role.TREEVIEW:
 		step = getColumnHeaderCount(oIA)
 		if step > 1 and obj.childCount > 20000:
 			ui.message(_("Please wait"))
 	for i in range(0, obj.childCount, step):
 		if i > 20000\
-			and obj.role in [ROLE_TREEVIEW, ROLE_LIST]:
+			and obj.role in [Role.TREEVIEW, Role.LIST]:
 			break
 		oldChild = child
 		child = oIA.accChild(i + 1)
@@ -187,7 +174,7 @@ class VLCTreeViewItem(qt.TreeViewItem):
 	def _get_states(self):
 		states = super(VLCTreeViewItem, self)._get_states()
 		# expanded state is useless
-		states.discard(STATE_EXPANDED)
+		states.discard(State.EXPANDED)
 		return states
 
 

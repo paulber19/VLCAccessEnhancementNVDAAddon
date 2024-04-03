@@ -1,6 +1,6 @@
 # shared\vlc_utils.py.
 # a part of VLCAccessEnhancement add-on
-# Copyright 2018-2022 paulber19
+# Copyright 2018-2023 paulber19
 # This file is covered by the GNU General Public License.
 
 
@@ -209,39 +209,24 @@ def mouseClick(obj, rightButton=False, twice=False):
 
 
 def getSpeechMode():
-	try:
-		# for nvda  version >= 2021.1
-		return speech.getState().speechMode
-	except AttributeError:
-		return speech.speechMode
+	return speech.getState().speechMode
 
 
 def setSpeechMode(mode):
-	try:
-		# for nvda version >= 2021.1
-		speech.setSpeechMode(mode)
-	except AttributeError:
-		speech.speechMode = mode
+	speech.setSpeechMode(mode)
 
 
 def setSpeechMode_off():
-	try:
-		# for nvda version >= 2021.1
-		speech.setSpeechMode(speech.SpeechMode.off)
-	except AttributeError:
-		speech.speechMode = speech.speechMode_off
+	speech.setSpeechMode(speech.SpeechMode.off)
 
 
 class MessageBox(wx.Dialog):
 	def __init__(self, parent, ID, title, helpMessage, closeIfInactive):
 		super(MessageBox, self).__init__(parent, ID, title)
 		self.oldSymbolLevel = config.conf["speech"]["symbolLevel"]
-		try:
-			# for nvda version >=  2021.2
-			from characterProcessing import SymbolLevel
-			config.conf["speech"]["symbolLevel"] = SymbolLevel.ALL
-		except ImportError:
-			config.conf["speech"]["symbolLevel"] = characterProcessing.SYMLVL_ALL
+
+		from characterProcessing import SymbolLevel
+		config.conf["speech"]["symbolLevel"] = SymbolLevel.ALL
 		# Translators: message shown in dialog to close window.
 		self.helpMessage = "%s\r\n%s" % (helpMessage, _("Hit Escape key to close the window"))
 		self.closeIfInactive = closeIfInactive

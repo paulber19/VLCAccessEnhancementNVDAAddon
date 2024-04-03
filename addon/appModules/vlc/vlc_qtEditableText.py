@@ -1,8 +1,8 @@
 # -*- coding: UTF-8 -*-
 # appModules\vlc\vlc_qtEditableText.py
 # a part of VLCAccessEnhancement add-on
-# Copyright (C) 2018 Javi Dominguez <fjavids@gmail.com>
-# modified by paulber19 (2020-2022)
+# Copyright (C) 2018  Javi Dominguez <fjavids@gmail.com>
+# modified by paulber19 (2020-2023)
 # This file is covered by the GNU General Public License.
 # See the file COPYING.txt for more details.
 # NVDA object class for editable text in QT interfaces
@@ -13,15 +13,7 @@ from string import printable, punctuation
 from globalCommands import commands
 from locale import getdefaultlocale
 import scriptHandler
-try:
-	# for nvda version >= 2021.2
-	from controlTypes.role import Role
-	ROLE_STATICTEXT = Role.STATICTEXT
-except ImportError:
-	# for nvda version < 2021.2
-	from controlTypes import (
-		ROLE_STATICTEXT
-	)
+from controlTypes.role import Role
 import config
 import speech
 import braille
@@ -30,7 +22,6 @@ addonHandler.initTranslation()
 
 SpecialAlphanumeric = {
 	"en": printable[:62],
-	# "es": printable[:62]+u"áéíóúàèìòùäëïöüâêîôûñçÁÉÍÓÚÀÈÌÒÙÄËÏÖÜÂÊÎÔÛÑÇ"
 }
 
 
@@ -57,7 +48,7 @@ class QTEditableText(EditableTextWithAutoSelectDetection):
 			return name
 		try:
 			previous = self.previous
-			if previous and previous.role in [ROLE_STATICTEXT, ]:
+			if previous and previous.role in [Role.STATICTEXT, ]:
 				return previous.name
 		except Exception:
 			pass
@@ -510,5 +501,5 @@ class VLCQTEditableText(QTEditableText):
 			# the alphanumeric characters of the punctuation signs.
 			# TRANSLATORS: This string should not be translated literally. Should be
 			# a list of the special characters that are considered to be alphanumeric
-			# in your local alphabet, for example the ñ in Spanish.
+			# in your local alphabet, for example the n tilde in Spanish.
 			self.alphanumeric = printable[:62] + _("SpecialAlphanumericCharactersInYourLanguage")

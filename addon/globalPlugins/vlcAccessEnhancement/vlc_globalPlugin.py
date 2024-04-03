@@ -42,7 +42,7 @@ class VLCGlobalPlugin (globalPluginHandler.GlobalPlugin):
 		self.vlcSettingsMenu = self.prefsMenu .AppendSubMenu(
 			menu,
 			# Translators: label of the add-on settings menu.
-			makeAddonWindowTitle(_("settings ...")),
+			makeAddonWindowTitle(_("Settings ...")),
 			# Translators: the tooltip text for addon submenu.
 			makeAddonWindowTitle(_("Settings menu")))
 		settingsSubMenu = menu.Append(
@@ -79,7 +79,7 @@ class VLCGlobalPlugin (globalPluginHandler.GlobalPlugin):
 		self.onSettingsMenu(None)
 
 	# Translators: message presented in input mode.
-	script_activateVLCSettingsDialog.__doc__ = _("Display the settings dialog ")
+	script_activateVLCSettingsDialog.__doc__ = _("Display the settings dialog")
 
 	def script_VLCGlobalPluginTest(self, gesture):
 		print("test VLCGlobalPluginTest")
