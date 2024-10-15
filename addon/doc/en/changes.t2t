@@ -15,10 +15,17 @@ Download:
 - [Development Version ADDON_DEV_URL]
 
 
++ Version 2.12 (October/11/2024) +
+Compatibility with NVDA 2024.2, 2024.3 and 2024.4.
+Bug fixes:
+- in edit boxes, "space" characters and uppercase characters are now correctly announced.
+- correction of a bad French translation.
+
+
 + Version 2.11 (March/27/2024) +
 Compatibility:
-- Compatibility with NVDA 2024.1
-- NVDA versions prior to 2022.1 are no longer supported.
+- Compatibility with NVDA 2024.1.
+- NVDA versions prior to 2023.1 are no longer supported.
 
 
 What's new:

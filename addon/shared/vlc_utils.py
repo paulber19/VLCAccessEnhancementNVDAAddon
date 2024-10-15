@@ -1,6 +1,6 @@
 # shared\vlc_utils.py.
 # a part of VLCAccessEnhancement add-on
-# Copyright 2018-2023 paulber19
+# Copyright 2018-2024 paulber19
 # This file is covered by the GNU General Public License.
 
 
@@ -50,7 +50,7 @@ def formatTime(sTime):
 	msg = ""
 	saySeconds = False
 	if len(time) == 3:
-		# hours, minuts, seconds
+		# hours, minutes, seconds
 		if time[0] == 0:
 			pass
 		elif time[0] == 1:
@@ -61,7 +61,7 @@ def formatTime(sTime):
 			msg = _("%s hours") % str(time[0])
 		time = time[1:]
 	if len(time) == 2:
-		# minuts, seconds
+		# minutes, seconds
 		if msg == "":
 			# no hours
 			if time[0] == 0:
@@ -70,7 +70,7 @@ def formatTime(sTime):
 				msg = msgOneMinute
 			else:
 				# Translators: message to user to say minutes 's number.
-				msg = _("%s minuts") % str(time[0])
+				msg = _("%s minutes") % str(time[0])
 		else:
 			# with hours
 			if time[0] == 0:
@@ -83,13 +83,13 @@ def formatTime(sTime):
 				else:
 					msg = "%s %s" % (msg, msgOneMinute)
 			else:
-				# many minuts
+				# many minutes
 				if time[1] == 0:
 					# non second
 					msg = "%s %s" % (msg, str(time[0]))
 				else:
 					# Translators: Message to user to say hours and minutes.
-					msg = "%s %s" % (msg, _("%s minuts" % str(time[0])))
+					msg = "%s %s" % (msg, _("%s minutes" % str(time[0])))
 		time = time[1:]
 	if time[0] == 1:
 		# one second

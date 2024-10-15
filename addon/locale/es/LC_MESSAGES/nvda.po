@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlcAccessEnhancement\n"
 "Report-Msgid-Bugs-To: PaulBer19 (paulber19@laposte.net\n"
-"POT-Creation-Date: 2024-03-26 19:04+0100\n"
-"PO-Revision-Date: 2024-04-02 17:36+0200\n"
+"POT-Creation-Date: 2024-09-05 10:14+0200\n"
+"PO-Revision-Date: 2024-10-02 22:51+0200\n"
 "Last-Translator: Rémy Ruiz <remyruiz@gmail.com>\n"
 "Language-Team: Rémy Ruiz <remyruiz@gmail.com>\n"
 "Language: es\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 3.4.2\n"
+"X-Generator: Poedit 3.5\n"
 "X-Poedit-Basepath: ../../../appModules\n"
 "X-Poedit-SearchPath-0: .\n"
 
@@ -287,31 +287,31 @@ msgid "Anchored playlist"
 msgstr "Lista de reproducción anclada"
 
 #: appModules\vlc\vlc_qtEditableText.py:103
-#: appModules\vlc\vlc_qtEditableText.py:139
-#: appModules\vlc\vlc_qtEditableText.py:177
-#: appModules\vlc\vlc_qtEditableText.py:204
-#: appModules\vlc\vlc_qtEditableText.py:243
-#: appModules\vlc\vlc_qtEditableText.py:256
-#: appModules\vlc\vlc_qtEditableText.py:311
-#: appModules\vlc\vlc_qtEditableText.py:378
-#: appModules\vlc\vlc_qtEditableText.py:450
+#: appModules\vlc\vlc_qtEditableText.py:140
+#: appModules\vlc\vlc_qtEditableText.py:179
+#: appModules\vlc\vlc_qtEditableText.py:206
+#: appModules\vlc\vlc_qtEditableText.py:247
+#: appModules\vlc\vlc_qtEditableText.py:260
+#: appModules\vlc\vlc_qtEditableText.py:315
+#: appModules\vlc\vlc_qtEditableText.py:382
+#: appModules\vlc\vlc_qtEditableText.py:454
 msgid "selected"
 msgstr "seleccionado"
 
 #: appModules\vlc\vlc_qtEditableText.py:106
-#: appModules\vlc\vlc_qtEditableText.py:142
-#: appModules\vlc\vlc_qtEditableText.py:179
-#: appModules\vlc\vlc_qtEditableText.py:206
-#: appModules\vlc\vlc_qtEditableText.py:246
-#: appModules\vlc\vlc_qtEditableText.py:253
-#: appModules\vlc\vlc_qtEditableText.py:314
-#: appModules\vlc\vlc_qtEditableText.py:381
+#: appModules\vlc\vlc_qtEditableText.py:143
+#: appModules\vlc\vlc_qtEditableText.py:181
+#: appModules\vlc\vlc_qtEditableText.py:208
+#: appModules\vlc\vlc_qtEditableText.py:250
+#: appModules\vlc\vlc_qtEditableText.py:257
+#: appModules\vlc\vlc_qtEditableText.py:318
+#: appModules\vlc\vlc_qtEditableText.py:385
 msgid "deselected"
 msgstr "no seleccionado"
 
-#: appModules\vlc\vlc_qtEditableText.py:264
-#: appModules\vlc\vlc_qtEditableText.py:269
-#: appModules\vlc\vlc_qtEditableText.py:288
+#: appModules\vlc\vlc_qtEditableText.py:268
+#: appModules\vlc\vlc_qtEditableText.py:273
+#: appModules\vlc\vlc_qtEditableText.py:292
 msgid "selection removed"
 msgstr "selección cancelada"
 
@@ -322,7 +322,7 @@ msgstr "selección cancelada"
 #. TRANSLATORS: This string should not be translated literally. Should be
 #. a list of the special characters that are considered to be alphanumeric
 #. in your local alphabet, for example the n tilde in Spanish.
-#: appModules\vlc\vlc_qtEditableText.py:505
+#: appModules\vlc\vlc_qtEditableText.py:511
 msgid "SpecialAlphanumericCharactersInYourLanguage"
 msgstr "ÁáéíóúýàèìòùäëïöüâêîôûçãñõÁÉÍÓÚÝÀÈÌÒÙÄËÏÖÜÂÊÎÔÛÇÃÑÕ"
 
@@ -902,7 +902,7 @@ msgstr "%s horas"
 #. Translators: Message to user to say hours and minutes.
 #: shared\vlc_utils.py:73 shared\vlc_utils.py:92
 #, python-format
-msgid "%s minuts"
+msgid "%s minutes"
 msgstr "%s minutos"
 
 #. Translators: no comment.

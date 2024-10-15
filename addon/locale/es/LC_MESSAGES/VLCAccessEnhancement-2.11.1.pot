@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: VLCAccessEnhancement 2.11\n"
+"Project-Id-Version: VLCAccessEnhancement 2.11.1\n"
 "Report-Msgid-Bugs-To: PaulBer19 (paulber19@laposte.net\n"
-"POT-Creation-Date: 2024-04-03 08:57+0200\n"
+"POT-Creation-Date: 2024-06-10 15:32+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -851,7 +851,7 @@ msgstr ""
 #. Translators: Message to user to say hours and minutes.
 #: shared\vlc_utils.py:73 shared\vlc_utils.py:92
 #, python-format
-msgid "%s minuts"
+msgid "%s minutes"
 msgstr ""
 
 #. Translators: no comment.

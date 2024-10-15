@@ -49,7 +49,7 @@ Compatible with VLC 3.0.
 """),
 
 	# version
-	"addon_version": "2.11",
+	"addon_version": "2.12",
 	# Author(s)
 	"addon_author": "PaulBer19 (paulber19@laposte.net",
 	# URL for the add-on documentation support
@@ -63,7 +63,7 @@ Compatible with VLC 3.0.
 	"addon_minimumNVDAVersion": "2023.1",
 	# Last NVDA version supported/tested
 	# (e.g. "2018.4", ideally more recent than minimum version)
-	"addon_lastTestedNVDAVersion": "2024.1",
+	"addon_lastTestedNVDAVersion": "2024.4",
 	# Add-on update channel (default is stable or None)
 	"addon_updateChannel": None,
 	# Add-on license such as GPL 2

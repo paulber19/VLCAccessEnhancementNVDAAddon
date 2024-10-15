@@ -2,7 +2,7 @@
 # appModules\vlc\vlc_qtEditableText.py
 # a part of VLCAccessEnhancement add-on
 # Copyright (C) 2018  Javi Dominguez <fjavids@gmail.com>
-# modified by paulber19 (2020-2023)
+# modified by paulber19 (2020-2024)
 # This file is covered by the GNU General Public License.
 # See the file COPYING.txt for more details.
 # NVDA object class for editable text in QT interfaces
@@ -34,9 +34,10 @@ class QTEditableText(EditableTextWithAutoSelectDetection):
 		self.fakeCaret = len(self.value) - 1 if self.value else 0
 		self.startSelection = -1
 		self.typeBuffer = ""
-		self.alphanumeric = SpecialAlphanumeric[self.language]\
-			if self.language in SpecialAlphanumeric\
-			else SpecialAlphanumeric["en"]
+		if self.language in SpecialAlphanumeric:
+			self.alphanumeric = SpecialAlphanumeric[self.language]
+		else:
+			self.alphanumeric = SpecialAlphanumeric["en"]
 		self.sign = ""
 		for k in commands._gestureMap:
 			if commands._gestureMap[k].__name__ == "script_reportCurrentSelection":
@@ -59,26 +60,25 @@ class QTEditableText(EditableTextWithAutoSelectDetection):
 		braille.handler.handleGainFocus(self)
 		self.typeBuffer = ""
 
-	def event_typedCharacter(self, *args, **kwargs):
+	def event_typedCharacter(self, ch):
 		self.startSelection = -1
-		ch = kwargs["ch"]
-		if ch in self.alphanumeric + punctuation:
+		if ch.isspace() or ch in self.alphanumeric + punctuation:
 			self.typeBuffer = self.typeBuffer + ch
 			self.fakeCaret = self.fakeCaret + 1
 			if config.conf["keyboard"]["speakTypedCharacters"]:
-				speech.speakText(ch)
+				# speech.speakText(ch)
+				super().event_typedCharacter(ch)
 		else:
 			if self.typeBuffer:
 				if config.conf["keyboard"]["speakTypedWords"]:
 					speech.speakText(self.typeBuffer)
 				self.typeBuffer = ""
-		if ch == " ":
-			self.fakeCaret = self.fakeCaret + 1
 		self.displayBraille()
 
 	def event_caret(self):
 		if self.debug:
 			speech.speakText(str(self.fakeCaret))
+		super().event_caret()
 
 	def script_nextCh(self, gesture):
 		self.typeBuffer = ""
@@ -112,7 +112,8 @@ class QTEditableText(EditableTextWithAutoSelectDetection):
 				self.fakeCaret = self.fakeCaret + 1
 			try:
 				if self.fakeCaret < len(self.value) + 1:
-					speech.speakText(self.value[self.fakeCaret - selection])
+					speech.speakSpelling(self.value[self.fakeCaret - selection])
+
 			except IndexError:
 				pass
 
@@ -147,10 +148,10 @@ class QTEditableText(EditableTextWithAutoSelectDetection):
 			if self.fakeCaret > 0:
 				self.fakeCaret = self.fakeCaret - 1
 			if selection and self.fakeCaret == 0:
-				speech.speakText(self.value[self.fakeCaret])
+				speech.speakSpelling(self.value[self.fakeCaret])
 			else:
 				if self.fakeCaret < len(self.value):
-					speech.speakText(self.value[self.fakeCaret])
+					speech.speakSpelling(self.value[self.fakeCaret])
 
 	def script_end(self, gesture):
 		self.typeBuffer = ""
@@ -159,7 +160,8 @@ class QTEditableText(EditableTextWithAutoSelectDetection):
 		if self.value:
 			self.fakeCaret = len(self.value)
 			if self.fakeCaret < len(self.value):
-				speech.speakText(self.value[self.fakeCaret])
+				speech.speakSpelling(self.value[self.fakeCaret])
+
 		self.displayBraille()
 
 	def script_selectEnd(self, gesture):
@@ -186,7 +188,7 @@ class QTEditableText(EditableTextWithAutoSelectDetection):
 		if self.fakeCaret > 0:
 			self.fakeCaret = 0
 		if self.value:
-			speech.speakText(self.value[self.fakeCaret])
+			speech.speakSpelling(self.value[self.fakeCaret])
 		self.displayBraille()
 
 	def script_selectHome(self, gesture):
@@ -214,8 +216,10 @@ class QTEditableText(EditableTextWithAutoSelectDetection):
 			self.removeSelection(value)
 			return
 		try:
+
 			if self.value:
-				speech.speakText(self.value[self.fakeCaret + 1])
+				speech.speakSpelling(self.value[self.fakeCaret + 1])
+
 		except IndexError:
 			pass
 		self.displayBraille()
@@ -481,9 +485,11 @@ class QTEditableText(EditableTextWithAutoSelectDetection):
 		"kb:home": "home",
 		"kb:shift+home": "selectHome",
 		"kb:delete": "supr",
+		"kb:numpadDelete": "supr",
 		"kb:backspace": "back",
 		"kb:control+backspace": "removeWords",
 		"kb:control+delete": "removeWords",
+		"kb:control+numpadDelete": "removeWords",
 		"kb:control+rightArrow": "nextWord",
 		"kb:control+shift+rightArrow": "selectNextWord",
 		"kb:control+leftArrow": "previousWord",

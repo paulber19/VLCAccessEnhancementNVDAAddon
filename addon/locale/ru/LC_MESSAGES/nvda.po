@@ -853,7 +853,7 @@ msgstr "%s часов"
 #. Translators: Message to user to say hours and minutes.
 #: shared\vlc_utils.py:72 shared\vlc_utils.py:91
 #, python-format
-msgid "%s minuts"
+msgid "%s minutes"
 msgstr "%s минут"
 
 #. Translators: no comment.

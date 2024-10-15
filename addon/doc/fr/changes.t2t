@@ -15,9 +15,16 @@ Téléchargement :
 - [versions de développement ADDON_DEV_URL]
 
 
++ Version 2.12 (11/10/2024) +
+Compatibilité avec NVDA 2024.2, 2024.3 et 2024.4.
+Corrections de bogues :
+- dans les zones d'édition, les caractères "espace" et caractères en majuscule sont maintenant correctement annoncées.
+- correction d'une mauvaise traduction française.
+
+
 + Version 2.11 (27/03/2024) +
 Compatibilité :
-- compatibilité avec NVDA 2024.
+- compatibilité avec NVDA 2024.1.
 - les versions de NVDA antérieures à la 2023.1 ne sont plus soutenues.
 
 

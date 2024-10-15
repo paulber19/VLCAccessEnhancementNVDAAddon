@@ -887,7 +887,7 @@ msgstr "%s saat"
 #. Translators: Message to user to say hours and minutes.
 #: shared\vlc_utils.py:73 shared\vlc_utils.py:92
 #, python-format
-msgid "%s minuts"
+msgid "%s minutes"
 msgstr "%s dakika"
 
 #. Translators: no comment.
