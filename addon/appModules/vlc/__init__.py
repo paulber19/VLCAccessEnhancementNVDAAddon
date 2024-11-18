@@ -74,9 +74,6 @@ addonHandler.initTranslation()
 
 _scriptCategory = str(_curAddon.manifest['summary'])
 
-# timer for script
-GB_scriptTimer = None
-
 
 def sendGesture(gesture):
 	gesture.send()
@@ -295,29 +292,16 @@ class InVLCViewWindow(IAccessible):
 		return False
 
 	def script_jumpAndReportTime(self, gesture):
-
-		def callback():
-			global GB_scriptTimer
-			GB_scriptTimer = None
-			mainWindow = self.appModule.mainWindow
-			elapsedTime = mainWindow.getElapsedTime()
-			if elapsedTime:
-				queueHandler.queueFunction(
-					queueHandler.eventQueue,
-					ui.message, formatTime(elapsedTime))
-
-		global GB_scriptTimer
-		if GB_scriptTimer is not None:
-			GB_scriptTimer.Stop()
-			GB_scriptTimer = None
-		queueHandler.queueFunction(
-			queueHandler.eventQueue, speech.cancelSpeech)
+		speech.cancelSpeech()
 		if self.hasNoMedia():
 			return
 		if self.isAJumpOutOfMedia(gesture):
 			return
 		gesture.send()
-		GB_scriptTimer = wx.CallLater(10, callback)
+		mainWindow = self.appModule.mainWindow
+		elapsedTime = mainWindow.getElapsedTime()
+		if elapsedTime:
+			ui.message( formatTime(elapsedTime))
 
 	def script_sayVolume(self, gesture):
 		def speakVolume(level, muteState):
