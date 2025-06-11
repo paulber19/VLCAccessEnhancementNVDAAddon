@@ -1,6 +1,6 @@
 # appModules\vlc\__init__.py.
 # a part of vlcAccessEnhancement add-on
-# Copyright 2019-2023 paulber19
+# Copyright 2019-2025 paulber19
 # This file is covered by the GNU General Public License.
 # some code source comes from VLC add-on written by Javi Dominguez.
 
@@ -54,21 +54,23 @@ del sys.path[-1]
 sharedPath = os.path.join(_curAddon.path, "shared")
 sys.path.append(sharedPath)
 import vlc_addonConfig
-# from vlc_utils import *
 from vlc_utils import (
-
 	mouseClick, MessageBox,
 	getTimeInSec, getTimeList, formatTime,
 )
-# from vlc_settingsHandler import *
 from vlc_settingsHandler import (
 	Vlcrc,
 	jumpDelays, playKeys, movementKeys, muteKeys,
 	volumeKeys, speedKeys, normalSpeedKeys, jumpKeys,
 )
-from vlc_special import makeAddonWindowTitle, messageBox
+from vlc_special import makeAddonWindowTitle
+from messages import confirm_YesNo, ReturnCode
 import vlc_strings
 del sys.path[-1]
+del sys.modules["vlc_utils"]
+del sys.modules["vlc_settingsHandler"]
+del sys.modules["vlc_special"]
+del sys.modules["messages"]
 
 addonHandler.initTranslation()
 
@@ -428,13 +430,13 @@ class InVLCViewWindow(IAccessible):
 		printDebug("resumePlayback")
 
 		def callback(resumeTime):
-			res = messageBox(
+			res = confirm_YesNo(
 				# Translators: message to ask the user if he want to resume playback.
 				_("Do you want to resume Playback at %s?") % formatTime(resumeTime),
 				# Translators: title of message box.
 				makeAddonWindowTitle(_("Confirmation")),
-				wx.OK | wx.CANCEL)
-			if res == wx.CANCEL:
+			)
+			if res != ReturnCode.YES:
 				return
 			mainWindow = self.appModule.mainWindow
 			totalTime = getTimeList(mainWindow.getTotalTime())

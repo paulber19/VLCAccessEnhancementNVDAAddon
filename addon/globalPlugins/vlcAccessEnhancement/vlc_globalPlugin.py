@@ -1,6 +1,6 @@
 # globalPlugins\VLCAccessEnhancement\vlc_globalPlugin.py
 # a part of vlcAccessEnhancement add-on
-# Copyright 2019-2022 paulber19
+# Copyright 2019-2024 paulber19
 # This file is covered by the GNU General Public License.
 
 
@@ -30,11 +30,13 @@ class VLCGlobalPlugin (globalPluginHandler.GlobalPlugin):
 		super(VLCGlobalPlugin, self).__init__(*args, **kwargs)
 		self.createSubMenu()
 		self.vlcrcSettings = vlc_settingsHandler.Vlcrc()
-		from . import updateHandler
 		vlc_addonConfig.initialize()
-		if vlc_addonConfig._addonConfigManager.getAutoUpdateCheck():
-			updateHandler.autoUpdateCheck(
-				releaseToDev=vlc_addonConfig._addonConfigManager.getUpdateReleaseVersionsToDevVersions())
+		from .updateHandler.update_check import setCheckForUpdate
+		from vlc_addonConfig import _addonConfigManager
+		setCheckForUpdate(_addonConfigManager.getAutoUpdateCheck())
+		from . import updateHandler
+		updateHandler.autoUpdateCheck(
+			releaseToDev=vlc_addonConfig._addonConfigManager.getUpdateReleaseVersionsToDevVersions())
 
 	def createSubMenu(self):
 		self.prefsMenu = gui.mainFrame.sysTrayIcon.preferencesMenu

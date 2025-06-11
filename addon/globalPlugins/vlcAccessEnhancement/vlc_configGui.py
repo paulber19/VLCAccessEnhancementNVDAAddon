@@ -1,6 +1,6 @@
 # globalPlugins\vlcAccessEnhancement\vlc_configGui.py
 # a part of vlcAccessEnhancement add-on
-# Copyright 2019- 2022 paulber19
+# Copyright 2019- 2025 paulber19
 # This file is covered by the GNU General Public License.
 
 
@@ -15,8 +15,12 @@ path = os.path.join(_curAddon.path, "shared")
 sys.path.append(path)
 from vlc_addonConfig import _addonConfigManager
 import vlc_settingsHandler
-from vlc_special import makeAddonWindowTitle, messageBox
+from vlc_special import makeAddonWindowTitle
+from messages import confirm_YesNo, ReturnCode
 del sys.path[-1]
+del sys.modules["vlc_settingsHandler"]
+del sys.modules["vlc_special"]
+del sys.modules["messages"]
 
 addonHandler.initTranslation()
 
@@ -122,6 +126,8 @@ class VLCUpdatePanel(SettingsPanel):
 	def saveSettingChanges(self):
 		if self.autoCheckForUpdatesCheckBox.IsChecked() != _addonConfigManager .getAutoUpdateCheck():
 			_addonConfigManager .toggleAutoUpdateCheck()
+			from . updateHandler.update_check import setCheckForUpdate
+			setCheckForUpdate(_addonConfigManager.getAutoUpdateCheck())
 		option = _addonConfigManager .getUpdateReleaseVersionsToDevVersions()
 		if self.updateReleaseVersionsToDevVersionsCheckBox.IsChecked() != option:
 			_addonConfigManager .toggleUpdateReleaseVersionsToDevVersions()
@@ -163,13 +169,13 @@ class VLCConfigurationDialog (SettingsDialog):
 		self.Destroy()
 
 	def onDeleteVLCFolder(self, evt):
-		if messageBox(
+		if confirm_YesNo(
 			# Translators: message to user
 			# to confirm the deletion of VLC configuration folder.
 			_("Do you want really to delete VLC configuration folder ?"),
 			# Translators: title of message box.
 			makeAddonWindowTitle(_("Confirmation")),
-			wx.YES | wx.NO) == wx.NO:
+		) != ReturnCodeYES:
 			return
 		vlc = vlc_settingsHandler.VLCSettings(_curAddon)
 		wx.CallLater(100, vlc.deleteConfigurationFolder)

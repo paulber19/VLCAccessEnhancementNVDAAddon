@@ -40,7 +40,6 @@ sharedPath = os.path.join(_curAddon.path, "shared")
 sys.path.append(sharedPath)
 import vlc_strings
 from vlc_strings import getString
-# from vlc_utils import *
 from vlc_utils import (
 	getSpeechMode, setSpeechMode, setSpeechMode_off,
 	leftClick, getTimeInSec, formatTime

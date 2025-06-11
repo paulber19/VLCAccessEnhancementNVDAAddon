@@ -1,6 +1,6 @@
 # shared\vlc_settingsHandler.py.
 # a part of vlcAccessEnhancement add-on
-# Copyright 2019-2022 paulber19
+# Copyright 2019-2025 paulber19
 # This file is covered by the GNU General Public License.
 
 
@@ -16,7 +16,8 @@ import wx
 from keyboardHandler import KeyboardInputGesture
 from configobj import ConfigObj
 from vlc_localeSettingsHandler import LocaleSettings
-from vlc_special import makeAddonWindowTitle, messageBox
+from vlc_special import makeAddonWindowTitle
+from messages import alert
 
 addonHandler.initTranslation()
 _curAddon = addonHandler.getCodeAddon()
@@ -259,7 +260,7 @@ class VLCSettings(object):
 			msg = _("You must stop VLC application before delete configuration folder")
 			# Translators: title of message box.
 			dialogTitle = _("Warning")
-			messageBox(msg, makeAddonWindowTitle(dialogTitle), wx.OK | wx.ICON_WARNING)
+			alert(msg, makeAddonWindowTitle(dialogTitle))
 			return False
 		if not self.vlcInitialized:
 			# Translators: message to inform the user than VLC is not initialized.

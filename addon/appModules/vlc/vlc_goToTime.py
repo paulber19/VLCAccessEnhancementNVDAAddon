@@ -1,6 +1,6 @@
 # appModules\vlc\vlc_goToTime.py.
 # a part of vlcAccessEnhancement add-on
-# Copyright 2019-2023 paulber19
+# Copyright 2019-2025 paulber19
 # This file is covered by the GNU General Public License.
 
 
@@ -14,6 +14,8 @@ sys.path.append(sharedPath)
 from vlc_utils import PutWindowOnForeground
 from vlc_special import makeAddonWindowTitle
 del sys.path[-1]
+del sys.modules["vlc_utils"]
+del sys.modules["vlc_special"]
 
 addonHandler.initTranslation()
 

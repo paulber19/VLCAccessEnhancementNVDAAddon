@@ -16,7 +16,6 @@ from oleacc import (
 	NAVDIR_FIRSTCHILD, NAVDIR_LASTCHILD, NAVDIR_NEXT,
 )
 import ctypes
-# from vlc_settingsHandler import *
 import sys
 _curAddon = addonHandler.getCodeAddon()
 debugToolsPath = os.path.join(_curAddon.path, "debugTools")

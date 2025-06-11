@@ -1,6 +1,6 @@
 # shared\vlc_utils.py.
 # a part of VLCAccessEnhancement add-on
-# Copyright 2018-2024 paulber19
+# Copyright 2018-2025 paulber19
 # This file is covered by the GNU General Public License.
 
 
@@ -159,18 +159,6 @@ def getTimeString(timeList):
 	""" convert time to time string with the form hh:mm:ss"""
 	return "{0}:{1}:{2}" .format(
 		timeList[0].zfill(2), timeList[1].zfill(2), timeList[2].zfill(2))
-
-
-def messageBox(
-	message,
-	caption=wx.MessageBoxCaptionStr,
-	style=wx.OK | wx.CENTER,
-	parent=None):
-	option = config.conf["presentation"]["reportObjectDescriptions"]
-	config.conf["presentation"]["reportObjectDescriptions"] = True
-	ret = gui.messageBox(message, caption, style, parent)
-	config.conf["presentation"]["reportObjectDescriptions"] = option
-	return ret
 
 
 def leftClick(x, y):

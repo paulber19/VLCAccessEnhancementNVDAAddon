@@ -15,6 +15,25 @@ Download:
 - [Development Version ADDON_DEV_URL]
 
 
++ Version 2.13 (June/05/2025) +
+Compatibility with NVDA 2025.1
+
+NVDA versions prior to 2024.1 are no longer supported.
+
+Bug fixes:
+- the update search is no longer done when the "Automatically search for updates" option is unchecked just after starting NVDA.
+
+
+Development :
+- when installing the add-on, the current configuration is no longer saved in the add-on folder but is now saved in the user configuration folder. This allows you to still keep the current configuration if an installation goes wrong.
+
+
+Compliance with the NVDA API:
+- Use of the "ExecandPump" method of the "Systemutils" module.
+- Taking into account of guy's obsolescence.
+ - Messagedialog is now used for all NVDA versions greater than 2025.1.
+
+
 + Version 2.12 (October/11/2024) +
 Compatibility with NVDA 2024.2, 2024.3 and 2024.4.
 Bug fixes:
