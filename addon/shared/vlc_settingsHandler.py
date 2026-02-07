@@ -17,7 +17,7 @@ from keyboardHandler import KeyboardInputGesture
 from configobj import ConfigObj
 from vlc_localeSettingsHandler import LocaleSettings
 from vlc_special import makeAddonWindowTitle
-from messages import alert
+from messages import alert, inform, confirm_YesNo, ReturnCode
 
 addonHandler.initTranslation()
 _curAddon = addonHandler.getCodeAddon()
@@ -267,7 +267,7 @@ class VLCSettings(object):
 			msg = _("Impossible, VLC application is not installed or initialized")
 			# Translators: title of message box.
 			dialogTitle = _("Warning")
-			messageBox(msg, makeAddonWindowTitle(dialogTitle), wx.OK | wx.ICON_WARNING)
+			alert(msg, makeAddonWindowTitle(dialogTitle))
 			return False
 		return True
 
@@ -283,13 +283,13 @@ class VLCSettings(object):
 				"Before modify VLC shortcuts, you must start VLC once.") % self.vlcSettingsDir
 			# Translators: title of message box.
 			dialogTitle = _("Information")
-			messageBox(msg, makeAddonWindowTitle(dialogTitle), wx.OK | wx.ICON_WARNING)
+			inform(msg, makeAddonWindowTitle(dialogTitle) )
 		except OSError:
 			# Translators: message to user: VLC configuration folder cannot be deleted.
 			msg = _("VLC configuration folder \"%s\" cannot be deleted") % self.vlcSettingsDir
 			# Translators: title of message box.
 			dialogTitle = _("Error")
-			messageBox(msg, makeAddonWindowTitle(dialogTitle), wx.OK | wx.ICON_WARNING)
+			alert(msg, makeAddonWindowTitle(dialogTitle))
 
 
 class ConfigObjWithoutCommentMarkers(ConfigObj):
@@ -430,21 +430,21 @@ class Vlcrc(VLCSettings):
 			msg = _("You must stop VLC application before modify VLC configuration file")
 			# Translators: title of message box.
 			dialogTitle = _("Warning")
-			messageBox(msg, makeAddonWindowTitle(dialogTitle), wx.OK | wx.ICON_WARNING)
+			alert(msg, makeAddonWindowTitle(dialogTitle))
 			return False
 		if not self.vlcInitialized:
 			# Translators: message to inform the user than VLC is not initialized.
 			msg = _("Impossible, VLC application is not installed or initialized")
 			# Translators: title of message box.
 			dialogTitle = _("Warning")
-			messageBox(msg, makeAddonWindowTitle(dialogTitle), wx.OK | wx.ICON_WARNING)
+			alert(msg, makeAddonWindowTitle(dialogTitle))
 			return False
 		if not self.exist():
 			# Translators: message to inform the user than VLC is not initialized.
 			msg = _("Error, VLC configuration is not found")
 			# Translators: title of message box.
 			dialogTitle = _("Warning")
-			messageBox(msg, makeAddonWindowTitle(dialogTitle), wx.OK | wx.ICON_WARNING)
+			alert(msg, makeAddonWindowTitle(dialogTitle))
 			return False
 		return True
 
@@ -459,17 +459,17 @@ class Vlcrc(VLCSettings):
 			msg = _("There is no key modification to do")
 			# Translators: title of message box.
 			dialogTitle = _("Information")
-			messageBox(msg, makeAddonWindowTitle(dialogTitle), wx.OK)
+			inform(msg, makeAddonWindowTitle(dialogTitle))
 			return
 		if not self.canUpdateVlcrcFile():
 			return
 		text = self.getNewVLCKeysHelp()
-		if messageBox(
+		if confirm_YesNo(
 			# Translators: message to ask the user if he accepts the update.
 			text + ". " + _("Are you OK?"),
 			# Translators: title of message box.
-			_("%s add-on - Confirmation") % self.addon.manifest["summary"],
-			wx.OK | wx.CANCEL) == wx.CANCEL:
+			_("%s add-on - Confirmation") % self.addon.manifest["summary"]
+		) != ReturnCode.YES:
 			return
 		lines = self._firstPass(newVLCKeys)
 		lines = self._secondPass(lines, newVLCKeys)
@@ -487,7 +487,7 @@ class Vlcrc(VLCSettings):
 		msg = _("VLC configuration file has been updated")
 		# Translators: title of message box.
 		dialogTitle = _("Information")
-		messageBox(msg, makeAddonWindowTitle(dialogTitle), wx.OK)
+		inform(msg, makeAddonWindowTitle(dialogTitle))
 
 	def normalizeKeyToVLC(self, key):
 		NVDAKeyToVLCKey = {

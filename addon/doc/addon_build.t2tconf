@@ -13,8 +13,8 @@
 %!PostProc: ADDON_NAME VLCAccessEnhancement
 %!PostProc: ADDON_REPOSITORY_NAME VLCAccessEnhancementNVDAAddon
 % current stable version
-%!PostProc (html):ADDON_CUR_VERSION 2.13
+%!PostProc (html):ADDON_CUR_VERSION 2.13.2
 %!PostProc (html):MINIMUM_NVDA_VERSION  2024.1
-%!PostProc (html):LAST_TESTED_NVDA_VERSION  2025.1
+%!PostProc (html):LAST_TESTED_NVDA_VERSION  2025.3
 %previous stable version
 %!PostProc (html):ADDON_PREV_VERSION 2.12.2

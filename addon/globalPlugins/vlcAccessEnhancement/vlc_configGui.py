@@ -175,7 +175,7 @@ class VLCConfigurationDialog (SettingsDialog):
 			_("Do you want really to delete VLC configuration folder ?"),
 			# Translators: title of message box.
 			makeAddonWindowTitle(_("Confirmation")),
-		) != ReturnCodeYES:
+		) != ReturnCode.YES:
 			return
 		vlc = vlc_settingsHandler.VLCSettings(_curAddon)
 		wx.CallLater(100, vlc.deleteConfigurationFolder)

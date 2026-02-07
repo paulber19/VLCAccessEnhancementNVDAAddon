@@ -34,6 +34,6 @@ The list of commands is obtained by Control+NVDA+H
 
 Compatible with VLC 3.0.
 
-[1]: https://github.com/paulber007/AllMyNVDAAddons/raw/master/VLC/VLCAccessEnhancement-2.13.nvda-addon
-[2]: http://angouleme.avh.asso.fr/fichesinfo/fiches_nvda/data/VLCAccessEnhancement-2.13.nvda-addon
+[1]: https://github.com/paulber007/AllMyNVDAAddons/raw/master/VLCAccessEnhancement/VLCAccessEnhancement-2.13.2.nvda-addon
+[2]: http://angouleme.avh.asso.fr/fichesinfo/fiches_nvda/data/VLCAccessEnhancement-2.13.2.nvda-addon
 [3]:https://github.com/paulber007/AllMyNVDAAddons/tree/master/vlcAccessEnhancement/dev
