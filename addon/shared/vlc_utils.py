@@ -1,6 +1,6 @@
 # shared\vlc_utils.py.
 # a part of VLCAccessEnhancement add-on
-# Copyright 2018-2025 paulber19
+# Copyright 2018-2026 paulber19
 # This file is covered by the GNU General Public License.
 
 
@@ -12,7 +12,9 @@ import keyboardHandler
 import time
 import wx
 import config
+import ui
 import speech
+import speech.speech
 import characterProcessing
 
 addonHandler.initTranslation()
@@ -163,8 +165,8 @@ def getTimeString(timeList):
 
 def leftClick(x, y):
 	winUser.setCursorPos(x, y)
-	winUser.mouse_event(winUser.MOUSEEVENTF_LEFTDOWN, 0, 0, None, None)
-	winUser.mouse_event(winUser.MOUSEEVENTF_LEFTUP, 0, 0, None, None)
+	winUser.mouse_event(winUser.MOUSEEVENTF_LEFTDOWN, 0, 0)
+	winUser.mouse_event(winUser.MOUSEEVENTF_LEFTUP, 0, 0)
 
 
 # winuser.h constant
@@ -181,19 +183,19 @@ def mouseClick(obj, rightButton=False, twice=False):
 	api.moveMouseToNVDAObject(obj)
 	api.setMouseObject(obj)
 	if not rightButton:
-		winUser.mouse_event(winUser.MOUSEEVENTF_LEFTDOWN, 0, 0, None, None)
-		winUser.mouse_event(winUser.MOUSEEVENTF_LEFTUP, 0, 0, None, None)
+		winUser.mouse_event(winUser.MOUSEEVENTF_LEFTDOWN, 0, 0)
+		winUser.mouse_event(winUser.MOUSEEVENTF_LEFTUP, 0, 0)
 		if twice:
 			time.sleep(0.1)
-			winUser.mouse_event(winUser.MOUSEEVENTF_LEFTDOWN, 0, 0, None, None)
-			winUser.mouse_event(winUser.MOUSEEVENTF_LEFTUP, 0, 0, None, None)
+			winUser.mouse_event(winUser.MOUSEEVENTF_LEFTDOWN, 0, 0)
+			winUser.mouse_event(winUser.MOUSEEVENTF_LEFTUP, 0, 0)
 	else:
-		winUser.mouse_event(winUser.MOUSEEVENTF_RIGHTDOWN, 0, 0, None, None)
-		winUser.mouse_event(winUser.MOUSEEVENTF_RIGHTUP, 0, 0, None, None)
+		winUser.mouse_event(winUser.MOUSEEVENTF_RIGHTDOWN, 0, 0)
+		winUser.mouse_event(winUser.MOUSEEVENTF_RIGHTUP, 0, 0)
 		if twice:
 			time.sleep(0.1)
-			winUser.mouse_event(winUser.MOUSEEVENTF_RIGHTDOWN, 0, 0, None, None)
-			winUser.mouse_event(winUser.MOUSEEVENTF_RIGHTUP, 0, 0, None, None)
+			winUser.mouse_event(winUser.MOUSEEVENTF_RIGHTDOWN, 0, 0)
+			winUser.mouse_event(winUser.MOUSEEVENTF_RIGHTUP, 0, 0)
 
 
 def getSpeechMode():
@@ -206,6 +208,18 @@ def setSpeechMode(mode):
 
 def setSpeechMode_off():
 	speech.setSpeechMode(speech.SpeechMode.off)
+speakOnDemand = speech.speech.SpeechMode.onDemand
+
+
+def executeWithSpeakOnDemand(func, *args, **kwargs):
+	from speech.speech import _speechState, SpeechMode
+	if not speakOnDemand or _speechState.speechMode != SpeechMode.onDemand:
+		return func(*args, **kwargs)
+	_speechState.speechMode = SpeechMode.talk
+	ret = func(*args, **kwargs)
+	_speechState.speechMode = SpeechMode.onDemand
+	return ret
+
 
 
 class MessageBox(wx.Dialog):

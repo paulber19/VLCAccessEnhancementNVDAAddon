@@ -86,11 +86,7 @@ class VLCGlobalPlugin (globalPluginHandler.GlobalPlugin):
 	def script_VLCGlobalPluginTest(self, gesture):
 		print("test VLCGlobalPluginTest")
 		ui.message("VLCGlobalPluginTest")
-		import globalVars
-		from .updateHandler.update_check import CheckForAddonUpdate
-		fileName = os.path.join(globalVars.appArgs.configPath, "myAddons.latest")
-		wx.CallAfter(
-			CheckForAddonUpdate, None, updateInfosFile=fileName, silent=False)
+
 	__gestures = {
-		"kb:alt+control+f11": "VLCGlobalPluginTest",
+		#"kb:alt+control+f11": "VLCGlobalPluginTest",
 	}

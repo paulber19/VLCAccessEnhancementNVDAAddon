@@ -1,6 +1,6 @@
 # appModules\vlc\vlc_application.py.
 # a part of vlcAccessEnhancement add-on
-# Copyright 2019-2022 paulber19
+# Copyright 2019-2026 paulber19
 # This file is covered by the GNU General Public License.
 
 
@@ -23,7 +23,6 @@ import ctypes
 from NVDAObjects.IAccessible import getNVDAObjectFromEvent
 import winUser
 from IAccessibleHandler import accNavigate, accParent
-from .vlc_utils import executeWithSpeakOnDemand
 import sys
 
 _curAddon = addonHandler.getCodeAddon()
@@ -42,9 +41,9 @@ import vlc_strings
 from vlc_strings import getString
 from vlc_utils import (
 	getSpeechMode, setSpeechMode, setSpeechMode_off,
-	leftClick, getTimeInSec, formatTime
+	leftClick, getTimeInSec, formatTime,
+	executeWithSpeakOnDemand
 )
-
 del sys.path[-1]
 
 addonHandler.initTranslation()

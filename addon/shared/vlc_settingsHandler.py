@@ -17,7 +17,7 @@ from keyboardHandler import KeyboardInputGesture
 from configobj import ConfigObj
 from vlc_localeSettingsHandler import LocaleSettings
 from vlc_special import makeAddonWindowTitle
-from messages import alert, inform, confirm_YesNo, ReturnCode
+from vlc_messages import alert, inform, confirm_YesNo, ReturnCode
 
 addonHandler.initTranslation()
 _curAddon = addonHandler.getCodeAddon()

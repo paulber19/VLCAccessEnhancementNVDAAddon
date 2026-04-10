@@ -24,13 +24,7 @@ import os
 import oleacc
 from inputCore import normalizeGestureIdentifier
 import inputCore
-try:
-	# NVDA >= 2024.1
-	speech.speech.SpeechMode.onDemand
-	speakOnDemand = {"speakOnDemand": True}
-except AttributeError:
-	# NVDA <= 2023.3
-	speakOnDemand = {}
+speakOnDemand = {"speakOnDemand": True}
 import sys
 from .vlc_goToTime import GoToTimeDialog
 from . import vlc_application
@@ -64,13 +58,9 @@ from vlc_settingsHandler import (
 	volumeKeys, speedKeys, normalSpeedKeys, jumpKeys,
 )
 from vlc_special import makeAddonWindowTitle
-from messages import confirm_YesNo, ReturnCode
+from vlc_messages import confirm_YesNo, ReturnCode
 import vlc_strings
 del sys.path[-1]
-del sys.modules["vlc_utils"]
-del sys.modules["vlc_settingsHandler"]
-del sys.modules["vlc_special"]
-del sys.modules["messages"]
 
 addonHandler.initTranslation()
 

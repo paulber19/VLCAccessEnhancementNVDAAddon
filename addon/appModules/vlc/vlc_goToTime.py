@@ -14,8 +14,6 @@ sys.path.append(sharedPath)
 from vlc_utils import PutWindowOnForeground
 from vlc_special import makeAddonWindowTitle
 del sys.path[-1]
-del sys.modules["vlc_utils"]
-del sys.modules["vlc_special"]
 
 addonHandler.initTranslation()
 

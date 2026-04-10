@@ -148,7 +148,7 @@ class AddonConfigManager(object):
 		self._updateResumeFiles()
 
 	def warnConfigurationReset(self):
-		from messages import alert
+		from vlc_messages import alert
 		wx.CallLater(
 			100,
 			alert,

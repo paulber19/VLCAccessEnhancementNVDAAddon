@@ -16,11 +16,8 @@ sys.path.append(path)
 from vlc_addonConfig import _addonConfigManager
 import vlc_settingsHandler
 from vlc_special import makeAddonWindowTitle
-from messages import confirm_YesNo, ReturnCode
+from vlc_messages import confirm_YesNo, ReturnCode
 del sys.path[-1]
-del sys.modules["vlc_settingsHandler"]
-del sys.modules["vlc_special"]
-del sys.modules["messages"]
 
 addonHandler.initTranslation()
 

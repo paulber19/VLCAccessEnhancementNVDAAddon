@@ -1,6 +1,6 @@
 # appModules\vlc\vlc_playlist.py
 # a part of vlcAccessEnhancement add-on
-# Copyright 2019-2023 paulber19
+# Copyright 2019-2026 paulber19
 # This file is covered by the GNU General Public License.
 # some ideas and code source comes from VLC add-on written by Javi Dominguez.
 
@@ -200,8 +200,8 @@ class VLCListItem(IAccessible):
 			api.moveMouseToNVDAObject(item)
 			x, y = winUser.getCursorPos()
 			if api.getDesktopObject().objectFromPoint(x, y) == item:
-				winUser.mouse_event(winUser.MOUSEEVENTF_LEFTDOWN, 0, 0, None, None)
-				winUser.mouse_event(winUser.MOUSEEVENTF_LEFTUP, 0, 0, None, None)
+				winUser.mouse_event(winUser.MOUSEEVENTF_LEFTDOWN, 0, 0)
+				winUser.mouse_event(winUser.MOUSEEVENTF_LEFTUP, 0, 0)
 				time.sleep(0.1)
 				eventHandler.queueEvent("gainFocus", item)
 				return
