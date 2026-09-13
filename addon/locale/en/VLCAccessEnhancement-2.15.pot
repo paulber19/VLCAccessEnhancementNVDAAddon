@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: VLCAccessEnhancement 2.14.1\n"
+"Project-Id-Version: VLCAccessEnhancement 2.15\n"
 "Report-Msgid-Bugs-To: PaulBer19 <paulber19@laposte.net>\n"
-"POT-Creation-Date: 2026-05-02 15:24+0200\n"
+"POT-Creation-Date: 2026-07-22 10:01+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,12 +18,15 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #. Add-on summary, usually the user visible name of the addon.
-#. Translators: Summary for this add-on to be shown on installation and add-on information.
-#: buildVars.py:23
+#. Translators: Summary/title for this add-on
+#. to be shown on installation and add-on information found in add-on store
+#: buildVars.py:21
 msgid "VLC multimedia player: Accessibility enhancements"
 msgstr ""
 
-#: buildVars.py:28
+#. Add-on description
+#. Translators: Long description to be shown for this add-on on add-on information from add-on store
+#: buildVars.py:24
 msgid ""
 "This addon adds a variety of commands to enhance accessibility in playing "
 "media:\n"
@@ -51,19 +54,25 @@ msgid ""
 "Compatible with VLC 3.0.\n"
 msgstr ""
 
+#. Brief changelog for this version
+#. Translators: what's new content for the add-on version to be shown in the add-on store
+#: buildVars.py:49
+msgid "See add-on history."
+msgstr ""
+
 #. Translators: the label of a message box dialog.
-#: installTasks.py:40
+#: installTasks.py:52
 msgid "Do you want to keep current add-on configuration settings ?"
 msgstr ""
 
 #. Translators: the title of a message box dialog.
-#: installTasks.py:42 installTasks.py:47
+#: installTasks.py:54 installTasks.py:59
 #, python-format
 msgid "%s - installation"
 msgstr ""
 
 #. Translators: the label of a message box dialog.
-#: installTasks.py:45
+#: installTasks.py:57
 msgid ""
 "Are you sure you don't want to keep the current add-on configuration "
 "settings?"
@@ -109,7 +118,7 @@ msgid "No media"
 msgstr ""
 
 #. Translators: message to user to report full screen state.
-#: appModules\vlc\vlc_application.py:209 shared\vlc_settingsHandler.py:123
+#: appModules\vlc\vlc_application.py:209 shared\vlc_settingsHandler.py:118
 msgid "Full screen"
 msgstr ""
 
@@ -159,7 +168,7 @@ msgid "No repeat"
 msgstr ""
 
 #. Translators: message to user to report random or normal playback state.
-#: appModules\vlc\vlc_application.py:335 shared\vlc_settingsHandler.py:121
+#: appModules\vlc\vlc_application.py:335 shared\vlc_settingsHandler.py:116
 msgid "Random playback"
 msgstr ""
 
@@ -249,7 +258,7 @@ msgid "&Cancel"
 msgstr ""
 
 #. Translators: message to the user.
-#: appModules\vlc\vlc_playlist.py:75 shared\vlc_settingsHandler.py:454
+#: appModules\vlc\vlc_playlist.py:75 shared\vlc_settingsHandler.py:449
 msgid "Please wait"
 msgstr ""
 
@@ -399,7 +408,7 @@ msgstr ""
 #. Translators: title of message box
 #: appModules\vlc\__init__.py:427
 #: globalPlugins\vlcAccessEnhancement\vlc_configGui.py:174
-#: shared\vlc_addonConfig.py:330
+#: shared\vlc_addonConfig.py:329
 msgid "Confirmation"
 msgstr ""
 
@@ -470,7 +479,7 @@ msgstr ""
 
 #. Translators: This is the label for the Update panel.
 #: globalPlugins\vlcAccessEnhancement\vlc_configGui.py:73
-#: globalPlugins\vlcAccessEnhancement\updateHandler\update_check.py:98
+#: globalPlugins\vlcAccessEnhancement\updateHandler\update_check.py:181
 msgid "Update"
 msgstr ""
 
@@ -543,60 +552,60 @@ msgstr ""
 
 #. Translators: The progress message
 #. indicating the name of the add-on being downloaded.
-#: globalPlugins\vlcAccessEnhancement\updateHandler\update_check.py:101
+#: globalPlugins\vlcAccessEnhancement\updateHandler\update_check.py:184
 msgid "Downloading {name}"
 msgstr ""
 
 #. Translators: A message indicating that an error occurred
 #. while downloading an update to NVDA.
-#: globalPlugins\vlcAccessEnhancement\updateHandler\update_check.py:116
+#: globalPlugins\vlcAccessEnhancement\updateHandler\update_check.py:199
 msgid "Error downloading update for {name}."
 msgstr ""
 
 #. Translators: message to user
-#: globalPlugins\vlcAccessEnhancement\updateHandler\update_check.py:170
+#: globalPlugins\vlcAccessEnhancement\updateHandler\update_check.py:252
 msgid "Cannot update {name} - missing file or invalid file format"
 msgstr ""
 
 #. Translators: The title of the dialog
 #. presented while an Addon is being updated.
-#: globalPlugins\vlcAccessEnhancement\updateHandler\update_check.py:187
+#: globalPlugins\vlcAccessEnhancement\updateHandler\update_check.py:269
 msgid "Updating"
 msgstr ""
 
 #. Translators: The message displayed while an addon is being updated.
-#: globalPlugins\vlcAccessEnhancement\updateHandler\update_check.py:189
+#: globalPlugins\vlcAccessEnhancement\updateHandler\update_check.py:271
 msgid "Please wait while the add-on is being updated."
 msgstr ""
 
 #. Translators: The message displayed when an error occurs
 #. when installing an add-on package.
-#: globalPlugins\vlcAccessEnhancement\updateHandler\update_check.py:211
+#: globalPlugins\vlcAccessEnhancement\updateHandler\update_check.py:293
 msgid "Failed to update {name} add-on"
 msgstr ""
 
-#: globalPlugins\vlcAccessEnhancement\updateHandler\update_check.py:255
+#: globalPlugins\vlcAccessEnhancement\updateHandler\update_check.py:337
 msgid "{summary} - update"
 msgstr ""
 
 #. Translators: message to user that the update service is temporarily in maintenance
-#: globalPlugins\vlcAccessEnhancement\updateHandler\update_check.py:268
+#: globalPlugins\vlcAccessEnhancement\updateHandler\update_check.py:350
 msgid "The service is temporarily under maintenance. Please, try again later."
 msgstr ""
 
-#: globalPlugins\vlcAccessEnhancement\updateHandler\update_check.py:295
+#: globalPlugins\vlcAccessEnhancement\updateHandler\update_check.py:377
 msgid ""
 "The update is not compatible with this version of NVDA. Minimum NVDA "
 "version: {minYear}.{minMajor}, last tested: {testedYear}.{testedMajor}."
 msgstr ""
 
 #. Translators: message to user to report a new version.
-#: globalPlugins\vlcAccessEnhancement\updateHandler\update_check.py:356
+#: globalPlugins\vlcAccessEnhancement\updateHandler\update_check.py:436
 #, python-format
 msgid "New version%s is available. Do you want to download it now?"
 msgstr ""
 
-#: globalPlugins\vlcAccessEnhancement\updateHandler\update_check.py:360
+#: globalPlugins\vlcAccessEnhancement\updateHandler\update_check.py:440
 msgid ""
 "New version{0} is available.\n"
 "But it is not compatible with this version of NVDA: minimum version requred "
@@ -605,38 +614,38 @@ msgid ""
 msgstr ""
 
 #. Translators: message to user that add-on is up to date
-#: globalPlugins\vlcAccessEnhancement\updateHandler\update_check.py:381
+#: globalPlugins\vlcAccessEnhancement\updateHandler\update_check.py:461
 #, python-format
 msgid "You are up-to-date. %s is the latest version."
 msgstr ""
 
-#: globalPlugins\vlcAccessEnhancement\updateHandler\update_check.py:388
+#: globalPlugins\vlcAccessEnhancement\updateHandler\update_check.py:468
 msgid "Oops! There was a problem checking for updates. Please retry later"
 msgstr ""
 
 #. Translators: This is a label of a button appearing
 #. on UpdateCheckResult dialog.
-#: globalPlugins\vlcAccessEnhancement\updateHandler\update_check.py:543
+#: globalPlugins\vlcAccessEnhancement\updateHandler\update_check.py:623
 msgid "&Yes"
 msgstr ""
 
 #. Translators: This is a label of a button appearing
 #. on UpdateCheckResult dialog.
-#: globalPlugins\vlcAccessEnhancement\updateHandler\update_check.py:548
+#: globalPlugins\vlcAccessEnhancement\updateHandler\update_check.py:628
 msgid "&No"
 msgstr ""
 
 #. Translators: The label of a button to remind the user later
 #. about performing some action.
-#: globalPlugins\vlcAccessEnhancement\updateHandler\update_check.py:553
+#: globalPlugins\vlcAccessEnhancement\updateHandler\update_check.py:633
 msgid "&Later"
 msgstr ""
 
-#: globalPlugins\vlcAccessEnhancement\updateHandler\update_check.py:557
+#: globalPlugins\vlcAccessEnhancement\updateHandler\update_check.py:637
 msgid "Wha&t's new"
 msgstr ""
 
-#: shared\vlc_addonConfig.py:157
+#: shared\vlc_addonConfig.py:156
 msgid ""
 "The configuration file of the add-on contains errors. The configuration has "
 "been reset to factory defaults"
@@ -644,124 +653,124 @@ msgstr ""
 
 #. Translators: title of message box
 #. Translators: title of message box.
-#: shared\vlc_addonConfig.py:160 shared\vlc_settingsHandler.py:262
-#: shared\vlc_settingsHandler.py:269 shared\vlc_settingsHandler.py:432
-#: shared\vlc_settingsHandler.py:439 shared\vlc_settingsHandler.py:446
+#: shared\vlc_addonConfig.py:159 shared\vlc_settingsHandler.py:257
+#: shared\vlc_settingsHandler.py:264 shared\vlc_settingsHandler.py:427
+#: shared\vlc_settingsHandler.py:434 shared\vlc_settingsHandler.py:441
 msgid "Warning"
 msgstr ""
 
 #. Translators: Message shown to ask user to modify resume time.
-#: shared\vlc_addonConfig.py:328
+#: shared\vlc_addonConfig.py:327
 msgid "Do you want to modify resume time for this media ?"
 msgstr ""
 
-#: shared\vlc_settingsHandler.py:95
+#: shared\vlc_settingsHandler.py:90
 msgid "Jump commands:"
 msgstr ""
 
-#: shared\vlc_settingsHandler.py:96
+#: shared\vlc_settingsHandler.py:91
 msgid "Jump 5 minutes after"
 msgstr ""
 
-#: shared\vlc_settingsHandler.py:97
+#: shared\vlc_settingsHandler.py:92
 msgid "Jump 5 minutes before"
 msgstr ""
 
-#: shared\vlc_settingsHandler.py:98
+#: shared\vlc_settingsHandler.py:93
 msgid "Jump 1 minute after"
 msgstr ""
 
-#: shared\vlc_settingsHandler.py:99
+#: shared\vlc_settingsHandler.py:94
 msgid "Jump 1 minute before"
 msgstr ""
 
-#: shared\vlc_settingsHandler.py:100 shared\vlc_settingsHandler.py:102
+#: shared\vlc_settingsHandler.py:95 shared\vlc_settingsHandler.py:97
 msgid "Jump 10 secondes after"
 msgstr ""
 
-#: shared\vlc_settingsHandler.py:101 shared\vlc_settingsHandler.py:103
+#: shared\vlc_settingsHandler.py:96 shared\vlc_settingsHandler.py:98
 msgid "Jump 10 secondes before"
 msgstr ""
 
-#: shared\vlc_settingsHandler.py:104
+#: shared\vlc_settingsHandler.py:99
 msgid "Jump 3 secondes after"
 msgstr ""
 
-#: shared\vlc_settingsHandler.py:105
+#: shared\vlc_settingsHandler.py:100
 msgid "Jump 3 secondes before"
 msgstr ""
 
-#: shared\vlc_settingsHandler.py:106
+#: shared\vlc_settingsHandler.py:101
 msgid "Speed commands"
 msgstr ""
 
-#: shared\vlc_settingsHandler.py:107
+#: shared\vlc_settingsHandler.py:102
 msgid "Increase the playback speed"
 msgstr ""
 
-#: shared\vlc_settingsHandler.py:108
+#: shared\vlc_settingsHandler.py:103
 msgid "Decrease the playback speed"
 msgstr ""
 
-#: shared\vlc_settingsHandler.py:109
+#: shared\vlc_settingsHandler.py:104
 msgid "Slightly increase the playback speed"
 msgstr ""
 
-#: shared\vlc_settingsHandler.py:110
+#: shared\vlc_settingsHandler.py:105
 msgid "Slightly decrease the playback speed"
 msgstr ""
 
-#: shared\vlc_settingsHandler.py:111
+#: shared\vlc_settingsHandler.py:106
 msgid "Normal rate"
 msgstr ""
 
-#: shared\vlc_settingsHandler.py:112
+#: shared\vlc_settingsHandler.py:107
 msgid "Volume commands:"
 msgstr ""
 
-#: shared\vlc_settingsHandler.py:113 shared\vlc_settingsHandler.py:115
+#: shared\vlc_settingsHandler.py:108 shared\vlc_settingsHandler.py:110
 msgid "Increase volume"
 msgstr ""
 
-#: shared\vlc_settingsHandler.py:114 shared\vlc_settingsHandler.py:116
+#: shared\vlc_settingsHandler.py:109 shared\vlc_settingsHandler.py:111
 msgid "Decrease volume"
 msgstr ""
 
-#: shared\vlc_settingsHandler.py:117
+#: shared\vlc_settingsHandler.py:112
 msgid "Playing commands:"
 msgstr ""
 
-#: shared\vlc_settingsHandler.py:118
+#: shared\vlc_settingsHandler.py:113
 msgid "Play / pause"
 msgstr ""
 
-#: shared\vlc_settingsHandler.py:119
+#: shared\vlc_settingsHandler.py:114
 msgid "Stop the media"
 msgstr ""
 
-#: shared\vlc_settingsHandler.py:120
+#: shared\vlc_settingsHandler.py:115
 msgid "Loop playback"
 msgstr ""
 
-#: shared\vlc_settingsHandler.py:122
+#: shared\vlc_settingsHandler.py:117
 msgid "Others commands:"
 msgstr ""
 
-#: shared\vlc_settingsHandler.py:124
+#: shared\vlc_settingsHandler.py:119
 msgid "Leave full screen"
 msgstr ""
 
 #. Translators: message to inform the user than VLC is running.
-#: shared\vlc_settingsHandler.py:260
+#: shared\vlc_settingsHandler.py:255
 msgid "You must stop VLC application before delete configuration folder"
 msgstr ""
 
 #. Translators: message to inform the user than VLC is not initialized.
-#: shared\vlc_settingsHandler.py:267 shared\vlc_settingsHandler.py:437
+#: shared\vlc_settingsHandler.py:262 shared\vlc_settingsHandler.py:432
 msgid "Impossible, VLC application is not installed or initialized"
 msgstr ""
 
-#: shared\vlc_settingsHandler.py:282
+#: shared\vlc_settingsHandler.py:277
 #, python-format
 msgid ""
 "VLC configuration folder (%s) has been deleted. Before modify VLC shortcuts, "
@@ -769,94 +778,94 @@ msgid ""
 msgstr ""
 
 #. Translators: title of message box.
-#: shared\vlc_settingsHandler.py:285 shared\vlc_settingsHandler.py:461
-#: shared\vlc_settingsHandler.py:489
+#: shared\vlc_settingsHandler.py:280 shared\vlc_settingsHandler.py:456
+#: shared\vlc_settingsHandler.py:484
 msgid "Information"
 msgstr ""
 
 #. Translators: message to user: VLC configuration folder cannot be deleted.
-#: shared\vlc_settingsHandler.py:289
+#: shared\vlc_settingsHandler.py:284
 #, python-format
 msgid "VLC configuration folder \"%s\" cannot be deleted"
 msgstr ""
 
 #. Translators: title of message box.
-#: shared\vlc_settingsHandler.py:291
+#: shared\vlc_settingsHandler.py:286
 msgid "Error"
 msgstr ""
 
 #. Translators: message to inform the user than VLC is running.
-#: shared\vlc_settingsHandler.py:430
+#: shared\vlc_settingsHandler.py:425
 msgid "You must stop VLC application before modify VLC configuration file"
 msgstr ""
 
 #. Translators: message to inform the user than VLC is not initialized.
-#: shared\vlc_settingsHandler.py:444
+#: shared\vlc_settingsHandler.py:439
 msgid "Error, VLC configuration is not found"
 msgstr ""
 
 #. no vlcrc modification
 #. Translators: message to user than there is no VLC keys to modify.
-#: shared\vlc_settingsHandler.py:459
+#: shared\vlc_settingsHandler.py:454
 msgid "There is no key modification to do"
 msgstr ""
 
 #. Translators: message to ask the user if he accepts the update.
-#: shared\vlc_settingsHandler.py:469
+#: shared\vlc_settingsHandler.py:464
 msgid "Are you OK?"
 msgstr ""
 
 #. Translators: title of message box.
-#: shared\vlc_settingsHandler.py:471
+#: shared\vlc_settingsHandler.py:466
 #, python-format
 msgid "%s add-on - Confirmation"
 msgstr ""
 
 #. Translators: message to inform the user than olcrc file has been updated.
-#: shared\vlc_settingsHandler.py:487
+#: shared\vlc_settingsHandler.py:482
 msgid "VLC configuration file has been updated"
 msgstr ""
 
 #. Translators: message to the user.
-#: shared\vlc_settingsHandler.py:531
+#: shared\vlc_settingsHandler.py:526
 msgid ""
 "The VLC command keys which will be record in the VLC configuration file are:"
 msgstr ""
 
-#: shared\vlc_settingsHandler.py:544
+#: shared\vlc_settingsHandler.py:539
 msgid "VLC command's keys:"
 msgstr ""
 
 #. Translators: no comment.
-#: shared\vlc_utils.py:44
+#: shared\vlc_utils.py:43
 msgid "one"
 msgstr ""
 
 #. Translators: no comment.
-#: shared\vlc_utils.py:46
+#: shared\vlc_utils.py:45
 msgid "one minute"
 msgstr ""
 
 #. Translators: no comment.
-#: shared\vlc_utils.py:60
+#: shared\vlc_utils.py:59
 msgid "one hour"
 msgstr ""
 
 #. Translators: message to user to say hours 's number.
-#: shared\vlc_utils.py:63
+#: shared\vlc_utils.py:62
 #, python-format
 msgid "%s hours"
 msgstr ""
 
 #. Translators: message to user to say minutes 's number.
 #. Translators: Message to user to say hours and minutes.
-#: shared\vlc_utils.py:75 shared\vlc_utils.py:94
+#: shared\vlc_utils.py:74 shared\vlc_utils.py:93
 #, python-format
 msgid "%s minutes"
 msgstr ""
 
 #. Translators: no comment.
-#: shared\vlc_utils.py:100
+#: shared\vlc_utils.py:99
 msgid "one second"
 msgstr ""
 
@@ -864,17 +873,17 @@ msgstr ""
 #. only seconds
 #. Translators: message to user to say only seconds.
 #. Translators: message to user to say hour, minute and seconds
-#: shared\vlc_utils.py:104 shared\vlc_utils.py:113 shared\vlc_utils.py:117
+#: shared\vlc_utils.py:103 shared\vlc_utils.py:112 shared\vlc_utils.py:116
 #, python-format
 msgid "%s seconds"
 msgstr ""
 
 #. Translators: no comment.
-#: shared\vlc_utils.py:122
+#: shared\vlc_utils.py:121
 msgid "0 second"
 msgstr ""
 
 #. Translators: message shown in dialog to close window.
-#: shared\vlc_utils.py:233
+#: shared\vlc_utils.py:235
 msgid "Hit Escape key to close the window"
 msgstr ""

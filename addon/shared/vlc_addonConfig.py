@@ -10,7 +10,6 @@ import os
 from logHandler import log
 import globalVars
 import wx
-import gui
 import config
 from vlc_settingsHandler import QTInterface
 from vlc_utils import getTimeString

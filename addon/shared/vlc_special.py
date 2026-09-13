@@ -4,9 +4,6 @@
 # This file is covered by the GNU General Public License.
 
 import addonHandler
-import gui
-import config
-import wx
 
 addonHandler.initTranslation()
 

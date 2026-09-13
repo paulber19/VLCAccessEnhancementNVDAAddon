@@ -88,5 +88,5 @@ class VLCGlobalPlugin (globalPluginHandler.GlobalPlugin):
 		ui.message("VLCGlobalPluginTest")
 
 	__gestures = {
-		#"kb:alt+control+f11": "VLCGlobalPluginTest",
+		# "kb:alt+control+f11": "VLCGlobalPluginTest",
 	}

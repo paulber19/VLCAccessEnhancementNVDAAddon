@@ -12,7 +12,6 @@ import codecs
 import shutil
 import shlobj
 import speech
-import wx
 from keyboardHandler import KeyboardInputGesture
 from configobj import ConfigObj
 from vlc_localeSettingsHandler import LocaleSettings
@@ -54,10 +53,6 @@ _defaultVlcKeysAssignment = {
 	"key-rate-faster-fine": "]",
 	"global-key-rate-slower-fine": "",
 	"key-rate-slower-fine": "[",
-	"global-key-next": "",
-	"key-next": "n",
-	"global-key-prev": "",
-	"key-prev": "p",
 	"global-key-stop": "",
 	"key-stop": "s",
 	"global-key-position": "",
@@ -283,7 +278,7 @@ class VLCSettings(object):
 				"Before modify VLC shortcuts, you must start VLC once.") % self.vlcSettingsDir
 			# Translators: title of message box.
 			dialogTitle = _("Information")
-			inform(msg, makeAddonWindowTitle(dialogTitle) )
+			inform(msg, makeAddonWindowTitle(dialogTitle))
 		except OSError:
 			# Translators: message to user: VLC configuration folder cannot be deleted.
 			msg = _("VLC configuration folder \"%s\" cannot be deleted") % self.vlcSettingsDir

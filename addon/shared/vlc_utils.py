@@ -7,15 +7,14 @@
 import addonHandler
 import winUser
 import api
-import gui
 import keyboardHandler
 import time
 import wx
 import config
-import ui
 import speech
 import speech.speech
 import characterProcessing
+import mouseHandler
 
 addonHandler.initTranslation()
 
@@ -179,23 +178,25 @@ def maximizeWindow(hWnd):
 	winUser.sendMessage(hWnd, WM_SYSCOMMAND, SC_MAXIMIZE, 0)
 
 
-def mouseClick(obj, rightButton=False, twice=False):
-	api.moveMouseToNVDAObject(obj)
-	api.setMouseObject(obj)
+def mouseClick(obj=None, rightButton=False, twice=False):
+	if obj:
+		api.moveMouseToNVDAObject(obj)
+		api.setMouseObject(obj)
 	if not rightButton:
-		winUser.mouse_event(winUser.MOUSEEVENTF_LEFTDOWN, 0, 0)
-		winUser.mouse_event(winUser.MOUSEEVENTF_LEFTUP, 0, 0)
+		mouseHandler.executeMouseEvent(winUser.MOUSEEVENTF_LEFTDOWN, 0, 0)
+		mouseHandler.executeMouseEvent(winUser.MOUSEEVENTF_LEFTUP, 0, 0)
 		if twice:
 			time.sleep(0.1)
-			winUser.mouse_event(winUser.MOUSEEVENTF_LEFTDOWN, 0, 0)
-			winUser.mouse_event(winUser.MOUSEEVENTF_LEFTUP, 0, 0)
+			mouseHandler.executeMouseEvent(winUser.MOUSEEVENTF_LEFTDOWN, 0, 0)
+			mouseHandler.executeMouseEvent(winUser.MOUSEEVENTF_LEFTUP, 0, 0)
 	else:
-		winUser.mouse_event(winUser.MOUSEEVENTF_RIGHTDOWN, 0, 0)
-		winUser.mouse_event(winUser.MOUSEEVENTF_RIGHTUP, 0, 0)
+		mouseHandler.executeMouseEvent(winUser.MOUSEEVENTF_RIGHTDOWN, 0, 0)
+		mouseHandler.executeMouseEvent(winUser.MOUSEEVENTF_RIGHTUP, 0, 0)
 		if twice:
 			time.sleep(0.1)
-			winUser.mouse_event(winUser.MOUSEEVENTF_RIGHTDOWN, 0, 0)
-			winUser.mouse_event(winUser.MOUSEEVENTF_RIGHTUP, 0, 0)
+			mouseHandler.executeMouseEvent(winUser.MOUSEEVENTF_RIGHTDOWN, 0, 0)
+			mouseHandler.executeMouseEvent(winUser.MOUSEEVENTF_RIGHTUP, 0, 0)
+		mouseHandler.executeMouseEvent(winUser.MOUSEEVENTF_RIGHTUP, 0, 0)
 
 
 def getSpeechMode():
@@ -208,6 +209,8 @@ def setSpeechMode(mode):
 
 def setSpeechMode_off():
 	speech.setSpeechMode(speech.SpeechMode.off)
+
+
 speakOnDemand = speech.speech.SpeechMode.onDemand
 
 
@@ -219,7 +222,6 @@ def executeWithSpeakOnDemand(func, *args, **kwargs):
 	ret = func(*args, **kwargs)
 	_speechState.speechMode = SpeechMode.onDemand
 	return ret
-
 
 
 class MessageBox(wx.Dialog):

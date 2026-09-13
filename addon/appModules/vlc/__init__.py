@@ -293,7 +293,7 @@ class InVLCViewWindow(IAccessible):
 		mainWindow = self.appModule.mainWindow
 		elapsedTime = mainWindow.getElapsedTime()
 		if elapsedTime:
-			ui.message( formatTime(elapsedTime))
+			ui.message(formatTime(elapsedTime))
 
 	def script_sayVolume(self, gesture):
 		def speakVolume(level, muteState):

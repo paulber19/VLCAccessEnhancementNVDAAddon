@@ -55,7 +55,7 @@ ID_EmbeddedPlaylist = 2
 
 def getForegroundObject():
 	hdMain = ctypes.windll.user32.GetForegroundWindow()
-	if not getString(vlc_strings.ID_VLCAppTitle) in winUser.getWindowText(hdMain):
+	if getString(vlc_strings.ID_VLCAppTitle) not in winUser.getWindowText(hdMain):
 		hdMain = winUser.getWindow(winUser.getWindow(hdMain, 2), 2)
 	o = getNVDAObjectFromEvent(hdMain, -4, 0)
 	return o
@@ -354,7 +354,7 @@ class MainWindow (object):
 	def calculatePosition(self, jumpTimeInSec, totalTimeInSec, isPlaying):
 		mainWindow = self
 		o1 = mainWindow.getMediaViewNVDAObject()
-		(x, y, l, h) = o1.location
+		(x, y, l, h) = o1.location  # noqa:E741
 		iX = (int(x) + 5) + (int(l) - 10) * jumpTimeInSec / totalTimeInSec
 		return (iX, int(y) + int(h) / 2)
 
